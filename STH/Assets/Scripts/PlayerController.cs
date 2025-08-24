@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Health health;
     [SerializeField] CinemachineCamera cam;
     [SerializeField] CinemachineFollow camFollow;
+    [SerializeField] AudioSource audioSource;
 
     [SerializeField] float cameraViewDistance;
     [SerializeField] float moveSpeed = 10f;
@@ -21,11 +22,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxHealth;
     [SerializeField] float bulletDamage;
     [SerializeField] float fireRate;
-
+    [SerializeField] float xp;
+    [SerializeField] float sprintTime;
+    [SerializeField] float sprintMultiplier;
 
     InputSystem_Actions playerInput;
 
     [SerializeField] float fireRateTimer;
+    [SerializeField] float sprintTimer;
+    [SerializeField] private float sprintCooldown;
+    public float sprintCooldownTimer;
+    public bool isSprinting;
 
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -33,17 +40,18 @@ public class PlayerController : MonoBehaviour
     public float GetEnemyDetectionRange { get => enemyDetectionRange; set => enemyDetectionRange = value; }
     public float GetBulletDamage { get => bulletDamage; set => bulletDamage = value; }
     public float GetFireRate { get => fireRate; set => fireRate = value; }
+    public float GetXp { get => xp; set => xp = value; }
 
     public void OnEnable()
     {
         playerInput = new InputSystem_Actions();
         playerInput.Player.Enable();
-        playerInput.Player.Attack.performed += OnAttackPerformed;
+       // playerInput.Player.Attack.performed += OnAttackPerformed;
     }
 
     public void OnDisable()
     {
-        playerInput.Player.Attack.performed -= OnAttackPerformed;
+      //  playerInput.Player.Attack.performed -= OnAttackPerformed;
         playerInput.Player.Disable();
     }
 
@@ -52,16 +60,50 @@ public class PlayerController : MonoBehaviour
         health = GetComponent<Health>();
         health.GetMaxHealth = GetMaxHealth;
         camFollow = cam.GetComponent<CinemachineFollow>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
-        // --- Movement ---
         Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-        // Move in world space (ignores player rotation)
-        transform.Translate(moveDir * GetMoveSpeed * Time.deltaTime, Space.World);
+        bool sprintInput = playerInput.Player.Sprint.inProgress;
+
+        // Handle sprinting
+        if (sprintInput && sprintCooldownTimer <= 0f)
+        {
+            isSprinting = true;
+            sprintTimer += Time.deltaTime;
+
+            if (sprintTimer > sprintTime)
+            {
+                // Max sprint reached, start cooldown
+                isSprinting = false;
+                sprintCooldownTimer = sprintCooldown;
+            }
+        }
+        else
+        {
+            // Not sprinting, reduce cooldown
+            isSprinting = false;
+
+            if (sprintTimer > 0f)
+            {
+                // Reset sprint timer if player released sprint early
+                sprintTimer = 0f;
+                sprintCooldownTimer = sprintCooldown; // start cooldown
+            }
+
+            if (sprintCooldownTimer > 0f)
+            {
+                sprintCooldownTimer -= Time.deltaTime;
+            }
+        }
+
+        // Apply movement
+        float currentSpeed = GetMoveSpeed * (isSprinting ? sprintMultiplier : 1f);
+        transform.Translate(moveDir * currentSpeed * Time.deltaTime, Space.World);
 
         // --- Facing Target ---
         if (target != null)
@@ -105,8 +147,10 @@ public class PlayerController : MonoBehaviour
     void ShootAtEnemy()
     {
         //Instantiate bullet here
+        audioSource.Play();
         GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
         newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
+        newBullet.GetComponent<Projectile>().playerController = this;
         newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
         Destroy(newBullet, 5f);
     }

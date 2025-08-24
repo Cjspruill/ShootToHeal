@@ -12,6 +12,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float damage;
     Transform target;
 
+    [SerializeField] float amountOfXpToDrop;
+    [SerializeField] GameObject xpOrb;
+
+    [SerializeField] GameObject audioPrefab;
+
     void Start()
     {
         target = FindFirstObjectByType<PlayerController>().transform;
@@ -71,11 +76,24 @@ public class EnemyController : MonoBehaviour
     {
         PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
 
-        if (playerController != null) 
+        if (playerController != null)
         {
             Health health = playerController.GetComponent<Health>();
 
             health.TakeDamage(damage);
         }
+    }
+
+    public void DropXpOrb()
+    {
+        GameObject newXpOrb = Instantiate(xpOrb, transform.position, transform.rotation);
+    }
+
+    public void PlayHurtAudio()
+    {
+        GameObject newAudioObj = Instantiate(audioPrefab, transform.position, Quaternion.identity);
+        AudioSource newAudio = newAudioObj.GetComponent<AudioSource>();
+        newAudio.Play();
+        Destroy(newAudioObj, newAudio.clip.length);
     }
 }

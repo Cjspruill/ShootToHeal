@@ -1,0 +1,13 @@
+{
+    "asset": "6350e4a54db9fe94b98538373ac5fea5",
+    "fileName": "0198dc9b-6e04-7ee3-b44c-3a314cda545b.wav",
+    "prompt": "Impact enemy",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "4bd731f54a064a5e9402697d43fe2979",
+    "duration": 1.2999999523162842,
+    "autoTrim": true,
+    "hasReference": false
+}

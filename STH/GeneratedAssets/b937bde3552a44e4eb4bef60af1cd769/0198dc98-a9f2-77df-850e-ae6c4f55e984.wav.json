@@ -1,0 +1,13 @@
+{
+    "asset": "b937bde3552a44e4eb4bef60af1cd769",
+    "fileName": "0198dc98-a9f2-77df-850e-ae6c4f55e984.wav",
+    "prompt": "Laser Bullet",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "962201648647be374cd99ee114d78e0d",
+    "duration": 2.0999999046325685,
+    "autoTrim": true,
+    "hasReference": false
+}

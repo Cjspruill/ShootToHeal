@@ -1,7 +1,9 @@
 using UnityEngine;
+using TMPro;
 
 public class Health : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] float health;
     [SerializeField] float maxHealth;
 
@@ -13,6 +15,7 @@ public class Health : MonoBehaviour
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
 
+   
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +37,11 @@ public class Health : MonoBehaviour
             }
         }
 
+        if (healthText)
+        {
+            int roundedHealth = Mathf.RoundToInt(health);
+            healthText.text = "Health: " + roundedHealth + "/ " + maxHealth;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -46,13 +54,14 @@ public class Health : MonoBehaviour
 
         if (health <= 0)
         {
-            Destroy(gameObject);
-            //Drop XP
-
-            if (GetComponent<EnemyController>())
+            EnemyController enemyController = GetComponent<EnemyController>();
+            if (enemyController)
             {
                 GameManager.Instance.EnemyDestroyed();
+                enemyController.DropXpOrb();
             }
+            Destroy(gameObject);
+            //Drop XP
         }
     }
 

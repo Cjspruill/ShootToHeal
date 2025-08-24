@@ -5,6 +5,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    [SerializeField] PlayerController playerController;
 
     [Header("Enemy Settings")]
     [SerializeField] private GameObject[] enemiesToSpawn;
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform enemyHolder;
     [SerializeField] private TextMeshProUGUI enemiesDefeatedText;
     [SerializeField] private TextMeshProUGUI currentLevelText;
+    [SerializeField] private TextMeshProUGUI currentXPText;
+    [SerializeField] private TextMeshProUGUI canSprintText;
 
     [Header("Spawn Settings")]
     [SerializeField]
@@ -25,13 +28,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int baseMaxEnemies = 5;         // starting max active enemies
     [SerializeField] private int maxEnemiesIncrease = 2;     // how many extra per level
     [SerializeField] private int maxEnemiesCap = 50;         // clamp cap
-    [SerializeField] private int enemiesRequiredForNextLevel;
+    [SerializeField] private int baseXP = 100;
+    [SerializeField] private float xpMultiplier = 1.5f;
 
     [Header("Level Settings")]
     [SerializeField] private int level = 1;
-    [SerializeField] private int enemiesDestroyed;
     [SerializeField] private int totalEnemiesDestroyed;
     [SerializeField] private int enemiesSpawned;
+    [SerializeField] bool levelEnded;
 
     public delegate void GameEvent();
     public static event GameEvent OnLevelEnd;
@@ -52,6 +56,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        playerController = FindFirstObjectByType<PlayerController>();
+
         StartLevel();
     }
 
@@ -62,6 +68,21 @@ public class GameManager : MonoBehaviour
 
         enemiesDefeatedText.text = "Enemies Destroyed: " + totalEnemiesDestroyed.ToString();
         currentLevelText.text = "Level: " + level;
+        currentXPText.text = "XP: " + playerController.GetXp + "/ " + GetMaxXpForLevel();
+
+        //if (playerController.isSprinting && playerController.sprintCooldownTimer > 0)
+        //    canSprintText.text = "Huff, Huff!";
+        if (playerController.sprintCooldownTimer <= 0)
+            canSprintText.text = "I've Got Energy!";
+        else
+            canSprintText.text = "I'm Tired!";
+
+        
+
+        if(!levelEnded && playerController.GetXp >= GetMaxXpForLevel())
+        {
+            EndLevel();
+        }
     }
 
 
@@ -69,6 +90,7 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel()
     {
+        levelEnded = false;
         level++;
         Time.timeScale = 1;
         OnLevelStart?.Invoke();
@@ -81,11 +103,16 @@ public class GameManager : MonoBehaviour
 
     public void EndLevel()
     {
+        if (levelEnded) return;
+
+        levelEnded = true;
         Time.timeScale = 0;
         OnLevelEnd?.Invoke();
 
         if (spawnRoutine != null)
             StopCoroutine(spawnRoutine);
+
+        playerController.GetXp = 0;
     }
 
     // ------------------- SPAWNING -------------------
@@ -126,13 +153,6 @@ public class GameManager : MonoBehaviour
     public void EnemyDestroyed()
     {
         totalEnemiesDestroyed++;
-        enemiesDestroyed++;
-
-        if (enemiesDestroyed >= GetRequiredKillsForLevel())
-        {
-            enemiesDestroyed = 0;
-            EndLevel();
-        }
     }
         // ------------------- SCALING FUNCTIONS -------------------
 
@@ -142,14 +162,14 @@ public class GameManager : MonoBehaviour
         return Mathf.Clamp(baseMaxEnemies + (level - 1) * maxEnemiesIncrease, baseMaxEnemies, maxEnemiesCap);
     }
 
+    private float GetMaxXpForLevel()
+    {
+        return Mathf.FloorToInt(baseXP * Mathf.Pow(xpMultiplier, level - 1));
+    }
+
     private float GetSpawnIntervalForLevel()
     {
         // scale and clamp
         return Mathf.Clamp(baseSpawnInterval - (level - 1) * spawnIntervalDecrease, minSpawnInterval, maxSpawnInterval);
-    }
-
-    private int GetRequiredKillsForLevel()
-    {
-        return level * enemiesRequiredForNextLevel;
     }
 }
