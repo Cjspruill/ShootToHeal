@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
+using Unity.Cinemachine;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,8 +9,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform barrelOut;
     [SerializeField] Transform target;
     [SerializeField] Health health;
+    [SerializeField] CinemachineCamera cam;
+    [SerializeField] CinemachineFollow camFollow;
 
-    [SerializeField] float distance;
+    [SerializeField] float cameraViewDistance;
     [SerializeField] float moveSpeed = 10f;
     [SerializeField] float bulletForce = 100f;
     [SerializeField] float enemyDetectionRange = 50f;
@@ -23,6 +26,13 @@ public class PlayerController : MonoBehaviour
     InputSystem_Actions playerInput;
 
     [SerializeField] float fireRateTimer;
+
+    public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
+    public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
+    public float GetMoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+    public float GetEnemyDetectionRange { get => enemyDetectionRange; set => enemyDetectionRange = value; }
+    public float GetBulletDamage { get => bulletDamage; set => bulletDamage = value; }
+    public float GetFireRate { get => fireRate; set => fireRate = value; }
 
     public void OnEnable()
     {
@@ -40,7 +50,8 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         health = GetComponent<Health>();
-        health.GetMaxHealth = maxHealth;
+        health.GetMaxHealth = GetMaxHealth;
+        camFollow = cam.GetComponent<CinemachineFollow>();
     }
 
     void Update()
@@ -50,7 +61,7 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
         // Move in world space (ignores player rotation)
-        transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(moveDir * GetMoveSpeed * Time.deltaTime, Space.World);
 
         // --- Facing Target ---
         if (target != null)
@@ -70,13 +81,15 @@ public class PlayerController : MonoBehaviour
         {
             fireRateTimer += Time.deltaTime;
 
-            if(fireRateTimer >= fireRate)
+            if(fireRateTimer >= GetFireRate)
             {
                 ShootAtEnemy();
                 fireRateTimer = 0;
             } 
         }
 
+
+        camFollow.FollowOffset = new Vector3(0, cameraViewDistance, 0);
     }
 
     public void OnAttackPerformed(InputAction.CallbackContext context)
@@ -84,7 +97,7 @@ public class PlayerController : MonoBehaviour
         //Add bool check for allowing player enabled shooting?
         //Instantiate bullet here
         GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
-        newBullet.GetComponent<Projectile>().damage = bulletDamage;
+        newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
         newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
         Destroy(newBullet, 5f);
     }
@@ -93,13 +106,13 @@ public class PlayerController : MonoBehaviour
     {
         //Instantiate bullet here
         GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
-        newBullet.GetComponent<Projectile>().damage = bulletDamage;
+        newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
         newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
         Destroy(newBullet, 5f);
     }
     void EnemySearch()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, enemyDetectionRange);
+        Collider[] hits = Physics.OverlapSphere(transform.position, GetEnemyDetectionRange);
 
         float closestDistance = Mathf.Infinity;
         Transform closestEnemy = null;

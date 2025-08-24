@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 8673536569689943428}
   - component: {fileID: 2072220949118663522}
   - component: {fileID: 7834348010958775455}
+  - component: {fileID: 5630457118972060912}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -236,7 +237,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 8cbfd8522888a0e41989e60f66963c68, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -298,9 +299,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 539f9e81f5a0dc84887c1a8f64c8408c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  mainCamera: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  barrelOut: {fileID: 0}
-  distance: 0
-  moveSpeed: 10
-  bulletForce: 100
+  bulletPrefab: {fileID: 1145268940505646583, guid: 710e2ce7b35b4db4eb07acbbf9a913f3, type: 3}
+  barrelOut: {fileID: 1219261347407491147}
+  target: {fileID: 0}
+  health: {fileID: 0}
+  cam: {fileID: 0}
+  camFollow: {fileID: 0}
+  cameraViewDistance: 10
+  moveSpeed: 4
+  bulletForce: 50
+  enemyDetectionRange: 7
+  maxHealth: 100
+  bulletDamage: 10
+  fireRate: 1.75
+  fireRateTimer: 0
+--- !u!114 &5630457118972060912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8963925535493690866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 043dfb549cd258a4fa55ac6a3be67a40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  health: 0
+  maxHealth: 0
+  damageTime: 0.5
+  damageTimer: 0
+  canDamage: 0

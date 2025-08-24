@@ -48,7 +48,11 @@ public class Health : MonoBehaviour
         {
             Destroy(gameObject);
             //Drop XP
-            Debug.Log("Dead AF");
+
+            if (GetComponent<EnemyController>())
+            {
+                GameManager.Instance.EnemyDestroyed();
+            }
         }
     }
 
