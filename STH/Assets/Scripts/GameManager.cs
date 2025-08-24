@@ -5,11 +5,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject[] enemiesToSpawn;
     [SerializeField] BoxCollider spawnArea;
+    [SerializeField] float spawnTime;
+    [SerializeField] float spawnTimeInterval;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        InvokeRepeating("SpawnEnemy", 5f, 10f);
+        InvokeRepeating("SpawnEnemy", spawnTime, spawnTimeInterval);
     }
 
     // Update is called once per frame
