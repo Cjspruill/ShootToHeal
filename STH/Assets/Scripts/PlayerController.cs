@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         playerInput.Player.Disable();
     }
 
-    void Start()
+    void Awake()
     {
         health = GetComponent<Health>();
         health.GetMaxHealth = maxHealth;

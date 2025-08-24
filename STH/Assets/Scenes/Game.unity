@@ -177,7 +177,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: fireRate
-      value: 2.5
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: barrelOut
@@ -520,52 +520,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!1 &642941431 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-  m_PrefabInstance: {fileID: 3675561939777325380}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &642941437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642941431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 043dfb549cd258a4fa55ac6a3be67a40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  health: 0
-  maxHealth: 100
---- !u!54 &642941438
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642941431}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 1
 --- !u!1 &724665199 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
@@ -590,6 +544,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   health: 0
   maxHealth: 0
+  damageTime: 0.5
+  damageTimer: 0
+  canDamage: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +605,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 978316021}
+  - component: {fileID: 978316022}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -670,6 +628,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &978316022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978316020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 155b04e939de2e94ba5621c29acef3f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  enemiesToSpawn:
+  - {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
+  spawnArea: {fileID: 2005797277}
 --- !u!1 &1242421587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,18 +1097,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 917851715072376036, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-      propertyPath: moveSpeed
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 917851715072376036, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-      propertyPath: rotationSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 917851715072376036, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-      propertyPath: stoppingDistance
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
       propertyPath: m_Name
       value: GruntEnemy
@@ -1183,13 +1144,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 642941437}
-    - targetCorrespondingSourceObject: {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 642941438}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

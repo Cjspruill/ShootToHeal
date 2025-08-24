@@ -5,10 +5,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float moveSpeed = 5f;        // movement speed
     [SerializeField] float stoppingDistance = 2f; // how close before stopping
     [SerializeField] float rotationSpeed = 10f;   // how quickly enemy rotates
+    [SerializeField] float separationRadius = 2f; // how close enemies can get to each other
+    [SerializeField] float separationForce = 3f;  // strength of separation push
 
+
+    [SerializeField] float damage;
     Transform target;
 
-    public void Start()
+    void Start()
     {
         target = FindFirstObjectByType<PlayerController>().transform;
     }
@@ -22,24 +26,56 @@ public class EnemyController : MonoBehaviour
     {
         if (target == null) return;
 
-        // Get direction towards player, ignoring vertical difference
-        Vector3 direction = target.position - transform.position;
-        direction.y = 0;
+        // --- Direction to player ---
+        Vector3 toPlayer = target.position - transform.position;
+        toPlayer.y = 0;
 
-        float distance = direction.magnitude;
+        float distance = toPlayer.magnitude;
 
-        // Rotate towards player every frame
-        if (direction != Vector3.zero)
+        // --- Separation from other enemies ---
+        Vector3 separation = Vector3.zero;
+        Collider[] hits = Physics.OverlapSphere(transform.position, separationRadius);
+        foreach (var hit in hits)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            if (hit.gameObject != gameObject && hit.GetComponent<EnemyController>() != null)
+            {
+                Vector3 away = transform.position - hit.transform.position;
+                separation += away.normalized / away.magnitude; // stronger push if very close
+            }
+        }
+
+        // --- Combine movement ---
+        Vector3 moveDir = Vector3.zero;
+        if (distance > stoppingDistance)
+        {
+            moveDir = toPlayer.normalized;
+        }
+
+        Vector3 finalDir = (moveDir + separation * separationForce).normalized;
+
+        // --- Rotate towards player (not separation) ---
+        if (toPlayer != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(toPlayer);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // Move if farther than stoppingDistance
-        if (distance > stoppingDistance)
+        // --- Move ---
+        if (finalDir != Vector3.zero)
         {
-            Vector3 moveDir = direction.normalized;
-            transform.position += moveDir * moveSpeed * Time.deltaTime;
+            transform.position += finalDir * moveSpeed * Time.deltaTime;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+
+        if (playerController != null) 
+        {
+            Health health = playerController.GetComponent<Health>();
+
+            health.TakeDamage(damage);
         }
     }
 }
