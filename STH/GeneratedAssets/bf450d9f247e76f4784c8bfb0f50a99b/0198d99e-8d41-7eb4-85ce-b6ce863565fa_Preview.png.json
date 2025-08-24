@@ -1,0 +1,11 @@
+{
+    "asset": "bf450d9f247e76f4784c8bfb0f50a99b",
+    "fileName": "0198d99e-8d41-7eb4-85ce-b6ce863565fa_Preview.png",
+    "prompt": "Checkered Board",
+    "negativePrompt": "",
+    "model": "575ecf67-4425-4939-97b9-5e138b8ee234",
+    "modelName": "Unity Texture2D",
+    "customSeed": 1005830307,
+    "w3CTraceId": "d50ca30a4bbae3421ab630f0f57e1f25",
+    "refinementMode": "Generation"
+}
