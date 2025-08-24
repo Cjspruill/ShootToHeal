@@ -343,16 +343,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1552464186}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: sprintTime
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: sprintCooldown
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: sprintMultiplier
-      value: 1.25
+      propertyPath: shootToHeal
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: m_Name
@@ -361,10 +353,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 724665212}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
 --- !u!1 &322341149
 GameObject:
@@ -926,10 +915,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradesSelector
   healthToGive: 10
   viewRangeToGive: 1
-  moveSpeedToGive: 0.2
-  enemyDetectionRangeToGive: 1
+  moveSpeedToGive: 0.1
+  enemyDetectionRangeToGive: 0.5
   bulletDamageToGive: 1
   fireRateToGive: 0.1
+  sprintTimeToGive: 0.2
+  sprintCooldownToGive: 0.2
+  sprintMultiplierToGive: 0.025
+  rotationSpeedToGive: 0.25
+  shootToHealToGive: 1
   playerController: {fileID: 724665207}
   upgradeButtons:
   - {fileID: 1615596398}
@@ -1311,11 +1305,6 @@ RectTransform:
   m_AnchoredPosition: {x: 50, y: -175}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &724665199 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-  m_PrefabInstance: {fileID: 194326879}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &724665205 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6166652936281876884, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
@@ -1326,109 +1315,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
   m_PrefabInstance: {fileID: 194326879}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 724665199}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 539f9e81f5a0dc84887c1a8f64c8408c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
---- !u!82 &724665212
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 724665199}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: b937bde3552a44e4eb4bef60af1cd769, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &754040902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,8 +1704,8 @@ MonoBehaviour:
   baseMaxEnemies: 5
   maxEnemiesIncrease: 2
   maxEnemiesCap: 50
-  baseXP: 25
-  xpMultiplier: 1.5
+  baseXP: 5
+  xpMultiplier: 1.15
   level: 0
   totalEnemiesDestroyed: 0
   enemiesSpawned: 0

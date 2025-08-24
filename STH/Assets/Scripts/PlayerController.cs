@@ -13,26 +13,30 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineFollow camFollow;
     [SerializeField] AudioSource audioSource;
 
-    [SerializeField] float cameraViewDistance;
-    [SerializeField] float moveSpeed = 10f;
     [SerializeField] float bulletForce = 100f;
-    [SerializeField] float enemyDetectionRange = 50f;
 
     [Header("Stats")]
     [SerializeField] float maxHealth;
+    [SerializeField] float moveSpeed = 10f;
+    [SerializeField] float enemyDetectionRange = 50f;
+    [SerializeField] float cameraViewDistance;
     [SerializeField] float bulletDamage;
     [SerializeField] float fireRate;
-    [SerializeField] float xp;
     [SerializeField] float sprintTime;
+    [SerializeField] private float sprintCooldown;
     [SerializeField] float sprintMultiplier;
+    [SerializeField] float rotationSpeed;
+    [SerializeField] float shootToHeal;
 
     InputSystem_Actions playerInput;
 
+    [Header("Timers")]
     [SerializeField] float fireRateTimer;
     [SerializeField] float sprintTimer;
-    [SerializeField] private float sprintCooldown;
     public float sprintCooldownTimer;
+
     public bool isSprinting;
+    [SerializeField] float xp;
 
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -41,6 +45,11 @@ public class PlayerController : MonoBehaviour
     public float GetBulletDamage { get => bulletDamage; set => bulletDamage = value; }
     public float GetFireRate { get => fireRate; set => fireRate = value; }
     public float GetXp { get => xp; set => xp = value; }
+    public float GetSprintTime { get => sprintTime; set => sprintTime = value; }
+    public float GetSprintCooldown { get => sprintCooldown; set => sprintCooldown = value; }
+    public float GetSprintMultiplier { get => sprintMultiplier; set => sprintMultiplier = value; }
+    public float GetRotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
+    public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
 
     public void OnEnable()
     {
@@ -76,11 +85,11 @@ public class PlayerController : MonoBehaviour
             isSprinting = true;
             sprintTimer += Time.deltaTime;
 
-            if (sprintTimer > sprintTime)
+            if (sprintTimer > GetSprintTime)
             {
                 // Max sprint reached, start cooldown
                 isSprinting = false;
-                sprintCooldownTimer = sprintCooldown;
+                sprintCooldownTimer = GetSprintCooldown;
             }
         }
         else
@@ -92,7 +101,7 @@ public class PlayerController : MonoBehaviour
             {
                 // Reset sprint timer if player released sprint early
                 sprintTimer = 0f;
-                sprintCooldownTimer = sprintCooldown; // start cooldown
+                sprintCooldownTimer = GetSprintCooldown; // start cooldown
             }
 
             if (sprintCooldownTimer > 0f)
@@ -102,7 +111,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Apply movement
-        float currentSpeed = GetMoveSpeed * (isSprinting ? sprintMultiplier : 1f);
+        float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
         transform.Translate(moveDir * currentSpeed * Time.deltaTime, Space.World);
 
         // --- Facing Target ---
@@ -113,7 +122,7 @@ public class PlayerController : MonoBehaviour
             if (direction.sqrMagnitude > 0.01f) // avoid jitter
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, GetRotationSpeed * Time.deltaTime);
             }
         }
 
@@ -150,6 +159,7 @@ public class PlayerController : MonoBehaviour
         audioSource.Play();
         GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
         newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
+        newBullet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
         newBullet.GetComponent<Projectile>().playerController = this;
         newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
         Destroy(newBullet, 5f);
@@ -183,5 +193,10 @@ public class PlayerController : MonoBehaviour
         {
             target = null; // nothing in range
         }
+    }
+
+    public void UpdateMaxHealth()
+    {
+        health.GetMaxHealth = GetMaxHealth;
     }
 }

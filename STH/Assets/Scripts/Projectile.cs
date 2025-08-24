@@ -3,6 +3,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] public float damage;
+    [SerializeField] public float shootToHeal;
     [SerializeField] public PlayerController playerController;
 
     public void OnCollisionEnter(Collision other)
@@ -15,7 +16,7 @@ public class Projectile : MonoBehaviour
         
 
         if (playerController)       
-            playerController.GetComponent<Health>().GiveHealth(1);
+            playerController.GetComponent<Health>().GiveHealth(shootToHeal);
         
 
         if (enemyController)

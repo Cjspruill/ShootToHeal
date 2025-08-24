@@ -12,6 +12,12 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] float enemyDetectionRangeToGive;
     [SerializeField] float bulletDamageToGive;
     [SerializeField] float fireRateToGive;
+    [SerializeField] float sprintTimeToGive;
+    [SerializeField] float sprintCooldownToGive;
+    [SerializeField] float sprintMultiplierToGive;
+    [SerializeField] float rotationSpeedToGive;
+    [SerializeField] float shootToHealToGive;
+
 
     [SerializeField] PlayerController playerController;
 
@@ -41,7 +47,12 @@ public class UpgradesSelector : MonoBehaviour
         (GiveMoveSpeedToPlayer, "+" + moveSpeedToGive + " Move Speed"),
         (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeToGive + " Enemy Detection"),
         (GiveBulletDamageToPlayer, "+" + bulletDamageToGive + " Bullet Damage"),
-        (GiveFireRateToPlayer, "+" + fireRateToGive + " Fire Rate")
+        (GiveFireRateToPlayer, "+" + fireRateToGive + " Fire Rate"),
+        (GiveSprintTimeToPlayer, "+" + sprintTimeToGive + "Sprint Time"),
+        (GiveSprintCooldownToPlayer, "-" + sprintCooldownToGive + "Sprint Cooldown"),
+        (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierToGive + "Sprint Multiplier"),
+        (GiveRotationSpeedToPlayer, "+" + rotationSpeedToGive + "Rotation Speed"),
+        (GiveShootToHealToPlayer, "+" + shootToHealToGive + "Shoot To Heal")
     };
 
         // clear old listeners
@@ -72,41 +83,72 @@ public class UpgradesSelector : MonoBehaviour
     void GiveHealthToPlayer()
     {
         playerController.GetMaxHealth += healthToGive;
-        GameManager.Instance.StartLevel();
-        upgradesPanel.SetActive(false);
+        playerController.UpdateMaxHealth();
+        StartLevel();
     }
 
     void GiveViewRangeToPlayer()
     {
         playerController.GetCameraViewDistance += viewRangeToGive;
-        GameManager.Instance.StartLevel();
-        upgradesPanel.SetActive(false);
+        StartLevel();
     }
 
     void GiveMoveSpeedToPlayer()
     {
         playerController.GetMoveSpeed += moveSpeedToGive;
-        GameManager.Instance.StartLevel();
-        upgradesPanel.SetActive(false);
+        StartLevel();
     }
 
     void GiveEnemyDetectionRangeToPlayer()
     {
         playerController.GetEnemyDetectionRange += enemyDetectionRangeToGive;
-        GameManager.Instance.StartLevel();
-        upgradesPanel.SetActive(false);
+        StartLevel();
     }
 
     void GiveBulletDamageToPlayer()
     {
         playerController.GetBulletDamage += bulletDamageToGive;
-        GameManager.Instance.StartLevel();
-        upgradesPanel.SetActive(false);
+        StartLevel();
     }
 
     void GiveFireRateToPlayer()
     {
         playerController.GetFireRate -= fireRateToGive;
+        StartLevel();
+    }
+
+    void GiveSprintTimeToPlayer()
+    {
+        playerController.GetSprintTime += sprintTimeToGive;
+        StartLevel();
+    }
+
+    void GiveSprintCooldownToPlayer()
+    {
+        playerController.GetSprintCooldown -= sprintCooldownToGive;
+        StartLevel();
+    }
+    
+    void GiveSprintMultiplierToPlayer()
+    {
+        playerController.GetSprintMultiplier += sprintMultiplierToGive;
+        StartLevel();
+    }
+
+    void GiveRotationSpeedToPlayer()
+    {
+        playerController.GetRotationSpeed += rotationSpeedToGive;
+        StartLevel();
+    }
+
+    void GiveShootToHealToPlayer()
+    {
+        playerController.GetShootToHeal += shootToHealToGive;
+        StartLevel();
+    }
+
+    void StartLevel()
+    {
         GameManager.Instance.StartLevel();
         upgradesPanel.SetActive(false);
     }

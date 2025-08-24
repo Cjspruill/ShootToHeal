@@ -40,7 +40,7 @@ public class Health : MonoBehaviour
         if (healthText)
         {
             int roundedHealth = Mathf.RoundToInt(health);
-            healthText.text = "Health: " + roundedHealth + "/ " + maxHealth;
+            healthText.text = "Health: " + roundedHealth + "/ " + GetMaxHealth;
         }
     }
 
