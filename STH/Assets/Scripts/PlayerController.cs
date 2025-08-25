@@ -1,6 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 
 public class PlayerController : MonoBehaviour
@@ -12,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineCamera cam;
     [SerializeField] CinemachineFollow camFollow;
     [SerializeField] AudioSource audioSource;
-
+    [SerializeField] UnityEngine.UI.Slider sprintSlider;
     [SerializeField] float bulletForce = 100f;
 
     [Header("Stats")]
@@ -38,6 +40,10 @@ public class PlayerController : MonoBehaviour
     public bool isSprinting;
     [SerializeField] float xp;
 
+    [Header("Knockback")]
+    [SerializeField] float knockbackRecoverySpeed = 5f; // how fast the knockback wears off
+    Vector3 knockbackVelocity = Vector3.zero;
+
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
     public float GetMoveSpeed { get => moveSpeed; set => moveSpeed = value; }
@@ -55,12 +61,10 @@ public class PlayerController : MonoBehaviour
     {
         playerInput = new InputSystem_Actions();
         playerInput.Player.Enable();
-       // playerInput.Player.Attack.performed += OnAttackPerformed;
     }
 
     public void OnDisable()
     {
-      //  playerInput.Player.Attack.performed -= OnAttackPerformed;
         playerInput.Player.Disable();
     }
 
@@ -74,6 +78,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Apply knockback first
+        HandleKnockback();
+
         Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
@@ -85,25 +92,28 @@ public class PlayerController : MonoBehaviour
             isSprinting = true;
             sprintTimer += Time.deltaTime;
 
-            if (sprintTimer > GetSprintTime)
+            if (sprintTimer >= GetSprintTime)
             {
-                // Max sprint reached, start cooldown
+                // Max sprint reached, force full cooldown
                 isSprinting = false;
+                sprintTimer = 0f;
                 sprintCooldownTimer = GetSprintCooldown;
             }
         }
         else
         {
-            // Not sprinting, reduce cooldown
-            isSprinting = false;
-
-            if (sprintTimer > 0f)
+            // Not sprinting
+            if (isSprinting)
             {
-                // Reset sprint timer if player released sprint early
+                // Player just stopped sprinting before max
+                float sprintRatio = sprintTimer / GetSprintTime; // % of sprint used
+                sprintCooldownTimer = GetSprintCooldown * sprintRatio; // scale cooldown
                 sprintTimer = 0f;
-                sprintCooldownTimer = GetSprintCooldown; // start cooldown
             }
 
+            isSprinting = false;
+
+            // Always tick down cooldown
             if (sprintCooldownTimer > 0f)
             {
                 sprintCooldownTimer -= Time.deltaTime;
@@ -118,11 +128,13 @@ public class PlayerController : MonoBehaviour
         if (target != null)
         {
             Vector3 direction = target.position - transform.position;
-            direction.y = 0; // keep only horizontal rotation
-            if (direction.sqrMagnitude > 0.01f) // avoid jitter
+            direction.y = 0;
+
+            if (direction.sqrMagnitude > 0.01f)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, GetRotationSpeed * Time.deltaTime);
+                // Rotate at a fixed speed in degrees/sec
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, GetRotationSpeed * Time.deltaTime);
             }
         }
 
@@ -141,6 +153,11 @@ public class PlayerController : MonoBehaviour
 
 
         camFollow.FollowOffset = new Vector3(0, cameraViewDistance, 0);
+
+        if (GameManager.Instance.showSprintSlider)
+        {
+            UpdateSprintSlider();
+        }
     }
 
     public void OnAttackPerformed(InputAction.CallbackContext context)
@@ -203,5 +220,34 @@ public class PlayerController : MonoBehaviour
     public void UpdateHealth(float value)
     {
         health.GetHealth += value;
+    }
+
+    void UpdateSprintSlider()
+    {
+        sprintSlider.maxValue = sprintTime;
+
+        if (isSprinting)
+            sprintSlider.value = sprintTimer;
+        else
+        sprintSlider.value = sprintCooldownTimer;
+    }
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+        // Only horizontal knockback
+        direction.y = 0;
+        knockbackVelocity += direction.normalized * force;
+    }
+
+    void HandleKnockback()
+    {
+        if (knockbackVelocity.magnitude > 0.01f)
+        {
+            // Move player by knockback
+            transform.position += knockbackVelocity * Time.deltaTime;
+
+            // Gradually reduce knockback over time
+            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackRecoverySpeed * Time.deltaTime);
+        }
     }
 }

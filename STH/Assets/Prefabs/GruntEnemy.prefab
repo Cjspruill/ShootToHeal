@@ -51,6 +51,7 @@ GameObject:
   - component: {fileID: 5625938454336629251}
   - component: {fileID: 6695042112508444216}
   - component: {fileID: -7597613072018630414}
+  - component: {fileID: 9152163104218263581}
   m_Layer: 0
   m_Name: GruntEnemy
   m_TagString: Untagged
@@ -165,14 +166,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1.75
+  sprintSpeed: 3
   stoppingDistance: 0
   rotationSpeed: 5
-  separationRadius: 2
+  separationRadius: 0.5
   separationForce: 3
+  knockbackForce: 5
+  sprintDuration: 2
+  minSprintCooldown: 5
+  maxSprintCooldown: 10
+  chanceToSprint: 0.5
   damage: 10
   amountOfXpToDrop: 10
   xpOrb: {fileID: 7058895534383387028, guid: 80d01143bffd061449980853dec2aa1c, type: 3}
   audioPrefab: {fileID: 8709370108117828910, guid: 7b2190fddfca7e740bf3c33b4c17832d, type: 3}
+  meshRenderer: {fileID: 0}
+  origColor: {r: 0, g: 0, b: 0, a: 0}
+  sprintColor: {r: 0.7798742, g: 0.70118076, b: 0.35560295, a: 1}
 --- !u!114 &5625938454336629251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +199,7 @@ MonoBehaviour:
   healthBarSlider: {fileID: 2518658931246033395}
   health: 0
   maxHealth: 100
-  damageTime: 0.25
+  damageTime: 0.15
   damageTimer: 0
   canDamage: 0
 --- !u!54 &6695042112508444216
@@ -316,6 +326,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!195 &9152163104218263581
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961342829119255558}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &2124747985303007952
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,13 +1,25 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 5f;        // movement speed
-    [SerializeField] float stoppingDistance = 2f; // how close before stopping
-    [SerializeField] float rotationSpeed = 10f;   // how quickly enemy rotates
-    [SerializeField] float separationRadius = 2f; // how close enemies can get to each other
-    [SerializeField] float separationForce = 3f;  // strength of separation push
+    [SerializeField] NavMeshAgent navMeshAgent;
 
+    [SerializeField] float moveSpeed = 5f;            // normal movement speed
+    [SerializeField] float sprintSpeed = 10f;         // sprint movement speed
+    [SerializeField] float stoppingDistance = 2f;
+    [SerializeField] float rotationSpeed = 10f;
+    [SerializeField] float separationRadius = 2f;
+    [SerializeField] float separationForce = 3f;
+    [SerializeField] float knockbackForce;
+
+    [SerializeField] float sprintDuration = 2f;       // how long the enemy sprints
+    [SerializeField] float minSprintCooldown = 3f;    // min wait before next sprint
+    [SerializeField] float maxSprintCooldown = 7f;    // max wait before next sprint
+    [SerializeField] float chanceToSprint;
+    float sprintTimer = 0f;
+    float sprintCooldownTimer = 0f;
+    bool isSprinting = false;
 
     [SerializeField] float damage;
     Transform target;
@@ -17,9 +29,24 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] GameObject audioPrefab;
 
+    [SerializeField] MeshRenderer meshRenderer;
+    [SerializeField] Color origColor;
+    [SerializeField] Color sprintColor;
+
+
     void Start()
     {
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        meshRenderer = GetComponent<MeshRenderer>();
+        origColor = meshRenderer.material.color;
+
         target = FindFirstObjectByType<PlayerController>().transform;
+
+        // start cooldown timer randomly to stagger sprints
+        sprintCooldownTimer = Random.Range(minSprintCooldown, maxSprintCooldown);
+
+        navMeshAgent.speed = moveSpeed;
+        navMeshAgent.stoppingDistance = stoppingDistance;
     }
 
     public void SetTarget(Transform newTarget)
@@ -31,13 +58,9 @@ public class EnemyController : MonoBehaviour
     {
         if (target == null) return;
 
-        // --- Direction to player ---
-        Vector3 toPlayer = target.position - transform.position;
-        toPlayer.y = 0;
+        HandleSprinting();
 
-        float distance = toPlayer.magnitude;
-
-        // --- Separation from other enemies ---
+        // --- Separation force ---
         Vector3 separation = Vector3.zero;
         Collider[] hits = Physics.OverlapSphere(transform.position, separationRadius);
         foreach (var hit in hits)
@@ -45,30 +68,54 @@ public class EnemyController : MonoBehaviour
             if (hit.gameObject != gameObject && hit.GetComponent<EnemyController>() != null)
             {
                 Vector3 away = transform.position - hit.transform.position;
-                separation += away.normalized / away.magnitude; // stronger push if very close
+                separation += away.normalized / away.magnitude;
             }
         }
 
-        // --- Combine movement ---
-        Vector3 moveDir = Vector3.zero;
-        if (distance > stoppingDistance)
-        {
-            moveDir = toPlayer.normalized;
-        }
+        // --- Final destination (target + separation offset) ---
+        Vector3 desiredPos = target.position + separation * separationForce;
 
-        Vector3 finalDir = (moveDir + separation * separationForce).normalized;
+        navMeshAgent.speed = isSprinting ? sprintSpeed : moveSpeed;
+        navMeshAgent.SetDestination(desiredPos);
 
-        // --- Rotate towards player (not separation) ---
-        if (toPlayer != Vector3.zero)
+        // --- Manual rotation smoothing (optional) ---
+        if (navMeshAgent.velocity.sqrMagnitude > 0.1f)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(toPlayer);
+            Quaternion lookRotation = Quaternion.LookRotation(navMeshAgent.velocity);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // --- Move ---
-        if (finalDir != Vector3.zero)
+        // --- Visual feedback ---
+        meshRenderer.material.color = isSprinting ? sprintColor : origColor;
+    }
+
+    void HandleSprinting()
+    {
+        if (isSprinting)
         {
-            transform.position += finalDir * moveSpeed * Time.deltaTime;
+            sprintTimer -= Time.deltaTime;
+            if (sprintTimer <= 0f)
+            {
+                isSprinting = false;
+                sprintCooldownTimer = Random.Range(minSprintCooldown, maxSprintCooldown);
+            }
+        }
+        else
+        {
+            sprintCooldownTimer -= Time.deltaTime;
+            if (sprintCooldownTimer <= 0f)
+            {
+                // Random chance to sprint when cooldown ends
+                if (Random.value < chanceToSprint)
+                {
+                    isSprinting = true;
+                    sprintTimer = sprintDuration;
+                }
+                else
+                {
+                    sprintCooldownTimer = Random.Range(minSprintCooldown, maxSprintCooldown);
+                }
+            }
         }
     }
 
@@ -78,9 +125,13 @@ public class EnemyController : MonoBehaviour
 
         if (playerController != null)
         {
+            // Damage
             Health health = playerController.GetComponent<Health>();
-
             health.TakeDamage(damage);
+
+            // Knockback
+            Vector3 knockbackDir = (collision.transform.position - transform.position).normalized;
+            playerController.ApplyKnockback(knockbackDir, knockbackForce);
         }
     }
 

@@ -203,6 +203,7 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowSprintButton()
     {
         showSprintButton.gameObject.SetActive(false);
+        GameManager.Instance.showSprintSlider = true;
         StartLevel();
     }
 

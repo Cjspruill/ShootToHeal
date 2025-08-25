@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 7834348010958775455}
   - component: {fileID: 5630457118972060912}
   - component: {fileID: 4190300513659213305}
+  - component: {fileID: 8588152606211545213}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -307,9 +308,10 @@ MonoBehaviour:
   cam: {fileID: 0}
   camFollow: {fileID: 0}
   audioSource: {fileID: 0}
+  sprintSlider: {fileID: 0}
   bulletForce: 50
   maxHealth: 100
-  moveSpeed: 4.25
+  moveSpeed: 2
   enemyDetectionRange: 7
   cameraViewDistance: 8
   bulletDamage: 10
@@ -317,12 +319,14 @@ MonoBehaviour:
   sprintTime: 1
   sprintCooldown: 5
   sprintMultiplier: 1.15
-  rotationSpeed: 1.25
+  rotationSpeed: 29
+  shootToHeal: 1
   fireRateTimer: 0
   sprintTimer: 0
   sprintCooldownTimer: 0
   isSprinting: 0
   xp: 0
+  knockbackRecoverySpeed: 5
 --- !u!114 &5630457118972060912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   healthText: {fileID: 0}
+  healthBarSlider: {fileID: 0}
   health: 0
   maxHealth: 0
   damageTime: 0.5
@@ -350,7 +355,7 @@ AudioSource:
   m_GameObject: {fileID: 8963925535493690866}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6863858347417199019, guid: 4e69244177d0f32459f77d4651a1ab8b, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: b937bde3552a44e4eb4bef60af1cd769, type: 3}
   m_PlayOnAwake: 0
@@ -438,3 +443,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!208 &8588152606211545213
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8963925535493690866}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

@@ -79,20 +79,27 @@ public class MusicManager : MonoBehaviour
     }
     public void SetMasterVolume(float value)
     {
-        audioMixer.SetFloat("MasterVolume", Mathf.Log10(value) * 20);
+        float volume = Mathf.Log10(Mathf.Max(value, 0.0001f)) * 20;
+        audioMixer.SetFloat("MasterVolume", volume);
+
         PlayerPrefs.SetFloat(MasterKey, value);
         PlayerPrefs.Save();
     }
+
     public void SetMusicVolume(float value)
     {
-        audioMixer.SetFloat("MusicVolume", Mathf.Log10(value) * 20);
+        float volume = Mathf.Log10(Mathf.Max(value, 0.0001f)) * 20;
+        audioMixer.SetFloat("MusicVolume", volume);
+
         PlayerPrefs.SetFloat(MusicKey, value);
         PlayerPrefs.Save();
     }
 
     public void SetEffectsVolume(float value)
     {
-        audioMixer.SetFloat("SoundEffectsVolume", Mathf.Log10(value) * 20);
+        float volume = Mathf.Log10(Mathf.Max(value, 0.0001f)) * 20;
+        audioMixer.SetFloat("SoundEffectsVolume", volume);
+
         PlayerPrefs.SetFloat(EffectsKey, value);
         PlayerPrefs.Save();
     }

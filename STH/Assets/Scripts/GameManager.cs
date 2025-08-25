@@ -6,37 +6,46 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     [SerializeField] PlayerController playerController;
+    [SerializeField] private LayerMask spawnIgnoreLayers;
 
     [Header("Enemy Settings")]
-    [SerializeField] private GameObject[] enemiesToSpawn;
+    [SerializeField] private GameObject[] enemiesToSpawn;   // [0] & [1] = normal, [2] = runner
     [SerializeField] private BoxCollider spawnArea;
     [SerializeField] private Transform enemyHolder;
+
+    [Header("UI")]
     [SerializeField] private TextMeshProUGUI enemiesDefeatedText;
     [SerializeField] private TextMeshProUGUI currentLevelText;
     [SerializeField] private TextMeshProUGUI currentXPText;
     [SerializeField] private TextMeshProUGUI canSprintText;
 
+    [Header("Obstacles")]
+    [SerializeField] GameObject cubePrefab;
+    [SerializeField] Transform obstacleHolder;
+
     [Header("Spawn Settings")]
-    [SerializeField]
-    [Tooltip("Starting interval in seconds.")]
-    private float baseSpawnInterval = 3f;   // starting interval (seconds)
-    [SerializeField]
-    [Tooltip("How much faster per level?")]
-    private float spawnIntervalDecrease = 0.2f; // how much faster per level
-    [SerializeField] private float minSpawnInterval = 0.5f;  // clamp min
-    [SerializeField] private float maxSpawnInterval = 10f;   // clamp max
-    [SerializeField] private int baseMaxEnemies = 5;         // starting max active enemies
-    [SerializeField] private int maxEnemiesIncrease = 2;     // how many extra per level
-    [SerializeField] private int maxEnemiesCap = 50;         // clamp cap
+    [SerializeField] private float baseSpawnInterval = 3f;
+    [SerializeField] private float spawnIntervalDecrease = 0.2f;
+    [SerializeField] private float minSpawnInterval = 0.5f;
+    [SerializeField] private float maxSpawnInterval = 10f;
+    [SerializeField] private int baseMaxEnemies = 5;
+    [SerializeField] private int maxEnemiesIncrease = 2;
+    [SerializeField] private int maxEnemiesCap = 50;
     [SerializeField] private int baseXP = 100;
     [SerializeField] private float xpMultiplier = 1.5f;
+
+    [Header("Runner Settings")]
+    [SerializeField] private float runnerSpawnInterval = 8f;   // how often to send runners
+    [SerializeField] private int maxRunners = 3;               // clamp how many can exist
 
     [Header("Level Settings")]
     [SerializeField] private int level = 1;
     [SerializeField] private int totalEnemiesDestroyed;
     [SerializeField] private int enemiesSpawned;
     [SerializeField] bool levelEnded;
-    [SerializeField] public bool showHealthBars;
+    [SerializeField] int numOfObstaclesToSpawn;
+    [SerializeField] public bool showHealthBars; 
+    [SerializeField] public bool showSprintSlider; 
     [SerializeField] public bool showXP;
 
     public delegate void GameEvent();
@@ -44,6 +53,7 @@ public class GameManager : MonoBehaviour
     public static event GameEvent OnLevelStart;
 
     private Coroutine spawnRoutine;
+    private Coroutine runnerRoutine;
 
     private void Awake()
     {
@@ -60,33 +70,32 @@ public class GameManager : MonoBehaviour
     {
         playerController = FindFirstObjectByType<PlayerController>();
 
+        for (int i = 0; i < numOfObstaclesToSpawn; i++)
+        {
+            SpawnObstacles();
+        }
+
         StartLevel();
     }
 
     private void Update()
     {
-        // You can use this to debug current enemy counts
-        // Debug.Log($"Active: {enemyHolder.childCount} | Spawned: {enemiesSpawned} | Destroyed: {enemiesDestroyed}");
-
         enemiesDefeatedText.text = "Enemies Destroyed: " + totalEnemiesDestroyed.ToString();
         currentLevelText.text = "Level: " + level;
         currentXPText.text = "XP: " + playerController.GetXp + "/ " + GetMaxXpForLevel();
 
-        //if (playerController.isSprinting && playerController.sprintCooldownTimer > 0)
-        //    canSprintText.text = "Huff, Huff!";
-        if (playerController.sprintCooldownTimer <= 0)
-            canSprintText.text = "I've Got Energy!";
+        if (playerController.isSprinting && playerController.sprintCooldownTimer < playerController.GetSprintCooldown)
+            canSprintText.text = "Huff, Huff, Huff!";
+        else if (playerController.sprintCooldownTimer <= 0)
+            canSprintText.text = "I Can Sprint!";
         else
             canSprintText.text = "I'm Tired!";
 
-        
-
-        if(!levelEnded && playerController.GetXp >= GetMaxXpForLevel())
+        if (!levelEnded && playerController.GetXp >= GetMaxXpForLevel())
         {
             EndLevel();
         }
     }
-
 
     // ------------------- LEVEL CONTROL -------------------
 
@@ -97,10 +106,11 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         OnLevelStart?.Invoke();
 
-        if (spawnRoutine != null)
-            StopCoroutine(spawnRoutine);
+        if (spawnRoutine != null) StopCoroutine(spawnRoutine);
+        if (runnerRoutine != null) StopCoroutine(runnerRoutine);
 
-        spawnRoutine = StartCoroutine(SpawnLoop());
+        spawnRoutine = StartCoroutine(SpawnLoop());         // normal enemies
+        runnerRoutine = StartCoroutine(RunnerLoop());       // runners
     }
 
     public void EndLevel()
@@ -111,8 +121,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         OnLevelEnd?.Invoke();
 
-        if (spawnRoutine != null)
-            StopCoroutine(spawnRoutine);
+        if (spawnRoutine != null) StopCoroutine(spawnRoutine);
+        if (runnerRoutine != null) StopCoroutine(runnerRoutine);
 
         playerController.GetXp = 0;
     }
@@ -128,26 +138,80 @@ public class GameManager : MonoBehaviour
 
             if (enemyHolder.childCount < maxEnemies)
             {
-                SpawnEnemy();
+                SpawnNormalEnemy();
             }
 
             yield return new WaitForSeconds(interval);
         }
     }
 
-    private void SpawnEnemy()
+    private IEnumerator RunnerLoop()
     {
-        if (enemiesToSpawn.Length == 0 || spawnArea == null) return;
+        while (true)
+        {
+            if (enemyHolder.childCount < GetMaxEnemiesForLevel())
+            {
+                int runnerCount = 0;
+                foreach (Transform child in enemyHolder)
+                {
+                    if (child.CompareTag("Runner")) // make sure your runner prefab is tagged "Runner"
+                        runnerCount++;
+                }
 
-        int randEnemyToSpawn = Random.Range(0, enemiesToSpawn.Length);
-        float randXValue = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
-        float randZValue = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
+                if (runnerCount < maxRunners)
+                {
+                    SpawnRunner();
+                }
+            }
+            yield return new WaitForSeconds(runnerSpawnInterval);
+        }
+    }
 
-        Vector3 spawnLocation = new Vector3(randXValue, 1.75f, randZValue);
+    private void SpawnNormalEnemy()
+    {
+        if (enemiesToSpawn.Length < 2 || spawnArea == null) return;
 
-        Instantiate(enemiesToSpawn[randEnemyToSpawn], spawnLocation, Quaternion.identity, enemyHolder);
+        int randIndex = Random.Range(0, 2); // only first two
+        Vector3 spawnLocation;
+        if (FindSpawnLocation(out spawnLocation))
+        {
+            Instantiate(enemiesToSpawn[randIndex], spawnLocation, Quaternion.identity, enemyHolder);
+            enemiesSpawned++;
+        }
+    }
 
-        enemiesSpawned++;
+    private void SpawnRunner()
+    {
+        if (enemiesToSpawn.Length < 3 || spawnArea == null) return;
+
+        Vector3 spawnLocation;
+        if (FindSpawnLocation(out spawnLocation))
+        {
+            GameObject runner = Instantiate(enemiesToSpawn[2], spawnLocation, Quaternion.identity, enemyHolder);
+            runner.tag = "Runner"; // so we can track them
+            enemiesSpawned++;
+        }
+    }
+
+    private bool FindSpawnLocation(out Vector3 spawnLocation)
+    {
+        spawnLocation = Vector3.zero;
+        int maxAttempts = 20;
+        float checkRadius = 0.5f;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
+            float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
+            spawnLocation = new Vector3(randX, 1.75f, randZ);
+
+            Collider[] colliders = Physics.OverlapSphere(spawnLocation, checkRadius, ~spawnIgnoreLayers);
+            if (colliders.Length == 0)
+                return true;
+        }
+
+        Debug.Log("Couldn't find free spawn spot!");
+        return false;
     }
 
     // ------------------- ENEMY TRACKING -------------------
@@ -156,11 +220,11 @@ public class GameManager : MonoBehaviour
     {
         totalEnemiesDestroyed++;
     }
-        // ------------------- SCALING FUNCTIONS -------------------
 
-        private int GetMaxEnemiesForLevel()
+    // ------------------- SCALING FUNCTIONS -------------------
+
+    private int GetMaxEnemiesForLevel()
     {
-        // scale and clamp
         return Mathf.Clamp(baseMaxEnemies + (level - 1) * maxEnemiesIncrease, baseMaxEnemies, maxEnemiesCap);
     }
 
@@ -171,7 +235,20 @@ public class GameManager : MonoBehaviour
 
     private float GetSpawnIntervalForLevel()
     {
-        // scale and clamp
         return Mathf.Clamp(baseSpawnInterval - (level - 1) * spawnIntervalDecrease, minSpawnInterval, maxSpawnInterval);
+    }
+
+    // ------------------- OBSTACLES -------------------
+
+    public void SpawnObstacles()
+    {
+        if (cubePrefab == null || spawnArea == null) return;
+
+        Vector3 spawnLocation;
+        if (!FindSpawnLocation(out spawnLocation)) return;
+
+        Quaternion newRotation = Quaternion.Euler(0, 0, 0);
+        GameObject newObstacle = Instantiate(cubePrefab, spawnLocation, newRotation, obstacleHolder);
+        newObstacle.transform.localScale = new Vector3(Random.Range(2, 10), Random.Range(5, 10), Random.Range(2, 10));
     }
 }
