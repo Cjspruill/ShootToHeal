@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int totalEnemiesDestroyed;
     [SerializeField] private int enemiesSpawned;
     [SerializeField] bool levelEnded;
+    [SerializeField] public bool showHealthBars;
+    [SerializeField] public bool showXP;
 
     public delegate void GameEvent();
     public static event GameEvent OnLevelEnd;

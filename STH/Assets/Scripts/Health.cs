@@ -1,9 +1,11 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI healthText;
+    [SerializeField] Slider healthBarSlider;
     [SerializeField] float health;
     [SerializeField] float maxHealth;
 
@@ -21,6 +23,13 @@ public class Health : MonoBehaviour
     void Start()
     {
         ResetHealth();
+
+        if(healthBarSlider != null)
+        {
+
+        healthBarSlider.maxValue = GetMaxHealth;
+        healthBarSlider.value = GetHealth;
+        }
     }
 
     // Update is called once per frame
@@ -38,9 +47,16 @@ public class Health : MonoBehaviour
         }
 
         if (healthText)
+            healthText.text = "Health: " + GetRoundedHealth() + "/ " + GetRoundedMaxHealth();
+        
+
+        if (GameManager.Instance.showHealthBars)
         {
-            int roundedHealth = Mathf.RoundToInt(health);
-            healthText.text = "Health: " + roundedHealth + "/ " + GetMaxHealth;
+            if (healthBarSlider != null)
+            {
+            healthBarSlider.gameObject.SetActive(true);
+            healthBarSlider.value = GetHealth;
+            }
         }
     }
 
@@ -78,5 +94,16 @@ public class Health : MonoBehaviour
     void ResetHealth() 
     {
         health = GetMaxHealth;
+    }
+
+    public int GetRoundedHealth()
+    {
+        int roundedHealth = Mathf.RoundToInt(health);
+        return roundedHealth;
+    }
+    public int GetRoundedMaxHealth()
+    {
+        int roundedMaxHealth = Mathf.RoundToInt(GetMaxHealth);
+        return roundedMaxHealth;
     }
 }

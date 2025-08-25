@@ -199,4 +199,9 @@ public class PlayerController : MonoBehaviour
     {
         health.GetMaxHealth = GetMaxHealth;
     }
+
+    public void UpdateHealth(float value)
+    {
+        health.GetHealth += value;
+    }
 }

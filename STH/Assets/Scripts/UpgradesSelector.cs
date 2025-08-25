@@ -6,22 +6,48 @@ using TMPro;
 
 public class UpgradesSelector : MonoBehaviour
 {
-    [SerializeField] float healthToGive;
-    [SerializeField] float viewRangeToGive;
-    [SerializeField] float moveSpeedToGive;
-    [SerializeField] float enemyDetectionRangeToGive;
-    [SerializeField] float bulletDamageToGive;
-    [SerializeField] float fireRateToGive;
-    [SerializeField] float sprintTimeToGive;
-    [SerializeField] float sprintCooldownToGive;
-    [SerializeField] float sprintMultiplierToGive;
-    [SerializeField] float rotationSpeedToGive;
-    [SerializeField] float shootToHealToGive;
+    float healthToGive;
+    [SerializeField] float healthToGiveMin;
+    [SerializeField] float healthToGiveMax;
+    float viewRangeToGive;
+    [SerializeField] float viewRangeToGiveMin;
+    [SerializeField] float viewRangeToGiveMax;
+    float moveSpeedToGive;
+    [SerializeField] float moveSpeedToGiveMin;
+    [SerializeField] float moveSpeedToGiveMax;
+    float enemyDetectionRangeToGive;
+    [SerializeField] float enemyDetectionRangeToGiveMin;
+    [SerializeField] float enemyDetectionRangeToGiveMax;
+    float bulletDamageToGive;
+    [SerializeField] float bulletDamageToGiveMin;
+    [SerializeField] float bulletDamageToGiveMax;
+    float fireRateToGive;
+    [SerializeField] float fireRateToGiveMin;
+    [SerializeField] float fireRateToGiveMax;
+    float sprintTimeToGive;
+    [SerializeField] float sprintTimeToGiveMin;
+    [SerializeField] float sprintTimeToGiveMax;
+    float sprintCooldownToGive;
+    [SerializeField] float sprintCooldownToGiveMin;
+    [SerializeField] float sprintCooldownToGiveMax;
+    float sprintMultiplierToGive;
+    [SerializeField] float sprintMultiplierToGiveMin;
+    [SerializeField] float sprintMultiplierToGiveMax;
+    float rotationSpeedToGive;
+    [SerializeField] float rotationSpeedToGiveMin;
+    [SerializeField] float rotationSpeedToGiveMax;
+    float shootToHealToGive;
+    [SerializeField] float shootToHealToGiveMin;
+    [SerializeField] float shootToHealToGiveMax;
 
 
     [SerializeField] PlayerController playerController;
 
     [SerializeField] Button[] upgradeButtons;
+    [SerializeField] Button showXpButton;
+    [SerializeField] Button showLevelButton;
+    [SerializeField] Button showSprintButton;
+    [SerializeField] Button showHealthBarsButton;
 
     [SerializeField] GameObject upgradesPanel;
 
@@ -39,20 +65,46 @@ public class UpgradesSelector : MonoBehaviour
     void RandomizeUpgrades()
     {
         upgradesPanel.SetActive(true);
+
+        healthToGive = UnityEngine.Random.Range(healthToGiveMin, healthToGiveMax);
+        viewRangeToGive = UnityEngine.Random.Range(viewRangeToGiveMin, viewRangeToGiveMax);
+        moveSpeedToGive = UnityEngine.Random.Range(moveSpeedToGiveMin, moveSpeedToGiveMax);
+        enemyDetectionRangeToGive = UnityEngine.Random.Range(enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax);
+        bulletDamageToGive = UnityEngine.Random.Range(bulletDamageToGiveMin, bulletDamageToGiveMax);
+        fireRateToGive = UnityEngine.Random.Range(fireRateToGiveMin, fireRateToGiveMax);
+        sprintTimeToGive = UnityEngine.Random.Range(sprintTimeToGiveMin, sprintTimeToGiveMax);
+        sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin,sprintCooldownToGiveMax);
+        sprintMultiplierToGive = UnityEngine.Random.Range(sprintMultiplierToGiveMin, sprintMultiplierToGiveMax);
+        rotationSpeedToGive = UnityEngine.Random.Range(rotationSpeedToGiveMin, rotationSpeedToGiveMax);
+        shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin,shootToHealToGiveMax);
+
+
+        float healthRounded = Mathf.Round(healthToGive * 100f) / 100f;
+        float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
+        float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
+        float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
+        float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
+        float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
+        float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
+        float sprintCooldownRounded = Mathf.Round(sprintCooldownToGive * 100f) / 100f;
+        float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
+        float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
+        float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
+
         // list of upgrades with their names using concatenation
         List<(Action action, string name)> allUpgrades = new List<(Action, string)>
     {
-        (GiveHealthToPlayer, "+" + healthToGive + " Health"),
-        (GiveViewRangeToPlayer, "+" + viewRangeToGive + " View Range"),
-        (GiveMoveSpeedToPlayer, "+" + moveSpeedToGive + " Move Speed"),
-        (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeToGive + " Enemy Detection"),
-        (GiveBulletDamageToPlayer, "+" + bulletDamageToGive + " Bullet Damage"),
-        (GiveFireRateToPlayer, "+" + fireRateToGive + " Fire Rate"),
-        (GiveSprintTimeToPlayer, "+" + sprintTimeToGive + "Sprint Time"),
-        (GiveSprintCooldownToPlayer, "-" + sprintCooldownToGive + "Sprint Cooldown"),
-        (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierToGive + "Sprint Multiplier"),
-        (GiveRotationSpeedToPlayer, "+" + rotationSpeedToGive + "Rotation Speed"),
-        (GiveShootToHealToPlayer, "+" + shootToHealToGive + "Shoot To Heal")
+        (GiveHealthToPlayer, "+" + healthRounded + " Health"),
+        (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
+        (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
+        (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
+        (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
+        (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
+        (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
+        (GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"),
+        (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
+        (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
+        (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal")
     };
 
         // clear old listeners
@@ -83,6 +135,7 @@ public class UpgradesSelector : MonoBehaviour
     void GiveHealthToPlayer()
     {
         playerController.GetMaxHealth += healthToGive;
+        playerController.UpdateHealth(healthToGive);
         playerController.UpdateMaxHealth();
         StartLevel();
     }
@@ -144,6 +197,32 @@ public class UpgradesSelector : MonoBehaviour
     void GiveShootToHealToPlayer()
     {
         playerController.GetShootToHeal += shootToHealToGive;
+        StartLevel();
+    }
+
+    public void ClickShowSprintButton()
+    {
+        showSprintButton.gameObject.SetActive(false);
+        StartLevel();
+    }
+
+    public void ClickShowXpButton()
+    {
+        showXpButton.gameObject.SetActive(false);
+        GameManager.Instance.showXP = true;
+        StartLevel();
+    }
+
+    public void ClickShowLevelButton()
+    {
+        showLevelButton.gameObject.SetActive(false);
+        StartLevel();
+    }
+
+    public void ClickShowHealthBarsButton()
+    {
+        showHealthBarsButton.gameObject.SetActive(false);
+        GameManager.Instance.showHealthBars = true;
         StartLevel();
     }
 

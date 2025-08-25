@@ -87,6 +87,7 @@ public class EnemyController : MonoBehaviour
     public void DropXpOrb()
     {
         GameObject newXpOrb = Instantiate(xpOrb, transform.position, transform.rotation);
+        newXpOrb.GetComponent<XpOrb>().xpToGive = amountOfXpToDrop;
     }
 
     public void PlayHurtAudio()
