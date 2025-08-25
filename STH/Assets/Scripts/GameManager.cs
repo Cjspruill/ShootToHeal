@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int level = 1;
     [SerializeField] private int totalEnemiesDestroyed;
     [SerializeField] private int enemiesSpawned;
-    [SerializeField] bool levelEnded;
+    [SerializeField] public bool levelEnded;
     [SerializeField] int numOfObstaclesToSpawn;
     [SerializeField] public bool showHealthBars; 
     [SerializeField] public bool showSprintSlider; 

@@ -5,6 +5,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] public float damage;
     [SerializeField] public float shootToHeal;
     [SerializeField] public PlayerController playerController;
+    [SerializeField] GameObject explosionPrefab;
 
     public void OnCollisionEnter(Collision other)
     {
@@ -21,6 +22,8 @@ public class Projectile : MonoBehaviour
 
         if (enemyController)
             enemyController.PlayHurtAudio();
+
+        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
 
         Destroy(gameObject);
     }

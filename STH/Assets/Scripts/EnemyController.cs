@@ -60,32 +60,20 @@ public class EnemyController : MonoBehaviour
 
         HandleSprinting();
 
-        // --- Separation force ---
-        Vector3 separation = Vector3.zero;
-        Collider[] hits = Physics.OverlapSphere(transform.position, separationRadius);
-        foreach (var hit in hits)
-        {
-            if (hit.gameObject != gameObject && hit.GetComponent<EnemyController>() != null)
-            {
-                Vector3 away = transform.position - hit.transform.position;
-                separation += away.normalized / away.magnitude;
-            }
-        }
-
-        // --- Final destination (target + separation offset) ---
-        Vector3 desiredPos = target.position + separation * separationForce;
-
+        // set agent speed based on sprint state
         navMeshAgent.speed = isSprinting ? sprintSpeed : moveSpeed;
-        navMeshAgent.SetDestination(desiredPos);
 
-        // --- Manual rotation smoothing (optional) ---
+        // always move directly to the player
+        navMeshAgent.SetDestination(target.position);
+
+        // optional: smooth rotation towards velocity
         if (navMeshAgent.velocity.sqrMagnitude > 0.1f)
         {
             Quaternion lookRotation = Quaternion.LookRotation(navMeshAgent.velocity);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // --- Visual feedback ---
+        // color feedback
         meshRenderer.material.color = isSprinting ? sprintColor : origColor;
     }
 

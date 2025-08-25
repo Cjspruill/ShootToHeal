@@ -309,7 +309,7 @@ MonoBehaviour:
   camFollow: {fileID: 0}
   audioSource: {fileID: 0}
   sprintSlider: {fileID: 0}
-  bulletForce: 50
+  bulletForce: 25
   maxHealth: 100
   moveSpeed: 2
   enemyDetectionRange: 7
@@ -318,8 +318,8 @@ MonoBehaviour:
   fireRate: 1.75
   sprintTime: 1
   sprintCooldown: 5
-  sprintMultiplier: 1.15
-  rotationSpeed: 29
+  sprintMultiplier: 1.25
+  rotationSpeed: 40
   shootToHeal: 1
   fireRateTimer: 0
   sprintTimer: 0

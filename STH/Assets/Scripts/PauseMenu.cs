@@ -52,6 +52,8 @@ public class PauseMenu : MonoBehaviour
 
     public void OnCancelPerformed(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.levelEnded) return;
+
         gameIsPaused = !gameIsPaused;
         pausePanel.SetActive(gameIsPaused);
 

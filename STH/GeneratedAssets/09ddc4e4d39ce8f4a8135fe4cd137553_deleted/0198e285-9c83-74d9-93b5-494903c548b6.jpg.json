@@ -1,0 +1,20 @@
+{
+    "asset": "09ddc4e4d39ce8f4a8135fe4cd137553",
+    "fileName": "0198e285-9c83-74d9-93b5-494903c548b6.jpg",
+    "prompt": "Grass",
+    "negativePrompt": "",
+    "model": "d4800c06-1388-4587-b3cd-455b67e220df",
+    "modelName": "Game Backgrounds (SDXL)",
+    "customSeed": -1,
+    "w3CTraceId": "1de3062c2ba04126877ef0663908ff46",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}
