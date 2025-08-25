@@ -48,9 +48,17 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button showLevelButton;
     [SerializeField] Button showSprintButton;
     [SerializeField] Button showHealthBarsButton;
+    [SerializeField] Button doubleGunsButton;
+    [SerializeField] Button shotgunButton;
 
     [SerializeField] GameObject upgradesPanel;
 
+    [SerializeField] float doubleGunsPrice = 5;
+    [SerializeField] float shotgunPrice = 10;
+
+
+    [SerializeField] TextMeshProUGUI doubleGunPriceText;
+    [SerializeField] TextMeshProUGUI shotgunPriceText;
 
     private void OnEnable()
     {
@@ -131,6 +139,9 @@ public class UpgradesSelector : MonoBehaviour
             // remove from list so it cannot repeat
             allUpgrades.RemoveAt(randIndex);
         }
+
+        doubleGunPriceText.text = "$ " + doubleGunsPrice;
+        shotgunPriceText.text = "$ " + shotgunPrice;
     }
     void GiveHealthToPlayer()
     {
@@ -224,6 +235,38 @@ public class UpgradesSelector : MonoBehaviour
     {
         showHealthBarsButton.gameObject.SetActive(false);
         GameManager.Instance.showHealthBars = true;
+        StartLevel();
+    }
+
+    public void BuyDoubleGunsButton()
+    {
+        if (playerController.GetCash < doubleGunsPrice) return;
+
+        playerController.GetCash -= doubleGunsPrice;
+
+        if (!shotgunButton.isActiveAndEnabled)
+            shotgunButton.gameObject.SetActive(true);
+        if(GameManager.Instance.shotgunActive)
+            GameManager.Instance.shotgunActive = false;
+
+        doubleGunsButton.gameObject.SetActive(false);
+        GameManager.Instance.doubleGunsActive = true;
+        StartLevel();
+    }
+
+    public void BuyShotGunButton()
+    {
+        if (playerController.GetCash < shotgunPrice) return;
+
+        playerController.GetCash -= shotgunPrice;
+
+        if (!doubleGunsButton.isActiveAndEnabled)
+            doubleGunsButton.gameObject.SetActive(true);
+        if(GameManager.Instance.doubleGunsActive)
+            GameManager.Instance.doubleGunsActive = false;
+
+        shotgunButton.gameObject.SetActive(false);
+        GameManager.Instance.shotgunActive = true;
         StartLevel();
     }
 

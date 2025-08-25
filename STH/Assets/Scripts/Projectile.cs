@@ -9,6 +9,8 @@ public class Projectile : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
+        if (other.gameObject.GetComponent<Projectile>()) return;
+
         Health health = other.gameObject.GetComponent<Health>();
         EnemyController enemyController = other.gameObject.GetComponent<EnemyController>();
 

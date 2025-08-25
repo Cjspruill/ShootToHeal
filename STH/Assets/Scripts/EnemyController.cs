@@ -9,8 +9,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float sprintSpeed = 10f;         // sprint movement speed
     [SerializeField] float stoppingDistance = 2f;
     [SerializeField] float rotationSpeed = 10f;
-    [SerializeField] float separationRadius = 2f;
-    [SerializeField] float separationForce = 3f;
     [SerializeField] float knockbackForce;
 
     [SerializeField] float sprintDuration = 2f;       // how long the enemy sprints
@@ -25,7 +23,9 @@ public class EnemyController : MonoBehaviour
     Transform target;
 
     [SerializeField] float amountOfXpToDrop;
+    [SerializeField] float amountOfCashToDropPerOrb;
     [SerializeField] GameObject xpOrb;
+    [SerializeField] GameObject cashOrb;
 
     [SerializeField] GameObject audioPrefab;
 
@@ -47,6 +47,7 @@ public class EnemyController : MonoBehaviour
 
         navMeshAgent.speed = moveSpeed;
         navMeshAgent.stoppingDistance = stoppingDistance;
+        navMeshAgent.updateRotation = false;
     }
 
     public void SetTarget(Transform newTarget)
@@ -66,10 +67,12 @@ public class EnemyController : MonoBehaviour
         // always move directly to the player
         navMeshAgent.SetDestination(target.position);
 
-        // optional: smooth rotation towards velocity
-        if (navMeshAgent.velocity.sqrMagnitude > 0.1f)
+        // smooth rotation directly towards the player
+        Vector3 direction = (target.position - transform.position).normalized;
+        direction.y = 0f; // keep upright
+        if (direction.sqrMagnitude > 0.001f) // prevent NaN if too close
         {
-            Quaternion lookRotation = Quaternion.LookRotation(navMeshAgent.velocity);
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
         }
 
@@ -135,5 +138,33 @@ public class EnemyController : MonoBehaviour
         AudioSource newAudio = newAudioObj.GetComponent<AudioSource>();
         newAudio.Play();
         Destroy(newAudioObj, newAudio.clip.length);
+    }
+
+    public void DropCashOrb()
+    {
+        GameObject newCashOrb = Instantiate(cashOrb, transform.position, transform.rotation);
+        newCashOrb.GetComponent<CashOrb>().cashAmountToGive = amountOfCashToDropPerOrb;
+
+        Rigidbody rb = newCashOrb.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            // Random direction in a sphere but mostly outward
+            Vector3 randomDirection = new Vector3(
+                Random.Range(-1f, 1f),
+                Random.Range(0.5f, 1.5f), // bias upward
+                Random.Range(-1f, 1f)
+            ).normalized;
+
+            float force = Random.Range(3f, 6f); // tweak these values for strength
+            rb.AddForce(randomDirection * force, ForceMode.Impulse);
+
+            // Optional: add a little spin
+            Vector3 randomTorque = new Vector3(
+                Random.Range(-180f, 180f),
+                Random.Range(-180f, 180f),
+                Random.Range(-180f, 180f)
+            );
+            rb.AddTorque(randomTorque);
+        }
     }
 }

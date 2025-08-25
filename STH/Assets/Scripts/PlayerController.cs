@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] Transform barrelOut;
+    [SerializeField] Transform doubleGunBarrelOutLeft;
+    [SerializeField] Transform doubleGunBarrelOutRight;
     [SerializeField] Transform target;
     [SerializeField] Health health;
     [SerializeField] CinemachineCamera cam;
@@ -39,10 +41,12 @@ public class PlayerController : MonoBehaviour
 
     public bool isSprinting;
     [SerializeField] float xp;
+    [SerializeField] float cash;
 
     [Header("Knockback")]
     [SerializeField] float knockbackRecoverySpeed = 5f; // how fast the knockback wears off
     Vector3 knockbackVelocity = Vector3.zero;
+    [SerializeField]private float shotgunSpreadAngle;
 
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -56,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public float GetSprintMultiplier { get => sprintMultiplier; set => sprintMultiplier = value; }
     public float GetRotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
     public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
+    public float GetCash { get => cash; set => cash = value; }
 
     public void OnEnable()
     {
@@ -75,66 +80,32 @@ public class PlayerController : MonoBehaviour
         camFollow = cam.GetComponent<CinemachineFollow>();
         audioSource = GetComponent<AudioSource>();
     }
-
     void Update()
     {
-        // Apply knockback first
         HandleKnockback();
 
         Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-        bool sprintInput = playerInput.Player.Sprint.inProgress;
-
-        // Handle sprinting
-        if (sprintInput && sprintCooldownTimer <= 0f)
-        {
-            isSprinting = true;
-            sprintTimer += Time.deltaTime;
-
-            if (sprintTimer >= GetSprintTime)
-            {
-                // Max sprint reached, force full cooldown
-                isSprinting = false;
-                sprintTimer = 0f;
-                sprintCooldownTimer = GetSprintCooldown;
-            }
-        }
-        else
-        {
-            // Not sprinting
-            if (isSprinting)
-            {
-                // Player just stopped sprinting before max
-                float sprintRatio = sprintTimer / GetSprintTime; // % of sprint used
-                sprintCooldownTimer = GetSprintCooldown * sprintRatio; // scale cooldown
-                sprintTimer = 0f;
-            }
-
-            isSprinting = false;
-
-            // Always tick down cooldown
-            if (sprintCooldownTimer > 0f)
-            {
-                sprintCooldownTimer -= Time.deltaTime;
-            }
-        }
-
-        // Apply movement
         float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
-        transform.Translate(moveDir * currentSpeed * Time.deltaTime, Space.World);
 
-        // --- Facing Target ---
-        if (target != null)
+        // ✅ Combine knockback + movement
+        Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity;
+        transform.Translate(finalVelocity * Time.deltaTime, Space.World);
+
+        // Rotation only if NOT being knocked back
+        if (target != null && knockbackVelocity == Vector3.zero)
         {
             Vector3 direction = target.position - transform.position;
             direction.y = 0;
-
             if (direction.sqrMagnitude > 0.01f)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
-                // Rotate at a fixed speed in degrees/sec
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, GetRotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    lookRotation,
+                    GetRotationSpeed * Time.deltaTime
+                );
             }
         }
 
@@ -174,12 +145,60 @@ public class PlayerController : MonoBehaviour
     {
         //Instantiate bullet here
         audioSource.Play();
-        GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
-        newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
-        newBullet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
-        newBullet.GetComponent<Projectile>().playerController = this;
-        newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
-        Destroy(newBullet, 5f);
+
+        if (GameManager.Instance.doubleGunsActive)
+        {
+            GameObject newBulletLeft = Instantiate(bulletPrefab, doubleGunBarrelOutLeft.position, doubleGunBarrelOutLeft.rotation);
+            newBulletLeft.GetComponent<Projectile>().damage = GetBulletDamage;
+            newBulletLeft.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBulletLeft.GetComponent<Projectile>().playerController = this;
+            newBulletLeft.GetComponent<Rigidbody>().AddForce(doubleGunBarrelOutLeft.forward * bulletForce, ForceMode.Impulse);
+            Destroy(newBulletLeft, 5f);
+
+            GameObject newBulletRight = Instantiate(bulletPrefab, doubleGunBarrelOutRight.position, doubleGunBarrelOutRight.rotation);
+            newBulletRight.GetComponent<Projectile>().damage = GetBulletDamage;
+            newBulletRight.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBulletRight.GetComponent<Projectile>().playerController = this;
+            newBulletRight.GetComponent<Rigidbody>().AddForce(doubleGunBarrelOutRight.forward * bulletForce, ForceMode.Impulse);
+            Destroy(newBulletRight, 5f);
+        }
+        else if (GameManager.Instance.shotgunActive)
+        {
+            int pelletCount = Random.Range(3, 8); // fires between 3 and 7 pellets
+
+            for (int i = 0; i < pelletCount; i++)
+            {
+                // Random angle offset within spread cone
+                float angleX = Random.Range(-shotgunSpreadAngle, shotgunSpreadAngle);
+                float angleY = Random.Range(-shotgunSpreadAngle, shotgunSpreadAngle);
+
+                // Apply rotation offset
+                Quaternion spreadRotation = Quaternion.Euler(barrelOut.eulerAngles.x + angleX,
+                                                             barrelOut.eulerAngles.y + angleY,
+                                                             barrelOut.eulerAngles.z);
+
+                // Spawn pellet
+                GameObject pellet = Instantiate(bulletPrefab, barrelOut.position, spreadRotation);
+                pellet.GetComponent<Projectile>().damage = GetBulletDamage;
+                pellet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+                pellet.GetComponent<Projectile>().playerController = this;
+
+                // Apply force in the spread direction
+                pellet.GetComponent<Rigidbody>().AddForce(spreadRotation * Vector3.forward * bulletForce, ForceMode.Impulse);
+
+                Destroy(pellet, 5f);
+            }
+        }
+        else
+        {
+            GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
+            newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
+            newBullet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBullet.GetComponent<Projectile>().playerController = this;
+            newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
+            Destroy(newBullet, 5f);
+        }
+
     }
     void EnemySearch()
     {
@@ -234,20 +253,33 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyKnockback(Vector3 direction, float force)
     {
-        // Only horizontal knockback
         direction.y = 0;
-        knockbackVelocity += direction.normalized * force;
+
+        // ✅ Cap force so repeated hits don’t explode velocity
+        Vector3 newForce = direction.normalized * force;
+        knockbackVelocity += newForce;
+
+        float maxKnockback = 20f; // tune this
+        if (knockbackVelocity.magnitude > maxKnockback)
+        {
+            knockbackVelocity = knockbackVelocity.normalized * maxKnockback;
+        }
     }
 
     void HandleKnockback()
     {
         if (knockbackVelocity.magnitude > 0.01f)
         {
-            // Move player by knockback
-            transform.position += knockbackVelocity * Time.deltaTime;
+            // Decay knockback gradually
+            knockbackVelocity = Vector3.Lerp(
+                knockbackVelocity,
+                Vector3.zero,
+                knockbackRecoverySpeed * Time.deltaTime
+            );
 
-            // Gradually reduce knockback over time
-            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackRecoverySpeed * Time.deltaTime);
+            // ✅ Hard stop (prevents infinite tiny rotations)
+            if (knockbackVelocity.magnitude < 0.1f)
+                knockbackVelocity = Vector3.zero;
         }
     }
 }

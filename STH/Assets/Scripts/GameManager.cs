@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI enemiesDefeatedText;
     [SerializeField] private TextMeshProUGUI currentLevelText;
     [SerializeField] private TextMeshProUGUI currentXPText;
+    [SerializeField] private TextMeshProUGUI currentCashText;
     [SerializeField] private TextMeshProUGUI canSprintText;
 
     [Header("Obstacles")]
@@ -45,7 +46,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool levelEnded;
     [SerializeField] int numOfObstaclesToSpawn;
     [SerializeField] public bool showHealthBars; 
-    [SerializeField] public bool showSprintSlider; 
+    [SerializeField] public bool showSprintSlider;
+    [SerializeField] public bool doubleGunsActive;
+    [SerializeField] public bool shotgunActive;
+
     [SerializeField] public bool showXP;
 
     public delegate void GameEvent();
@@ -83,6 +87,7 @@ public class GameManager : MonoBehaviour
         enemiesDefeatedText.text = "Enemies Destroyed: " + totalEnemiesDestroyed.ToString();
         currentLevelText.text = "Level: " + level;
         currentXPText.text = "XP: " + playerController.GetXp + "/ " + GetMaxXpForLevel();
+        currentCashText.text = "Cash: " + playerController.GetCash;
 
         if (playerController.isSprinting && playerController.sprintCooldownTimer < playerController.GetSprintCooldown)
             canSprintText.text = "Huff, Huff, Huff!";

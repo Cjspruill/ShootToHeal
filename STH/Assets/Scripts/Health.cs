@@ -75,9 +75,15 @@ public class Health : MonoBehaviour
             {
                 GameManager.Instance.EnemyDestroyed();
                 enemyController.DropXpOrb();
+
+                float cashOrbsToDrop = Random.Range(1, 5);
+
+                for (int i = 0; i < cashOrbsToDrop; i++) 
+                {
+                    enemyController.DropCashOrb();
+                }
             }
             Destroy(gameObject);
-            //Drop XP
         }
     }
 

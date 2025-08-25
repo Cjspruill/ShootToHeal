@@ -5,6 +5,8 @@ using TMPro;
 
 public class PauseMenu : MonoBehaviour
 {
+    [SerializeField] GameObject gameOverPanel;
+
     [SerializeField] PlayerController playerController;
     [SerializeField] Health playerHealth;
     [SerializeField] GameObject pausePanel;
@@ -82,4 +84,15 @@ public class PauseMenu : MonoBehaviour
         else
             xpText.text = "";
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void RestartGame()
+    {
+
+    }
+
 }

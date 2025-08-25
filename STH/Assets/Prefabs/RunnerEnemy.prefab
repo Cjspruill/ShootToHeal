@@ -598,8 +598,6 @@ MonoBehaviour:
   sprintSpeed: 8
   stoppingDistance: 0
   rotationSpeed: 10
-  separationRadius: 0.25
-  separationForce: 3
   knockbackForce: 7
   sprintDuration: 3
   minSprintCooldown: 4
@@ -607,7 +605,9 @@ MonoBehaviour:
   chanceToSprint: 0.75
   damage: 5
   amountOfXpToDrop: 20
+  amountOfCashToDropPerOrb: 5
   xpOrb: {fileID: 7058895534383387028, guid: 80d01143bffd061449980853dec2aa1c, type: 3}
+  cashOrb: {fileID: 3948500603145726157, guid: 262e077456ac30f488b4790e4f7face4, type: 3}
   audioPrefab: {fileID: 8709370108117828910, guid: 7b2190fddfca7e740bf3c33b4c17832d, type: 3}
   meshRenderer: {fileID: 0}
   origColor: {r: 0, g: 0, b: 0, a: 0}
@@ -628,7 +628,7 @@ MonoBehaviour:
   healthBarSlider: {fileID: 706249965521761381}
   health: 0
   maxHealth: 20
-  damageTime: 0.15
+  damageTime: 0
   damageTimer: 0
   canDamage: 0
 --- !u!54 &4088872485180209131

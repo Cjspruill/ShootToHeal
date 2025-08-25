@@ -207,10 +207,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1552464186}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: bulletForce
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: sprintSlider
       value: 
       objectReference: {fileID: 343208674}
@@ -686,6 +682,7 @@ MonoBehaviour:
   enemiesDefeatedText: {fileID: 1409242165}
   currentLevelText: {fileID: 754040904}
   currentXPText: {fileID: 573618304}
+  currentCashText: {fileID: 1798445378}
   canSprintText: {fileID: 1109960483}
   cubePrefab: {fileID: 5660823980138371029, guid: 2de18de84aca8104b8d9f21ff21d081d, type: 3}
   obstacleHolder: {fileID: 994115428}
@@ -707,6 +704,8 @@ MonoBehaviour:
   numOfObstaclesToSpawn: 50
   showHealthBars: 0
   showSprintSlider: 0
+  doubleGunsActive: 0
+  shotgunActive: 0
   showXP: 0
 --- !u!1 &994115427
 GameObject:
@@ -991,6 +990,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1798445378 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3017943634013682233, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
+  m_PrefabInstance: {fileID: 2951882757814893087}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1807172969
 GameObject:
   m_ObjectHideFlags: 0
