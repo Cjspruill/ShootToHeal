@@ -1,0 +1,13 @@
+{
+    "asset": "84bf18dc5d35a964e817a30c11e500e2",
+    "fileName": "0198e43c-78c2-700c-a466-ea28f01d1d93.wav",
+    "prompt": "Double Gun Shot",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "ed7c49e63317067425e99f33449aed07",
+    "duration": 1.0,
+    "autoTrim": true,
+    "hasReference": false
+}

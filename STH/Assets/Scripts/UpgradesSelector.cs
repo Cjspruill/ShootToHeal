@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,7 +39,9 @@ public class UpgradesSelector : MonoBehaviour
     float shootToHealToGive;
     [SerializeField] float shootToHealToGiveMin;
     [SerializeField] float shootToHealToGiveMax;
-
+    float flamethrowerDurationToGive;
+    [SerializeField] float flameThrowerDurationMin;
+    [SerializeField] float flameThrowerDurationMax;
 
     [SerializeField] PlayerController playerController;
 
@@ -48,24 +50,38 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button showLevelButton;
     [SerializeField] Button showSprintButton;
     [SerializeField] Button showHealthBarsButton;
+    [SerializeField] Button showTargetReticleButton;
     [SerializeField] Button doubleGunsButton;
     [SerializeField] Button machineGunButton;
     [SerializeField] Button shotgunButton;
+    [SerializeField] Button flamethrowerButton;
 
     [SerializeField] GameObject upgradesPanel;
 
     [SerializeField] float doubleGunsPrice = 5;
     [SerializeField] float machineGunPrice = 5;
     [SerializeField] float shotgunPrice = 10;
+    [SerializeField] float flamethrowerPrice = 10;
 
     [SerializeField] bool doubleGunsPurchased;
     [SerializeField] bool machineGunPurchased;
     [SerializeField] bool shotgunPurchased;
+    [SerializeField] bool flamethrowerPurchased;
 
 
     [SerializeField] TextMeshProUGUI doubleGunPriceText;
     [SerializeField] TextMeshProUGUI machineGunPriceText;
     [SerializeField] TextMeshProUGUI shotgunPriceText;
+    [SerializeField] TextMeshProUGUI flameThrowerPriceText;
+
+    public enum WeaponType
+    {
+        None,
+        DoubleGuns,
+        MachineGun,
+        Shotgun,
+        Flamethrower
+    }
 
     private void OnEnable()
     {
@@ -73,7 +89,7 @@ public class UpgradesSelector : MonoBehaviour
     }
 
     private void OnDisable()
-    {        
+    {
         GameManager.OnLevelEnd -= RandomizeUpgrades;
     }
 
@@ -88,11 +104,11 @@ public class UpgradesSelector : MonoBehaviour
         bulletDamageToGive = UnityEngine.Random.Range(bulletDamageToGiveMin, bulletDamageToGiveMax);
         fireRateToGive = UnityEngine.Random.Range(fireRateToGiveMin, fireRateToGiveMax);
         sprintTimeToGive = UnityEngine.Random.Range(sprintTimeToGiveMin, sprintTimeToGiveMax);
-        sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin,sprintCooldownToGiveMax);
+        sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin, sprintCooldownToGiveMax);
         sprintMultiplierToGive = UnityEngine.Random.Range(sprintMultiplierToGiveMin, sprintMultiplierToGiveMax);
         rotationSpeedToGive = UnityEngine.Random.Range(rotationSpeedToGiveMin, rotationSpeedToGiveMax);
-        shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin,shootToHealToGiveMax);
-
+        shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin, shootToHealToGiveMax);
+        flamethrowerDurationToGive = UnityEngine.Random.Range(flameThrowerDurationMin, flameThrowerDurationMax);
 
         float healthRounded = Mathf.Round(healthToGive * 100f) / 100f;
         float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
@@ -105,52 +121,59 @@ public class UpgradesSelector : MonoBehaviour
         float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
         float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
         float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
+        float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
 
-        // list of upgrades with their names using concatenation
         List<(Action action, string name)> allUpgrades = new List<(Action, string)>
-    {
-        (GiveHealthToPlayer, "+" + healthRounded + " Health"),
-        (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
-        (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
-        (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
-        (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
-        (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
-        (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
-        (GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"),
-        (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
-        (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
-        (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal")
-    };
+{
+    (GiveHealthToPlayer, "+" + healthRounded + " Health"),
+    (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
+    (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
+    (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
+    (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
+    (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
+    (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
+    (GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"),
+    (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
+    (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
+    (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal")
+};
 
-        // clear old listeners
-        foreach (Button btn in upgradeButtons)
+        // ✅ Only add Flamethrower Duration if purchased
+        if (flamethrowerPurchased)
         {
-            btn.onClick.RemoveAllListeners();
+            allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
         }
 
-        // assign 3 unique upgrades to the buttons
+        foreach (Button btn in upgradeButtons)
+            btn.onClick.RemoveAllListeners();
+
         for (int i = 0; i < upgradeButtons.Length; i++)
         {
             int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
             var chosenUpgrade = allUpgrades[randIndex];
 
-            // set button text
             TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
             if (btnText != null)
                 btnText.text = chosenUpgrade.name;
 
-            // capture local copy to avoid closure issues
             Action upgradeCopy = chosenUpgrade.action;
             upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
 
-            // remove from list so it cannot repeat
             allUpgrades.RemoveAt(randIndex);
         }
 
-        doubleGunPriceText.text = "$ " + doubleGunsPrice;
-        machineGunPriceText.text = "$ " + machineGunPrice;
-        shotgunPriceText.text = "$ " + shotgunPrice;
+        doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
+        machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
+        shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
+        flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
+
+        doubleGunsButton.gameObject.SetActive(!GameManager.Instance.doubleGunsActive);
+        machineGunButton.gameObject.SetActive(!GameManager.Instance.machineGunActive);
+        shotgunButton.gameObject.SetActive(!GameManager.Instance.shotgunActive);
+        flamethrowerButton.gameObject.SetActive(!GameManager.Instance.flamethrowerActive);
     }
+
+    // === Upgrade Handlers ===
     void GiveHealthToPlayer()
     {
         playerController.GetMaxHealth += healthToGive;
@@ -159,206 +182,89 @@ public class UpgradesSelector : MonoBehaviour
         StartLevel();
     }
 
-    void GiveViewRangeToPlayer()
-    {
-        playerController.GetCameraViewDistance += viewRangeToGive;
-        StartLevel();
-    }
+    void GiveViewRangeToPlayer() { playerController.GetCameraViewDistance += viewRangeToGive; StartLevel(); }
+    void GiveMoveSpeedToPlayer() { playerController.GetMoveSpeed += moveSpeedToGive; StartLevel(); }
+    void GiveEnemyDetectionRangeToPlayer() { playerController.GetEnemyDetectionRange += enemyDetectionRangeToGive; StartLevel(); }
+    void GiveBulletDamageToPlayer() { playerController.GetBulletDamage += bulletDamageToGive; StartLevel(); }
+    void GiveFireRateToPlayer() { playerController.GetFireRate -= fireRateToGive; StartLevel(); }
+    void GiveSprintTimeToPlayer() { playerController.GetSprintTime += sprintTimeToGive; StartLevel(); }
+    void GiveSprintCooldownToPlayer() { playerController.GetSprintCooldown -= sprintCooldownToGive; StartLevel(); }
+    void GiveSprintMultiplierToPlayer() { playerController.GetSprintMultiplier += sprintMultiplierToGive; StartLevel(); }
+    void GiveRotationSpeedToPlayer() { playerController.GetRotationSpeed += rotationSpeedToGive; StartLevel(); }
+    void GiveShootToHealToPlayer() { playerController.GetShootToHeal += shootToHealToGive; StartLevel(); }
+    void GiveFlamethrowerDurationToPlayer() { playerController.GetFlameThrowerDuration += flamethrowerDurationToGive; StartLevel(); }
 
-    void GiveMoveSpeedToPlayer()
-    {
-        playerController.GetMoveSpeed += moveSpeedToGive;
-        StartLevel();
-    }
-
-    void GiveEnemyDetectionRangeToPlayer()
-    {
-        playerController.GetEnemyDetectionRange += enemyDetectionRangeToGive;
-        StartLevel();
-    }
-
-    void GiveBulletDamageToPlayer()
-    {
-        playerController.GetBulletDamage += bulletDamageToGive;
-        StartLevel();
-    }
-
-    void GiveFireRateToPlayer()
-    {
-        playerController.GetFireRate -= fireRateToGive;
-        StartLevel();
-    }
-
-    void GiveSprintTimeToPlayer()
-    {
-        playerController.GetSprintTime += sprintTimeToGive;
-        StartLevel();
-    }
-
-    void GiveSprintCooldownToPlayer()
-    {
-        playerController.GetSprintCooldown -= sprintCooldownToGive;
-        StartLevel();
-    }
+    // === Info Buttons ===
+    public void ClickShowSprintButton() { showSprintButton.gameObject.SetActive(false); GameManager.Instance.showSprintSlider = true; StartLevel(); }
+    public void ClickShowXpButton() { showXpButton.gameObject.SetActive(false); GameManager.Instance.showXP = true; StartLevel(); }
+    public void ClickShowLevelButton() { showLevelButton.gameObject.SetActive(false); StartLevel(); }
+    public void ClickShowHealthBarsButton() { showHealthBarsButton.gameObject.SetActive(false); GameManager.Instance.showHealthBars = true; StartLevel(); }
+    public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     
-    void GiveSprintMultiplierToPlayer()
+    // === Weapon Logic ===
+    void SwapWeapon(WeaponType newWeapon)
     {
-        playerController.GetSprintMultiplier += sprintMultiplierToGive;
-        StartLevel();
-    }
+        if (GameManager.Instance.machineGunActive)
+            playerController.GetFireRate /= .35f;
 
-    void GiveRotationSpeedToPlayer()
-    {
-        playerController.GetRotationSpeed += rotationSpeedToGive;
-        StartLevel();
-    }
+        GameManager.Instance.doubleGunsActive = false;
+        GameManager.Instance.machineGunActive = false;
+        GameManager.Instance.shotgunActive = false;
+        GameManager.Instance.flamethrowerActive = false;
 
-    void GiveShootToHealToPlayer()
-    {
-        playerController.GetShootToHeal += shootToHealToGive;
-        StartLevel();
-    }
+        doubleGunsButton.gameObject.SetActive(true);
+        machineGunButton.gameObject.SetActive(true);
+        shotgunButton.gameObject.SetActive(true);
+        flamethrowerButton.gameObject.SetActive(true);
 
-    public void ClickShowSprintButton()
-    {
-        showSprintButton.gameObject.SetActive(false);
-        GameManager.Instance.showSprintSlider = true;
-        StartLevel();
-    }
-
-    public void ClickShowXpButton()
-    {
-        showXpButton.gameObject.SetActive(false);
-        GameManager.Instance.showXP = true;
-        StartLevel();
-    }
-
-    public void ClickShowLevelButton()
-    {
-        showLevelButton.gameObject.SetActive(false);
-        StartLevel();
-    }
-
-    public void ClickShowHealthBarsButton()
-    {
-        showHealthBarsButton.gameObject.SetActive(false);
-        GameManager.Instance.showHealthBars = true;
-        StartLevel();
-    }
-
-    public void BuyDoubleGunsButton()
-    {
-        if (doubleGunsPurchased)
+        switch (newWeapon)
         {
-            SwapForDoubleGuns();
+            case WeaponType.DoubleGuns:
+                GameManager.Instance.doubleGunsActive = true;
+                doubleGunsButton.gameObject.SetActive(false);
+                break;
+            case WeaponType.MachineGun:
+                GameManager.Instance.machineGunActive = true;
+                playerController.GetFireRate *= .35f;
+                machineGunButton.gameObject.SetActive(false);
+                break;
+            case WeaponType.Shotgun:
+                GameManager.Instance.shotgunActive = true;
+                shotgunButton.gameObject.SetActive(false);
+                break;
+            case WeaponType.Flamethrower:
+                GameManager.Instance.flamethrowerActive = true;
+                flamethrowerButton.gameObject.SetActive(false);
+                break;
+        }
+    }
+
+    void BuyWeapon(WeaponType weaponType, ref bool purchasedFlag, float price, TextMeshProUGUI priceText)
+    {
+        if (purchasedFlag)
+        {
+            SwapWeapon(weaponType);
             StartLevel();
             return;
         }
 
-        if (playerController.GetCash < doubleGunsPrice) return;
-        playerController.GetCash -= doubleGunsPrice;
-        doubleGunsPurchased = true;
-        doubleGunPriceText.text = "";
-        SwapForDoubleGuns();
+        if (playerController.GetCash < price) return;
+
+        playerController.GetCash -= price;
+        purchasedFlag = true;
+        priceText.text = "";
+        SwapWeapon(weaponType);
         StartLevel();
     }
 
-    public void BuyMachineGun()
-    {
-        if (machineGunPurchased)
-        {
-            SwapForMachineGun(); 
-            StartLevel(); 
-            return;
-        }
-
-        if(playerController.GetCash < machineGunPrice) return;
-        playerController.GetCash -= machineGunPrice;
-        machineGunPurchased = true;
-        machineGunPriceText.text = "";
-        SwapForMachineGun();
-        StartLevel();
-
-    }
-
-    public void BuyShotGunButton()
-    {
-        if (shotgunPurchased) 
-        {
-            SwapForShotgun();
-            StartLevel();
-            return;
-        }
-
-        if (playerController.GetCash < shotgunPrice) return;
-        playerController.GetCash -= shotgunPrice;
-        shotgunPurchased = true;
-        shotgunPriceText.text = "";
-        SwapForShotgun();
-        StartLevel();
-    }
+    public void BuyDoubleGunsButton() => BuyWeapon(WeaponType.DoubleGuns, ref doubleGunsPurchased, doubleGunsPrice, doubleGunPriceText);
+    public void BuyMachineGun() => BuyWeapon(WeaponType.MachineGun, ref machineGunPurchased, machineGunPrice, machineGunPriceText);
+    public void BuyShotGunButton() => BuyWeapon(WeaponType.Shotgun, ref shotgunPurchased, shotgunPrice, shotgunPriceText);
+    public void BuyFlamethrower() => BuyWeapon(WeaponType.Flamethrower, ref flamethrowerPurchased, flamethrowerPrice, flameThrowerPriceText);
 
     void StartLevel()
     {
         GameManager.Instance.StartLevel();
         upgradesPanel.SetActive(false);
-    }
-
-
-    void SwapForDoubleGuns()
-    {
-        if (!machineGunButton.isActiveAndEnabled)
-            machineGunButton.gameObject.SetActive(true);
-        if (!shotgunButton.isActiveAndEnabled)
-            shotgunButton.gameObject.SetActive(true);
-
-        if (GameManager.Instance.machineGunActive)
-        {
-            playerController.GetFireRate /= .35f;
-            GameManager.Instance.machineGunActive = false;
-        }
-        if (GameManager.Instance.shotgunActive)
-            GameManager.Instance.shotgunActive = false;
-
-        doubleGunsButton.gameObject.SetActive(false);
-        GameManager.Instance.doubleGunsActive = true;
-    }
-
-    void SwapForMachineGun()
-    {
-        if (!doubleGunsButton.isActiveAndEnabled)
-            doubleGunsButton.gameObject.SetActive(true);
-        if (!shotgunButton.isActiveAndEnabled)
-            shotgunButton.gameObject.SetActive(true);
-
-
-        if (GameManager.Instance.doubleGunsActive)
-            GameManager.Instance.doubleGunsActive = false;
-        if (GameManager.Instance.shotgunActive)
-            GameManager.Instance.shotgunActive = false;
-
-
-        machineGunButton.gameObject.SetActive(false);
-        GameManager.Instance.machineGunActive = true;
-        playerController.GetFireRate *= .35f;
-    }
-
-    void SwapForShotgun()
-    {
-        if (!doubleGunsButton.isActiveAndEnabled)
-            doubleGunsButton.gameObject.SetActive(true);
-        if (!machineGunButton.isActiveAndEnabled)
-            machineGunButton.gameObject.SetActive(true);
-
-        if (GameManager.Instance.doubleGunsActive)
-            GameManager.Instance.doubleGunsActive = false;
-        if (GameManager.Instance.machineGunActive)
-        {
-            playerController.GetFireRate /= .35f;
-            GameManager.Instance.machineGunActive = false;
-        }
-
-        shotgunButton.gameObject.SetActive(false);
-        GameManager.Instance.shotgunActive = true;
     }
 }

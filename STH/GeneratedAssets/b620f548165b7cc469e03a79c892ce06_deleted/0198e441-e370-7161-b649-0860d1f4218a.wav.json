@@ -1,0 +1,13 @@
+{
+    "asset": "b620f548165b7cc469e03a79c892ce06",
+    "fileName": "0198e441-e370-7161-b649-0860d1f4218a.wav",
+    "prompt": "flash impact",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "5b0ed2646b477280ff40a21a0e4def5e",
+    "duration": 1.0,
+    "autoTrim": true,
+    "hasReference": false
+}

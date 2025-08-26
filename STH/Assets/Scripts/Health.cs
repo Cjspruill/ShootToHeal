@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Health : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class Health : MonoBehaviour
 
     [SerializeField] bool canDamage;
 
+    [SerializeField] MeshRenderer meshRenderer;
+    [SerializeField] Color origColor;
+    [SerializeField] Color damageFlashColor = Color.white;
+
+    [SerializeField] float damageFlashTime = .25f;
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
 
@@ -22,6 +28,9 @@ public class Health : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        meshRenderer = GetComponent<MeshRenderer>();
+        origColor = meshRenderer.material.color;
+
         ResetHealth();
 
         if(healthBarSlider != null)
@@ -67,6 +76,7 @@ public class Health : MonoBehaviour
         health -= damage;
         canDamage = false;
         damageTimer = 0;
+        StartCoroutine(DamageFlash());
 
         if (health <= 0)
         {
@@ -111,5 +121,14 @@ public class Health : MonoBehaviour
     {
         int roundedMaxHealth = Mathf.RoundToInt(GetMaxHealth);
         return roundedMaxHealth;
+    }
+
+    IEnumerator DamageFlash()
+    {
+        meshRenderer.material.color = damageFlashColor;
+
+        yield return new WaitForSeconds(damageFlashTime);
+
+        meshRenderer.material.color = origColor;
     }
 }

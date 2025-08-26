@@ -1203,7 +1203,10 @@ MonoBehaviour:
     level up. The game will pause and let you select a stat to boost. The left and
     right columns are one time buys and will dissapear from the screen after that.
     Careful of the edges of the map as you will become death if you fall. There is
-    no coming back! All enemies will knock you back when they touch you. So be careful."
+    no coming back! All enemies will knock you back when they touch you. So be careful.\nThere
+    are 3 enemy types. A grunt who is brown and is fairly easy to destroy, a green
+    runner who is fast and sprints fast and often, and a red tank who moves slow
+    and hits hard. They are like walls. Be careful of them swarming you."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1230,7 +1233,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
+  m_fontSize: 23.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

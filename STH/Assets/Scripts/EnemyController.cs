@@ -110,7 +110,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
 

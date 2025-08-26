@@ -1,0 +1,13 @@
+{
+    "asset": "51d1e7d79477214499777162a1f11b05",
+    "fileName": "0198e439-d3e8-7d6f-85a5-128ce23555ef.wav",
+    "prompt": "Machine Gun shot",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "332d57aa27cb9601b510fc9a011c98da",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

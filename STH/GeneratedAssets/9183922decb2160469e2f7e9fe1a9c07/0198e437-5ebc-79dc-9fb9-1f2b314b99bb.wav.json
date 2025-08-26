@@ -1,0 +1,13 @@
+{
+    "asset": "9183922decb2160469e2f7e9fe1a9c07",
+    "fileName": "0198e437-5ebc-79dc-9fb9-1f2b314b99bb.wav",
+    "prompt": "Shotgun Blast",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "515e8cd6af1fef25eead0ecd95dc9722",
+    "duration": 3.0,
+    "autoTrim": true,
+    "hasReference": false
+}

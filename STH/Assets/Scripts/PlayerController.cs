@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineCamera cam;
     [SerializeField] CinemachineFollow camFollow;
     [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip doubleGunAudioClip;
+    [SerializeField] AudioClip machineGunAudioClip;
+    [SerializeField] AudioClip shotgunAudioClip;
     [SerializeField] UnityEngine.UI.Slider sprintSlider;
     [SerializeField] float bulletForce = 100f;
 
@@ -31,9 +34,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float sprintMultiplier;
     [SerializeField] float rotationSpeed;
     [SerializeField] float shootToHeal;
+    [SerializeField] float flameThrowerDuration;
 
     InputSystem_Actions playerInput;
     CharacterController characterController;
+    [SerializeField] ParticleSystem[] flameThrower;
 
     [Header("Timers")]
     [SerializeField] float fireRateTimer;
@@ -53,6 +58,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float gravity = -9.81f;
     Vector3 verticalVelocity;
 
+    [SerializeField] GameObject targetReticleGameObject;
+    [SerializeField] TargetReticle targetReticle;
+
     // Properties
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -67,6 +75,7 @@ public class PlayerController : MonoBehaviour
     public float GetRotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
     public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
     public float GetCash { get => cash; set => cash = value; }
+    public float GetFlameThrowerDuration { get => flameThrowerDuration; set => flameThrowerDuration = value; }
 
     void OnEnable()
     {
@@ -86,6 +95,7 @@ public class PlayerController : MonoBehaviour
         camFollow = cam.GetComponent<CinemachineFollow>();
         audioSource = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController>();
+        targetReticle = targetReticleGameObject.GetComponent<TargetReticle>();
     }
 
     void Update()
@@ -96,6 +106,11 @@ public class PlayerController : MonoBehaviour
 
         // Shooting logic
         EnemySearch();
+        if (GameManager.Instance.showTargetReticle)
+        {
+            PlaceTargetReticle();
+        }
+
         if (target != null)
         {
             fireRateTimer += Time.deltaTime;
@@ -181,11 +196,14 @@ public class PlayerController : MonoBehaviour
 
     void ShootAtEnemy()
     {
-        //Instantiate bullet here
-        audioSource.Play();
+       
 
         if (GameManager.Instance.doubleGunsActive)
         {
+            audioSource.clip = doubleGunAudioClip;
+            audioSource.Play();
+            
+
             GameObject newBulletLeft = Instantiate(bulletPrefab, doubleGunBarrelOutLeft.position, doubleGunBarrelOutLeft.rotation);
             newBulletLeft.GetComponent<Projectile>().damage = GetBulletDamage;
             newBulletLeft.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
@@ -202,6 +220,9 @@ public class PlayerController : MonoBehaviour
         }
         else if (GameManager.Instance.shotgunActive)
         {
+            audioSource.clip = shotgunAudioClip;
+            audioSource.Play();
+
             int pelletCount = Random.Range(3, 8); // fires between 3 and 7 pellets
 
             for (int i = 0; i < pelletCount; i++)
@@ -227,8 +248,22 @@ public class PlayerController : MonoBehaviour
                 Destroy(pellet, 5f);
             }
         }
+        else if (GameManager.Instance.flamethrowerActive)
+        {
+            for (int i = 0; i < flameThrower.Length; i++)
+                flameThrower[i].Play();
+
+            flameThrower[0].gameObject.GetComponent<AudioSource>().Play();
+
+            flameThrower[0].gameObject.GetComponent<FlameThrower>().damage = GetBulletDamage * .045f;
+
+            Invoke("StopFlamethrower", flameThrowerDuration);
+        }
         else
         {
+            audioSource.clip = machineGunAudioClip;
+            audioSource.Play();
+
             GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
             newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
             newBullet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
@@ -236,8 +271,16 @@ public class PlayerController : MonoBehaviour
             newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBullet, 5f);
         }
-
     }
+
+    void StopFlamethrower()
+    {
+        for (int i = 0; i < flameThrower.Length; i++)
+            flameThrower[i].Stop();
+
+        flameThrower[0].gameObject.GetComponent<AudioSource>().Stop();
+    }
+
     void EnemySearch()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, GetEnemyDetectionRange);
@@ -302,5 +345,28 @@ public class PlayerController : MonoBehaviour
     public void UpdateHealth(float value)
     {
         health.GetHealth += value;
+    }
+
+    void PlaceTargetReticle()
+    {
+        if (target != null)
+        {
+            if (!targetReticleGameObject.activeInHierarchy)
+                targetReticleGameObject.SetActive(true);
+
+            if (target.gameObject.name.Contains("Grunt"))
+                targetReticle.UpdateReticleSize(targetReticle.gruntReticleSize);
+            if (target.gameObject.name.Contains("Runner"))
+                targetReticle.UpdateReticleSize(targetReticle.runnerReticleSize);
+            if (target.gameObject.name.Contains("Tank"))
+                targetReticle.UpdateReticleSize(targetReticle.tankReticleSize);
+
+            Vector3 newPos = new Vector3(target.position.x, 0, target.position.z);
+            targetReticle.transform.position = newPos;
+        }
+        else
+            targetReticleGameObject.SetActive(false);
+
+        
     }
 }
