@@ -61,6 +61,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject targetReticleGameObject;
     [SerializeField] TargetReticle targetReticle;
 
+    Vector2 touchStartPos;
+    Vector2 touchCurrentPos;
+    bool isTouching = false;
+    Vector2 externalMoveInput = Vector2.zero;
+
+
     // Properties
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -125,21 +131,57 @@ public class PlayerController : MonoBehaviour
 
         if (GameManager.Instance.showSprintSlider)
             UpdateSprintSlider();
+
+        HandleTouchInput(); // 👈 add this here
     }
-
-    void HandleMovement()
+    void HandleTouchInput()
     {
-        // Input
-        Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
-        Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
+        bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
+          || Application.platform == RuntimePlatform.WindowsEditor
+          || Application.platform == RuntimePlatform.OSXPlayer
+          || Application.platform == RuntimePlatform.LinuxPlayer;
 
-        // Sprint logic
-        bool sprintInput = playerInput.Player.Sprint.inProgress;
-        if (sprintInput && sprintCooldownTimer <= 0f)
+        if (isPC) return; // no touchscreen available
+
+        int activeTouchCount = 0;
+        foreach (var touch in Touchscreen.current.touches)
         {
+            if (touch.press.isPressed)
+                activeTouchCount++;
+        }
+
+        // --- Movement ---
+        if (activeTouchCount >= 1)
+        {
+            var primaryTouch = Touchscreen.current.primaryTouch;
+
+            if (!isTouching)
+            {
+                isTouching = true;
+                touchStartPos = primaryTouch.startPosition.ReadValue();
+            }
+
+            touchCurrentPos = primaryTouch.position.ReadValue();
+            Vector2 dragDelta = touchCurrentPos - touchStartPos;
+
+            // Normalize drag like joystick
+            Vector2 moveInput = dragDelta.normalized;
+            ApplyTouchMovement(moveInput);
+        }
+        else
+        {
+            isTouching = false;
+            externalMoveInput = Vector2.zero;
+        }
+
+        // --- Sprint ---
+        if (activeTouchCount >= 2 && sprintCooldownTimer <= 0f)
+        {
+            // keep sprinting as long as key is held
             isSprinting = true;
             sprintTimer += Time.deltaTime;
 
+            // if sprint time is exceeded, force cooldown
             if (sprintTimer >= GetSprintTime)
             {
                 isSprinting = false;
@@ -147,10 +189,71 @@ public class PlayerController : MonoBehaviour
                 sprintCooldownTimer = GetSprintCooldown;
             }
         }
-        else
+        else if (activeTouchCount < 2)
         {
             if (isSprinting)
             {
+                // went from sprinting → released early → partial cooldown
+                float sprintRatio = sprintTimer / GetSprintTime;
+                sprintCooldownTimer = GetSprintCooldown * sprintRatio;
+                sprintTimer = 0f;
+            }
+
+            isSprinting = false;
+
+            if (sprintCooldownTimer > 0f)
+                sprintCooldownTimer -= Time.deltaTime;
+        }
+    }
+
+    void ApplyTouchMovement(Vector2 moveInput)
+    {
+        externalMoveInput = moveInput;
+    }
+
+
+    void HandleMovement()
+    {
+        // Read from Input System if on PC
+        Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
+
+        // If on mobile, override with touch input
+        if (Touchscreen.current != null && externalMoveInput != Vector2.zero)
+            moveInput = externalMoveInput;
+
+        Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
+
+      
+        bool sprintInput = playerInput.Player.Sprint.inProgress;
+
+        bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
+          || Application.platform == RuntimePlatform.WindowsEditor
+          || Application.platform == RuntimePlatform.OSXPlayer
+          || Application.platform == RuntimePlatform.LinuxPlayer;
+
+        if (!isPC)
+        {
+            return;
+        }
+        if (sprintInput && sprintCooldownTimer <= 0f)
+        {
+            // keep sprinting as long as key is held
+            isSprinting = true;
+            sprintTimer += Time.deltaTime;
+
+            // if sprint time is exceeded, force cooldown
+            if (sprintTimer >= GetSprintTime)
+            {
+                isSprinting = false;
+                sprintTimer = 0f;
+                sprintCooldownTimer = GetSprintCooldown;
+            }
+        }
+        else if (!sprintInput) // only stop sprinting when key is released
+        {
+            if (isSprinting)
+            {
+                // went from sprinting → released early → partial cooldown
                 float sprintRatio = sprintTimer / GetSprintTime;
                 sprintCooldownTimer = GetSprintCooldown * sprintRatio;
                 sprintTimer = 0f;
@@ -162,18 +265,20 @@ public class PlayerController : MonoBehaviour
                 sprintCooldownTimer -= Time.deltaTime;
         }
 
-        // Movement speed
+        // -------------------------------
+        // Movement + Gravity
+        // -------------------------------
         float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
 
-        // Gravity
         if (characterController.isGrounded && verticalVelocity.y < 0)
-            verticalVelocity.y = -2f; // stick to ground
+            verticalVelocity.y = -2f;
+
         verticalVelocity.y += gravity * Time.deltaTime;
 
-        // Final movement
         Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity + verticalVelocity;
         characterController.Move(finalVelocity * Time.deltaTime);
     }
+
 
     void HandleFacing()
     {
@@ -196,8 +301,6 @@ public class PlayerController : MonoBehaviour
 
     void ShootAtEnemy()
     {
-       
-
         if (GameManager.Instance.doubleGunsActive)
         {
             audioSource.clip = doubleGunAudioClip;
@@ -254,7 +357,7 @@ public class PlayerController : MonoBehaviour
                 flameThrower[i].Play();
 
             flameThrower[0].gameObject.GetComponent<AudioSource>().Play();
-
+            flameThrower[0].gameObject.GetComponent<FlameThrower>().shootToHeal = GetShootToHeal * .045f;
             flameThrower[0].gameObject.GetComponent<FlameThrower>().damage = GetBulletDamage * .045f;
 
             Invoke("StopFlamethrower", flameThrowerDuration);

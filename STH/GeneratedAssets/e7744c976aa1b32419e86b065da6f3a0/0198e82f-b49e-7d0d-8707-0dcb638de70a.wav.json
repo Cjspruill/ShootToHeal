@@ -1,0 +1,13 @@
+{
+    "asset": "e7744c976aa1b32419e86b065da6f3a0",
+    "fileName": "0198e82f-b49e-7d0d-8707-0dcb638de70a.wav",
+    "prompt": "Money Pickup",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "c86d4c1018fbe0aa468ce69d603e751d",
+    "duration": 1.0,
+    "autoTrim": true,
+    "hasReference": false
+}

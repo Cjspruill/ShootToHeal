@@ -81,6 +81,8 @@ public class Health : MonoBehaviour
         if (health <= 0)
         {
             EnemyController enemyController = GetComponent<EnemyController>();
+            PlayerController playerController = GetComponent<PlayerController>();
+
             if (enemyController)
             {
                 GameManager.Instance.EnemyDestroyed();
@@ -93,6 +95,12 @@ public class Health : MonoBehaviour
                     enemyController.DropCashOrb();
                 }
             }
+
+            if (playerController)
+            {
+                GameManager.Instance.GameOver();
+            }
+
             Destroy(gameObject);
         }
     }

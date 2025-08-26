@@ -4,7 +4,10 @@ public class FlameThrower : MonoBehaviour
 {
 
     [SerializeField] public float damage;
+    [SerializeField] public float shootToHeal;
     [SerializeField] AudioSource audioSource;
+    [SerializeField] PlayerController playerController;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,5 +28,8 @@ public class FlameThrower : MonoBehaviour
         {
             health.TakeDamage(damage);
         }
+
+        if (playerController)
+            playerController.GetComponent<Health>().GiveHealth(shootToHeal);
     }
 }

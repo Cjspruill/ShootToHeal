@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class PauseMenu : MonoBehaviour
 {
@@ -33,12 +35,14 @@ public class PauseMenu : MonoBehaviour
         playerInput = new InputSystem_Actions();
         playerInput.UI.Enable();
         playerInput.UI.Cancel.performed += OnCancelPerformed;
+        GameManager.OnGameOver += ShowGameOverPanel;
     }
 
     private void OnDisable()
     {
         playerInput.UI.Disable();
         playerInput.UI.Cancel.performed -= OnCancelPerformed;
+        GameManager.OnGameOver -= ShowGameOverPanel;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -92,7 +96,26 @@ public class PauseMenu : MonoBehaviour
 
     public void RestartGame()
     {
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    void ShowGameOverPanel()
+    {
+        gameOverPanel.SetActive(true);
+    }
+
+    public void PauseButtonClicked()
+    {
+        if (GameManager.Instance.levelEnded) return;
+
+        gameIsPaused = !gameIsPaused;
+        pausePanel.SetActive(gameIsPaused);
+
+        if (gameIsPaused)
+            Time.timeScale = 0;
+        else
+            Time.timeScale = 1;
+    }
+
+  
 }

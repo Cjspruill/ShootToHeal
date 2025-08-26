@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 155170874}
+  - component: {fileID: 155170875}
   m_Layer: 0
   m_Name: EnemyHolder
   m_TagString: Untagged
@@ -150,6 +151,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &155170875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155170873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f2fd7cd023a25e47958b78cb84f06e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHolder
 --- !u!1001 &194326879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -734,6 +747,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 994115428}
+  - component: {fileID: 994115429}
   m_Layer: 0
   m_Name: ObstacleHolder
   m_TagString: Untagged
@@ -756,17 +770,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1082805421 stripped
+--- !u!114 &994115429
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9219355120321880413, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-  m_PrefabInstance: {fileID: 2951882757814893087}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 994115427}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ca02d99c0b6d5742bc22bd33005bdcc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleHolder
 --- !u!114 &1109960483 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4691852363801923497, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
@@ -1509,6 +1524,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2634602706552868302, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 724665213}
+    - target: {fileID: 2634602706552868302, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 724665207}
     - target: {fileID: 3113554187736235698, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1593,26 +1616,10 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 724665207}
-    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: showTargetReticleButton
-      value: 
-      objectReference: {fileID: 1082805421}
     - target: {fileID: 3857187591952407833, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: m_Name
       value: HUDCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 4790662756367361357, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6124391636742940640, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: playerHealth
-      value: 
-      objectReference: {fileID: 724665213}
-    - target: {fileID: 6124391636742940640, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: playerController
-      value: 
-      objectReference: {fileID: 724665207}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
