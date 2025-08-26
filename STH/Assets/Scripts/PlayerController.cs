@@ -231,38 +231,37 @@ public class PlayerController : MonoBehaviour
           || Application.platform == RuntimePlatform.OSXPlayer
           || Application.platform == RuntimePlatform.LinuxPlayer;
 
-        if (!isPC)
+        if (isPC)
         {
-            return;
-        }
-        if (sprintInput && sprintCooldownTimer <= 0f)
-        {
-            // keep sprinting as long as key is held
-            isSprinting = true;
-            sprintTimer += Time.deltaTime;
-
-            // if sprint time is exceeded, force cooldown
-            if (sprintTimer >= GetSprintTime)
+            if (sprintInput && sprintCooldownTimer <= 0f)
             {
+                // keep sprinting as long as key is held
+                isSprinting = true;
+                sprintTimer += Time.deltaTime;
+
+                // if sprint time is exceeded, force cooldown
+                if (sprintTimer >= GetSprintTime)
+                {
+                    isSprinting = false;
+                    sprintTimer = 0f;
+                    sprintCooldownTimer = GetSprintCooldown;
+                }
+            }
+            else if (!sprintInput) // only stop sprinting when key is released
+            {
+                if (isSprinting)
+                {
+                    // went from sprinting → released early → partial cooldown
+                    float sprintRatio = sprintTimer / GetSprintTime;
+                    sprintCooldownTimer = GetSprintCooldown * sprintRatio;
+                    sprintTimer = 0f;
+                }
+
                 isSprinting = false;
-                sprintTimer = 0f;
-                sprintCooldownTimer = GetSprintCooldown;
-            }
-        }
-        else if (!sprintInput) // only stop sprinting when key is released
-        {
-            if (isSprinting)
-            {
-                // went from sprinting → released early → partial cooldown
-                float sprintRatio = sprintTimer / GetSprintTime;
-                sprintCooldownTimer = GetSprintCooldown * sprintRatio;
-                sprintTimer = 0f;
-            }
 
-            isSprinting = false;
-
-            if (sprintCooldownTimer > 0f)
-                sprintCooldownTimer -= Time.deltaTime;
+                if (sprintCooldownTimer > 0f)
+                    sprintCooldownTimer -= Time.deltaTime;
+            }
         }
 
         // -------------------------------
