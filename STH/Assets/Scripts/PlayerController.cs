@@ -82,18 +82,52 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        // Apply knockback decay
         HandleKnockback();
 
+        // --- Movement Input ---
         Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-        float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
+        // --- Sprint Input ---
+        bool sprintInput = playerInput.Player.Sprint.inProgress;
 
-        // ✅ Combine knockback + movement
+        if (sprintInput && sprintCooldownTimer <= 0f)
+        {
+            isSprinting = true;
+            sprintTimer += Time.deltaTime;
+
+            if (sprintTimer >= GetSprintTime)
+            {
+                // Max sprint reached, force full cooldown
+                isSprinting = false;
+                sprintTimer = 0f;
+                sprintCooldownTimer = GetSprintCooldown;
+            }
+        }
+        else
+        {
+            // Not sprinting
+            if (isSprinting)
+            {
+                // Player just stopped sprinting before max
+                float sprintRatio = sprintTimer / GetSprintTime;
+                sprintCooldownTimer = GetSprintCooldown * sprintRatio;
+                sprintTimer = 0f;
+            }
+
+            isSprinting = false;
+
+            if (sprintCooldownTimer > 0f)
+                sprintCooldownTimer -= Time.deltaTime;
+        }
+
+        // --- Apply movement + knockback ---
+        float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
         Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity;
         transform.Translate(finalVelocity * Time.deltaTime, Space.World);
 
-        // Rotation only if NOT being knocked back
+        // --- Facing Target (only if not being knocked back) ---
         if (target != null && knockbackVelocity == Vector3.zero)
         {
             Vector3 direction = target.position - transform.position;
@@ -109,26 +143,24 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // --- Enemy search + shooting ---
         EnemySearch();
 
-        if(target != null)
+        if (target != null)
         {
             fireRateTimer += Time.deltaTime;
 
-            if(fireRateTimer >= GetFireRate)
+            if (fireRateTimer >= GetFireRate)
             {
                 ShootAtEnemy();
                 fireRateTimer = 0;
-            } 
+            }
         }
-
 
         camFollow.FollowOffset = new Vector3(0, cameraViewDistance, 0);
 
         if (GameManager.Instance.showSprintSlider)
-        {
             UpdateSprintSlider();
-        }
     }
 
     public void OnAttackPerformed(InputAction.CallbackContext context)
@@ -255,31 +287,27 @@ public class PlayerController : MonoBehaviour
     {
         direction.y = 0;
 
-        // ✅ Cap force so repeated hits don’t explode velocity
         Vector3 newForce = direction.normalized * force;
         knockbackVelocity += newForce;
 
-        float maxKnockback = 20f; // tune this
+        float maxKnockback = 20f; // clamp so spam-hit doesn't go crazy
         if (knockbackVelocity.magnitude > maxKnockback)
-        {
             knockbackVelocity = knockbackVelocity.normalized * maxKnockback;
-        }
     }
 
     void HandleKnockback()
     {
         if (knockbackVelocity.magnitude > 0.01f)
         {
-            // Decay knockback gradually
             knockbackVelocity = Vector3.Lerp(
                 knockbackVelocity,
                 Vector3.zero,
                 knockbackRecoverySpeed * Time.deltaTime
             );
 
-            // ✅ Hard stop (prevents infinite tiny rotations)
             if (knockbackVelocity.magnitude < 0.1f)
                 knockbackVelocity = Vector3.zero;
         }
     }
+
 }

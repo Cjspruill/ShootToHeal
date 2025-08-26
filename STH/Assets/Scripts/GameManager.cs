@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool showHealthBars; 
     [SerializeField] public bool showSprintSlider;
     [SerializeField] public bool doubleGunsActive;
+    [SerializeField] public bool machineGunActive;
     [SerializeField] public bool shotgunActive;
 
     [SerializeField] public bool showXP;

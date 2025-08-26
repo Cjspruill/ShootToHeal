@@ -49,15 +49,22 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button showSprintButton;
     [SerializeField] Button showHealthBarsButton;
     [SerializeField] Button doubleGunsButton;
+    [SerializeField] Button machineGunButton;
     [SerializeField] Button shotgunButton;
 
     [SerializeField] GameObject upgradesPanel;
 
     [SerializeField] float doubleGunsPrice = 5;
+    [SerializeField] float machineGunPrice = 5;
     [SerializeField] float shotgunPrice = 10;
+
+    [SerializeField] bool doubleGunsPurchased;
+    [SerializeField] bool machineGunPurchased;
+    [SerializeField] bool shotgunPurchased;
 
 
     [SerializeField] TextMeshProUGUI doubleGunPriceText;
+    [SerializeField] TextMeshProUGUI machineGunPriceText;
     [SerializeField] TextMeshProUGUI shotgunPriceText;
 
     private void OnEnable()
@@ -141,6 +148,7 @@ public class UpgradesSelector : MonoBehaviour
         }
 
         doubleGunPriceText.text = "$ " + doubleGunsPrice;
+        machineGunPriceText.text = "$ " + machineGunPrice;
         shotgunPriceText.text = "$ " + shotgunPrice;
     }
     void GiveHealthToPlayer()
@@ -240,33 +248,53 @@ public class UpgradesSelector : MonoBehaviour
 
     public void BuyDoubleGunsButton()
     {
+        if (doubleGunsPurchased)
+        {
+            SwapForDoubleGuns();
+            StartLevel();
+            return;
+        }
+
         if (playerController.GetCash < doubleGunsPrice) return;
-
         playerController.GetCash -= doubleGunsPrice;
-
-        if (!shotgunButton.isActiveAndEnabled)
-            shotgunButton.gameObject.SetActive(true);
-        if(GameManager.Instance.shotgunActive)
-            GameManager.Instance.shotgunActive = false;
-
-        doubleGunsButton.gameObject.SetActive(false);
-        GameManager.Instance.doubleGunsActive = true;
+        doubleGunsPurchased = true;
+        doubleGunPriceText.text = "";
+        SwapForDoubleGuns();
         StartLevel();
+    }
+
+    public void BuyMachineGun()
+    {
+        if (machineGunPurchased)
+        {
+            SwapForMachineGun(); 
+            StartLevel(); 
+            return;
+        }
+
+        if(playerController.GetCash < machineGunPrice) return;
+        playerController.GetCash -= machineGunPrice;
+        machineGunPurchased = true;
+        machineGunPriceText.text = "";
+        SwapForMachineGun();
+        StartLevel();
+
     }
 
     public void BuyShotGunButton()
     {
+        if (shotgunPurchased) 
+        {
+            SwapForShotgun();
+            StartLevel();
+            return;
+        }
+
         if (playerController.GetCash < shotgunPrice) return;
-
         playerController.GetCash -= shotgunPrice;
-
-        if (!doubleGunsButton.isActiveAndEnabled)
-            doubleGunsButton.gameObject.SetActive(true);
-        if(GameManager.Instance.doubleGunsActive)
-            GameManager.Instance.doubleGunsActive = false;
-
-        shotgunButton.gameObject.SetActive(false);
-        GameManager.Instance.shotgunActive = true;
+        shotgunPurchased = true;
+        shotgunPriceText.text = "";
+        SwapForShotgun();
         StartLevel();
     }
 
@@ -274,5 +302,63 @@ public class UpgradesSelector : MonoBehaviour
     {
         GameManager.Instance.StartLevel();
         upgradesPanel.SetActive(false);
+    }
+
+
+    void SwapForDoubleGuns()
+    {
+        if (!machineGunButton.isActiveAndEnabled)
+            machineGunButton.gameObject.SetActive(true);
+        if (!shotgunButton.isActiveAndEnabled)
+            shotgunButton.gameObject.SetActive(true);
+
+        if (GameManager.Instance.machineGunActive)
+        {
+            playerController.GetFireRate /= .35f;
+            GameManager.Instance.machineGunActive = false;
+        }
+        if (GameManager.Instance.shotgunActive)
+            GameManager.Instance.shotgunActive = false;
+
+        doubleGunsButton.gameObject.SetActive(false);
+        GameManager.Instance.doubleGunsActive = true;
+    }
+
+    void SwapForMachineGun()
+    {
+        if (!doubleGunsButton.isActiveAndEnabled)
+            doubleGunsButton.gameObject.SetActive(true);
+        if (!shotgunButton.isActiveAndEnabled)
+            shotgunButton.gameObject.SetActive(true);
+
+
+        if (GameManager.Instance.doubleGunsActive)
+            GameManager.Instance.doubleGunsActive = false;
+        if (GameManager.Instance.shotgunActive)
+            GameManager.Instance.shotgunActive = false;
+
+
+        machineGunButton.gameObject.SetActive(false);
+        GameManager.Instance.machineGunActive = true;
+        playerController.GetFireRate *= .35f;
+    }
+
+    void SwapForShotgun()
+    {
+        if (!doubleGunsButton.isActiveAndEnabled)
+            doubleGunsButton.gameObject.SetActive(true);
+        if (!machineGunButton.isActiveAndEnabled)
+            machineGunButton.gameObject.SetActive(true);
+
+        if (GameManager.Instance.doubleGunsActive)
+            GameManager.Instance.doubleGunsActive = false;
+        if (GameManager.Instance.machineGunActive)
+        {
+            playerController.GetFireRate /= .35f;
+            GameManager.Instance.machineGunActive = false;
+        }
+
+        shotgunButton.gameObject.SetActive(false);
+        GameManager.Instance.shotgunActive = true;
     }
 }
