@@ -207,17 +207,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1552464186}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: cash
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: sprintSlider
       value: 
       objectReference: {fileID: 343208674}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: rotationSpeed
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: m_Name
       value: Player
@@ -709,7 +701,7 @@ MonoBehaviour:
   totalEnemiesDestroyed: 0
   enemiesSpawned: 0
   levelEnded: 0
-  numOfObstaclesToSpawn: 50
+  numOfObstaclesToSpawn: 75
   showHealthBars: 0
   showSprintSlider: 0
   doubleGunsActive: 0

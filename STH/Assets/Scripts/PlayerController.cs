@@ -33,21 +33,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float shootToHeal;
 
     InputSystem_Actions playerInput;
+    CharacterController characterController;
 
     [Header("Timers")]
     [SerializeField] float fireRateTimer;
     [SerializeField] float sprintTimer;
     public float sprintCooldownTimer;
-
     public bool isSprinting;
+
     [SerializeField] float xp;
     [SerializeField] float cash;
 
     [Header("Knockback")]
-    [SerializeField] float knockbackRecoverySpeed = 5f; // how fast the knockback wears off
+    [SerializeField] float knockbackRecoverySpeed = 5f;
     Vector3 knockbackVelocity = Vector3.zero;
-    [SerializeField]private float shotgunSpreadAngle;
+    [SerializeField] private float shotgunSpreadAngle;
 
+    [Header("Gravity")]
+    [SerializeField] float gravity = -9.81f;
+    Vector3 verticalVelocity;
+
+    // Properties
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
     public float GetMoveSpeed { get => moveSpeed; set => moveSpeed = value; }
@@ -62,13 +68,13 @@ public class PlayerController : MonoBehaviour
     public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
     public float GetCash { get => cash; set => cash = value; }
 
-    public void OnEnable()
+    void OnEnable()
     {
         playerInput = new InputSystem_Actions();
         playerInput.Player.Enable();
     }
 
-    public void OnDisable()
+    void OnDisable()
     {
         playerInput.Player.Disable();
     }
@@ -79,19 +85,41 @@ public class PlayerController : MonoBehaviour
         health.GetMaxHealth = GetMaxHealth;
         camFollow = cam.GetComponent<CinemachineFollow>();
         audioSource = GetComponent<AudioSource>();
+        characterController = GetComponent<CharacterController>();
     }
+
     void Update()
     {
-        // Apply knockback decay
         HandleKnockback();
+        HandleMovement();
+        HandleFacing();
 
-        // --- Movement Input ---
+        // Shooting logic
+        EnemySearch();
+        if (target != null)
+        {
+            fireRateTimer += Time.deltaTime;
+            if (fireRateTimer >= GetFireRate)
+            {
+                ShootAtEnemy();
+                fireRateTimer = 0;
+            }
+        }
+
+        camFollow.FollowOffset = new Vector3(0, cameraViewDistance, 0);
+
+        if (GameManager.Instance.showSprintSlider)
+            UpdateSprintSlider();
+    }
+
+    void HandleMovement()
+    {
+        // Input
         Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-        // --- Sprint Input ---
+        // Sprint logic
         bool sprintInput = playerInput.Player.Sprint.inProgress;
-
         if (sprintInput && sprintCooldownTimer <= 0f)
         {
             isSprinting = true;
@@ -99,7 +127,6 @@ public class PlayerController : MonoBehaviour
 
             if (sprintTimer >= GetSprintTime)
             {
-                // Max sprint reached, force full cooldown
                 isSprinting = false;
                 sprintTimer = 0f;
                 sprintCooldownTimer = GetSprintCooldown;
@@ -107,10 +134,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Not sprinting
             if (isSprinting)
             {
-                // Player just stopped sprinting before max
                 float sprintRatio = sprintTimer / GetSprintTime;
                 sprintCooldownTimer = GetSprintCooldown * sprintRatio;
                 sprintTimer = 0f;
@@ -122,12 +147,21 @@ public class PlayerController : MonoBehaviour
                 sprintCooldownTimer -= Time.deltaTime;
         }
 
-        // --- Apply movement + knockback ---
+        // Movement speed
         float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
-        Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity;
-        transform.Translate(finalVelocity * Time.deltaTime, Space.World);
 
-        // --- Facing Target (only if not being knocked back) ---
+        // Gravity
+        if (characterController.isGrounded && verticalVelocity.y < 0)
+            verticalVelocity.y = -2f; // stick to ground
+        verticalVelocity.y += gravity * Time.deltaTime;
+
+        // Final movement
+        Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity + verticalVelocity;
+        characterController.Move(finalVelocity * Time.deltaTime);
+    }
+
+    void HandleFacing()
+    {
         if (target != null && knockbackVelocity == Vector3.zero)
         {
             Vector3 direction = target.position - transform.position;
@@ -142,36 +176,8 @@ public class PlayerController : MonoBehaviour
                 );
             }
         }
-
-        // --- Enemy search + shooting ---
-        EnemySearch();
-
-        if (target != null)
-        {
-            fireRateTimer += Time.deltaTime;
-
-            if (fireRateTimer >= GetFireRate)
-            {
-                ShootAtEnemy();
-                fireRateTimer = 0;
-            }
-        }
-
-        camFollow.FollowOffset = new Vector3(0, cameraViewDistance, 0);
-
-        if (GameManager.Instance.showSprintSlider)
-            UpdateSprintSlider();
     }
 
-    public void OnAttackPerformed(InputAction.CallbackContext context)
-    {
-        //Add bool check for allowing player enabled shooting?
-        //Instantiate bullet here
-        GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
-        newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
-        newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
-        Destroy(newBullet, 5f);
-    }
 
     void ShootAtEnemy()
     {
@@ -235,62 +241,39 @@ public class PlayerController : MonoBehaviour
     void EnemySearch()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, GetEnemyDetectionRange);
-
         float closestDistance = Mathf.Infinity;
         Transform closestEnemy = null;
 
-        for (int i = 0; i < hits.Length; i++)
+        foreach (Collider hit in hits)
         {
-            EnemyController enemy = hits[i].GetComponent<EnemyController>();
+            EnemyController enemy = hit.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                float dist = Vector3.Distance(transform.position, hits[i].transform.position);
+                float dist = Vector3.Distance(transform.position, hit.transform.position);
                 if (dist < closestDistance)
                 {
                     closestDistance = dist;
-                    closestEnemy = hits[i].transform;
+                    closestEnemy = hit.transform;
                 }
             }
         }
 
-        if (closestEnemy != null)
-        {
-            target = closestEnemy;
-        }
-        else
-        {
-            target = null; // nothing in range
-        }
-    }
-
-    public void UpdateMaxHealth()
-    {
-        health.GetMaxHealth = GetMaxHealth;
-    }
-
-    public void UpdateHealth(float value)
-    {
-        health.GetHealth += value;
+        target = closestEnemy;
     }
 
     void UpdateSprintSlider()
     {
         sprintSlider.maxValue = sprintTime;
-
-        if (isSprinting)
-            sprintSlider.value = sprintTimer;
-        else
-        sprintSlider.value = sprintCooldownTimer;
+        sprintSlider.value = isSprinting ? sprintTimer : sprintCooldownTimer;
     }
 
     public void ApplyKnockback(Vector3 direction, float force)
     {
         direction.y = 0;
-
         Vector3 newForce = direction.normalized * force;
         knockbackVelocity += newForce;
 
-        float maxKnockback = 20f; // clamp so spam-hit doesn't go crazy
+        float maxKnockback = 20f;
         if (knockbackVelocity.magnitude > maxKnockback)
             knockbackVelocity = knockbackVelocity.normalized * maxKnockback;
     }
@@ -310,4 +293,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    public void UpdateMaxHealth()
+    {
+        health.GetMaxHealth = GetMaxHealth;
+    }
+
+    public void UpdateHealth(float value)
+    {
+        health.GetHealth += value;
+    }
 }

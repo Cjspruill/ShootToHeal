@@ -4646,9 +4646,9 @@ MonoBehaviour:
   machineGunButton: {fileID: 904303428505659554}
   shotgunButton: {fileID: 3646941885297596806}
   upgradesPanel: {fileID: 4451237000906542111}
-  doubleGunsPrice: 5
-  machineGunPrice: 10
-  shotgunPrice: 15
+  doubleGunsPrice: 250
+  machineGunPrice: 500
+  shotgunPrice: 750
   doubleGunsPurchased: 0
   machineGunPurchased: 0
   shotgunPurchased: 0
