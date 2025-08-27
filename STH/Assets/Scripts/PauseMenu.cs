@@ -99,6 +99,11 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     void ShowGameOverPanel()
     {
         gameOverPanel.SetActive(true);

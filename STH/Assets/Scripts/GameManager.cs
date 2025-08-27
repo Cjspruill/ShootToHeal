@@ -72,47 +72,6 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-
-    void OnEnable()
-    {
-        // Subscribe to the event
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        // Unsubscribe when object is disabled/destroyed
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    // This is the delegate signature Unity expects:
-    // Scene scene, LoadSceneMode mode
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log("Scene loaded: " + scene.name + " | Mode: " + mode);
-        // Example: reset time scale after scene loads
-        Time.timeScale = 1f;
-
-        playerController = null;
-        enemyHolder = null;
-        obstacleHolder = null;
-
-        playerController = FindFirstObjectByType<PlayerController>();
-        enemyHolder = FindFirstObjectByType<EnemyHolder>().transform;
-        obstacleHolder = FindFirstObjectByType<ObstacleHolder>().transform;
-
-        ResetStats();
-
-        for (int i = 0; i < numOfObstaclesToSpawn; i++)
-        {
-            SpawnObstacles();
-        }
-
-        StartLevel();
-
     }
 
 
@@ -133,6 +92,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+
+        
         enemiesDefeatedText.text = "Enemies Destroyed: " + totalEnemiesDestroyed.ToString();
         currentLevelText.text = "Level: " + level;
         currentXPText.text = "XP: " + playerController.GetXp + "/ " + GetMaxXpForLevel();
@@ -315,29 +276,5 @@ public class GameManager : MonoBehaviour
         newObstacle.transform.localScale = new Vector3(Random.Range(2, 10), Random.Range(5, 10), Random.Range(2, 10));
     }
 
-    void ResetStats()
-    {
-        baseSpawnInterval = 3f;
-        spawnIntervalDecrease = 0.2f;
-        minSpawnInterval = 0.5f;
-        maxSpawnInterval = 8f;
-        baseMaxEnemies = 5;
-        maxEnemiesIncrease = 2;
-        maxEnemiesCap = 100;
-        baseXP = 2;
-        xpMultiplier = 1.15f;
-        runnerSpawnInterval = 8f;   // how often to send runners
-        maxRunners = 3;               // clamp how many can exist
-        level = 1;
-        totalEnemiesDestroyed = 0;
-
-        levelEnded = false;
-        showHealthBars = false;
-        showSprintSlider = false;
-        doubleGunsActive = false;
-        machineGunActive = false;
-        shotgunActive = false;
-        flamethrowerActive = false;
-        showTargetReticle = false;
-    }
+   
 }
