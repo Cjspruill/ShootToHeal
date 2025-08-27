@@ -51,6 +51,7 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button showSprintButton;
     [SerializeField] Button showHealthBarsButton;
     [SerializeField] Button showTargetReticleButton;
+    [SerializeField] Button showMiniMapButton;
     [SerializeField] Button doubleGunsButton;
     [SerializeField] Button machineGunButton;
     [SerializeField] Button shotgunButton;
@@ -203,7 +204,7 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowLevelButton() { showLevelButton.gameObject.SetActive(false); StartLevel(); }
     public void ClickShowHealthBarsButton() { showHealthBarsButton.gameObject.SetActive(false); GameManager.Instance.showHealthBars = true; StartLevel(); }
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
-    
+    public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
     // === Weapon Logic ===
     void SwapWeapon(WeaponType newWeapon)
     {
