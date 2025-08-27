@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] Color origColor;
     [SerializeField] Color damageFlashColor = Color.white;
-
+    [SerializeField] public bool inDamageFlash; 
     [SerializeField] float damageFlashTime = .25f;
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -28,7 +28,7 @@ public class Health : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+       // meshRenderer = GetComponent<MeshRenderer>();
         origColor = meshRenderer.material.color;
 
         ResetHealth();
@@ -134,9 +134,9 @@ public class Health : MonoBehaviour
     IEnumerator DamageFlash()
     {
         meshRenderer.material.color = damageFlashColor;
-
+        inDamageFlash = true;
         yield return new WaitForSeconds(damageFlashTime);
-
+        inDamageFlash = false;
         meshRenderer.material.color = origColor;
     }
 }

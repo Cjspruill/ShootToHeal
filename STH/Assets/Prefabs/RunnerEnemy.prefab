@@ -594,12 +594,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   navMeshAgent: {fileID: 0}
-  moveSpeed: 5
-  sprintSpeed: 8
+  moveSpeed: 8
+  sprintSpeed: 14
   stoppingDistance: 0
   rotationSpeed: 10
   knockbackForce: 7
-  sprintDuration: 3
+  sprintDuration: 2
   minSprintCooldown: 4
   maxSprintCooldown: 7
   chanceToSprint: 0.75
@@ -612,6 +612,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 0}
   origColor: {r: 0, g: 0, b: 0, a: 0}
   sprintColor: {r: 0.31258634, g: 0.91194963, b: 0.89733106, a: 1}
+  health: {fileID: 0}
 --- !u!114 &4455539684403054978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +632,11 @@ MonoBehaviour:
   damageTime: 0
   damageTimer: 0
   canDamage: 0
+  meshRenderer: {fileID: 8827615271299246516}
+  origColor: {r: 0, g: 0, b: 0, a: 0}
+  damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  inDamageFlash: 0
+  damageFlashTime: 0.25
 --- !u!54 &4088872485180209131
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -771,7 +777,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5

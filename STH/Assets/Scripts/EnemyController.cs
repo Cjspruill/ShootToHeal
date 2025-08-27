@@ -32,12 +32,13 @@ public class EnemyController : MonoBehaviour
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] Color origColor;
     [SerializeField] Color sprintColor;
-
+    [SerializeField] Health health;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         meshRenderer = GetComponent<MeshRenderer>();
+        health = GetComponent<Health>();
         origColor = meshRenderer.material.color;
 
         target = FindFirstObjectByType<PlayerController>().transform;
@@ -77,7 +78,14 @@ public class EnemyController : MonoBehaviour
         }
 
         // color feedback
-        meshRenderer.material.color = isSprinting ? sprintColor : origColor;
+        if (isSprinting)
+        {
+            meshRenderer.material.color = sprintColor;
+        }
+        else if (!health.inDamageFlash)
+        {
+            meshRenderer.material.color = origColor;
+        }
     }
 
     void HandleSprinting()

@@ -166,8 +166,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   navMeshAgent: {fileID: 0}
-  moveSpeed: 1.75
-  sprintSpeed: 3
+  moveSpeed: 3.75
+  sprintSpeed: 8
   stoppingDistance: 0
   rotationSpeed: 5
   knockbackForce: 5
@@ -181,9 +181,10 @@ MonoBehaviour:
   xpOrb: {fileID: 7058895534383387028, guid: 80d01143bffd061449980853dec2aa1c, type: 3}
   cashOrb: {fileID: 3948500603145726157, guid: 262e077456ac30f488b4790e4f7face4, type: 3}
   audioPrefab: {fileID: 8709370108117828910, guid: 7b2190fddfca7e740bf3c33b4c17832d, type: 3}
-  meshRenderer: {fileID: 0}
+  meshRenderer: {fileID: 5282415479603299888}
   origColor: {r: 0, g: 0, b: 0, a: 0}
   sprintColor: {r: 0.7798742, g: 0.70118076, b: 0.35560295, a: 1}
+  health: {fileID: 0}
 --- !u!114 &5625938454336629251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,6 +204,11 @@ MonoBehaviour:
   damageTime: 0
   damageTimer: 0
   canDamage: 0
+  meshRenderer: {fileID: 5282415479603299888}
+  origColor: {r: 0, g: 0, b: 0, a: 0}
+  damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  inDamageFlash: 0
+  damageFlashTime: 0.25
 --- !u!54 &6695042112508444216
 Rigidbody:
   m_ObjectHideFlags: 0

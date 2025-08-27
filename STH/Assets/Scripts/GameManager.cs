@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     private Coroutine spawnRoutine;
     private Coroutine runnerRoutine;
 
+    float score;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -195,46 +197,86 @@ public class GameManager : MonoBehaviour
     {
         if (enemiesToSpawn.Length < 2 || spawnArea == null) return;
 
-        int randIndex = Random.Range(0, 2); // only first two
-        Vector3 spawnLocation;
-        if (FindSpawnLocation(out spawnLocation))
+        int enemyIndex = 0;
+        if (level >= 10)
         {
-            Instantiate(enemiesToSpawn[randIndex], spawnLocation, Quaternion.identity, enemyHolder);
+            float tankChance = Mathf.InverseLerp(10, 200, level);
+            if (Random.value < tankChance)
+                enemyIndex = 1; // tank
+        }
+
+        GameObject prefab = enemiesToSpawn[enemyIndex];
+
+        // calculate collider bounds to know size
+        Vector3 size = GetPrefabBoundsSize(prefab);
+
+        Vector3 spawnLocation;
+        if (FindSpawnLocation(out spawnLocation, size))
+        {
+            Instantiate(prefab, spawnLocation, Quaternion.identity, enemyHolder);
             enemiesSpawned++;
         }
     }
+
 
     private void SpawnRunner()
     {
         if (enemiesToSpawn.Length < 3 || spawnArea == null) return;
 
+        GameObject prefab = enemiesToSpawn[2];
+        Vector3 size = GetPrefabBoundsSize(prefab);
+
         Vector3 spawnLocation;
-        if (FindSpawnLocation(out spawnLocation))
+        if (FindSpawnLocation(out spawnLocation, size))
         {
-            GameObject runner = Instantiate(enemiesToSpawn[2], spawnLocation, Quaternion.identity, enemyHolder);
-            runner.tag = "Runner"; // so we can track them
+            GameObject runner = Instantiate(prefab, spawnLocation, Quaternion.identity, enemyHolder);
+            runner.tag = "Runner";
             enemiesSpawned++;
         }
     }
 
-    private bool FindSpawnLocation(out Vector3 spawnLocation)
+    // helper to calculate prefab size
+    private Vector3 GetPrefabBoundsSize(GameObject prefab)
+    {
+        Collider col = prefab.GetComponentInChildren<Collider>();
+        if (col != null)
+            return col.bounds.size;
+
+        // fallback: arbitrary small size if no collider
+        return Vector3.one;
+    }
+
+    private bool FindSpawnLocation(out Vector3 spawnLocation, Vector3 objectSize, float paddingXZ = 2f)
     {
         spawnLocation = Vector3.zero;
-        int maxAttempts = 20;
-        float checkRadius = 0.5f;
+        int maxAttempts = 30; // try more times for fairness
+
+        // Half extents: add padding only to X/Z so tall obstacles don’t fail
+        Vector3 halfExtents = new Vector3(
+            (objectSize.x * 0.5f) + paddingXZ,
+            objectSize.y * 0.5f, // no padding in Y
+            (objectSize.z * 0.5f) + paddingXZ
+        );
 
         for (int i = 0; i < maxAttempts; i++)
         {
             float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
             float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
-            spawnLocation = new Vector3(randX, 1.75f, randZ);
 
-            Collider[] colliders = Physics.OverlapSphere(spawnLocation, checkRadius, ~spawnIgnoreLayers);
+            spawnLocation = new Vector3(randX, objectSize.y / 2f, randZ);
+
+            Collider[] colliders = Physics.OverlapBox(
+                spawnLocation,
+                halfExtents,
+                Quaternion.identity,
+                ~spawnIgnoreLayers
+            );
+
             if (colliders.Length == 0)
                 return true;
         }
 
-        Debug.Log("Couldn't find free spawn spot!");
+        Debug.LogWarning("Couldn't find free spawn spot after " + maxAttempts + " attempts!");
         return false;
     }
 
@@ -268,13 +310,31 @@ public class GameManager : MonoBehaviour
     {
         if (cubePrefab == null || spawnArea == null) return;
 
-        Vector3 spawnLocation;
-        if (!FindSpawnLocation(out spawnLocation)) return;
+        // Pick random size for this obstacle
+        Vector3 randomScale = new Vector3(
+            Random.Range(2, 10),
+            Random.Range(5, 10),
+            Random.Range(2, 10)
+        );
 
-        Quaternion newRotation = Quaternion.Euler(0, 0, 0);
-        GameObject newObstacle = Instantiate(cubePrefab, spawnLocation, newRotation, obstacleHolder);
-        newObstacle.transform.localScale = new Vector3(Random.Range(2, 10), Random.Range(5, 10), Random.Range(2, 10));
+        Vector3 spawnLocation;
+        // add padding so obstacles don’t get wedged together
+        if (!FindSpawnLocation(out spawnLocation, randomScale, paddingXZ: 2f)) return;
+
+        GameObject newObstacle = Instantiate(cubePrefab, spawnLocation, Quaternion.identity, obstacleHolder);
+        newObstacle.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+        newObstacle.transform.localScale = randomScale;
     }
 
-   
+    public int GetScore()
+    {
+        int baseScore = (totalEnemiesDestroyed * 10);   // 10 points per enemy
+        float xpScore = playerController.GetXp * 2;     // XP gives some extra points
+        float cashScore = playerController.GetCash * 5;   // Cash is worth more
+        int levelBonus = level * 100;                   // Surviving levels adds flat bonus
+
+        int scoreRounded = Mathf.RoundToInt(baseScore + xpScore + cashScore + levelBonus);
+
+        return scoreRounded;
+    }
 }

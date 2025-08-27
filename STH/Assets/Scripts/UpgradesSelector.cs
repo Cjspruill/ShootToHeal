@@ -132,17 +132,20 @@ public class UpgradesSelector : MonoBehaviour
     (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
     (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
     (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
-    (GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"),
     (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
     (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
     (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal")
 };
 
+
+        // ✅ Only add SprintCooldown upgrade if player still has cooldown > 0
+        if (playerController.GetSprintCooldown > 0)        
+            allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
+        
         // ✅ Only add Flamethrower Duration if purchased
-        if (flamethrowerPurchased)
-        {
+        if (flamethrowerPurchased)        
             allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
-        }
+        
 
         foreach (Button btn in upgradeButtons)
             btn.onClick.RemoveAllListeners();

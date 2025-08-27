@@ -201,9 +201,9 @@ public class PlayerController : MonoBehaviour
 
             isSprinting = false;
 
+        }
             if (sprintCooldownTimer > 0f)
                 sprintCooldownTimer -= Time.deltaTime;
-        }
     }
 
     void ApplyTouchMovement(Vector2 moveInput)
@@ -258,10 +258,10 @@ public class PlayerController : MonoBehaviour
                 }
 
                 isSprinting = false;
+            }
 
                 if (sprintCooldownTimer > 0f)
                     sprintCooldownTimer -= Time.deltaTime;
-            }
         }
 
         // -------------------------------

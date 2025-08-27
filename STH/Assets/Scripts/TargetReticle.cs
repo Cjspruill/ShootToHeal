@@ -16,7 +16,7 @@ public class TargetReticle : MonoBehaviour
     void Update()
     {
         if(!GameManager.Instance.levelEnded)
-        transform.Rotate(0, 0, 1);
+        transform.Rotate(0, 0, 360 * Time.deltaTime);
     }
 
     public void UpdateReticleSize(Vector3 newSize)

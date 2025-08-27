@@ -8,7 +8,6 @@ public class XpOrb : MonoBehaviour
     private void Start()
     {
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material.color = Random.ColorHSV();
     }
 
     private void OnTriggerEnter(Collider other)
