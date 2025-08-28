@@ -177,7 +177,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void KnockBack(Vector3 dir, float force, float duration)
+    public void KnockBack(Vector3 dir, float force, float duration = 0f)
     {
         StartCoroutine(ApplyKnockback(dir, force, duration));
     }

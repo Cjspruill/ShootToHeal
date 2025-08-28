@@ -313,10 +313,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2131267050678777921, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5630457118972060912, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: healthText
       value: 
@@ -374,8 +370,7 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 7776167659474540940, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
@@ -935,6 +930,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5585369192156571109, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
   m_PrefabInstance: {fileID: 2827546503331692282}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1006996411 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
+  m_PrefabInstance: {fileID: 2827546503331692282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006996408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 435423fed6ec4cf4e98aee57c67222ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIHelperBot
 --- !u!114 &1109960483 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4691852363801923497, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
@@ -1714,44 +1720,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
+      propertyPath: aiHelperBot
+      value: 
+      objectReference: {fileID: 1006996411}
+    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: aiBotToActivate
       value: 
       objectReference: {fileID: 1006996408}
     - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: aiMeleeBotPrice
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: aiRangedBotPrice
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: playerController
       value: 
       objectReference: {fileID: 724665207}
-    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: doubleGunsPurchased
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3857187591952407833, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: m_Name
       value: HUDCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 4307566420004865039, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.2995605
-      objectReference: {fileID: 0}
-    - target: {fileID: 4307566420004865039, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -74.78204
-      objectReference: {fileID: 0}
-    - target: {fileID: 7740765597543401557, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.00012207031
-      objectReference: {fileID: 0}
-    - target: {fileID: 8289517406425015948, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -46.91205
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -311,15 +311,15 @@ public class PlayerController : MonoBehaviour
             GameObject newBulletLeft = Instantiate(bulletPrefab, doubleGunBarrelOutLeft.position, doubleGunBarrelOutLeft.rotation);
             newBulletLeft.GetComponent<Projectile>().damage = GetBulletDamage;
             newBulletLeft.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBulletLeft.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
             newBulletLeft.GetComponent<Projectile>().playerController = this;
-            newBulletLeft.GetComponent<Rigidbody>().AddForce(doubleGunBarrelOutLeft.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBulletLeft, 5f);
 
             GameObject newBulletRight = Instantiate(bulletPrefab, doubleGunBarrelOutRight.position, doubleGunBarrelOutRight.rotation);
             newBulletRight.GetComponent<Projectile>().damage = GetBulletDamage;
             newBulletRight.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBulletRight.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
             newBulletRight.GetComponent<Projectile>().playerController = this;
-            newBulletRight.GetComponent<Rigidbody>().AddForce(doubleGunBarrelOutRight.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBulletRight, 5f);
         }
         else if (GameManager.Instance.shotgunActive)
@@ -344,6 +344,7 @@ public class PlayerController : MonoBehaviour
                 GameObject pellet = Instantiate(bulletPrefab, barrelOut.position, spreadRotation);
                 pellet.GetComponent<Projectile>().damage = GetBulletDamage;
                 pellet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+                pellet.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
                 pellet.GetComponent<Projectile>().playerController = this;
 
                 // Apply force in the spread direction
@@ -371,6 +372,7 @@ public class PlayerController : MonoBehaviour
             GameObject newBullet = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
             newBullet.GetComponent<Projectile>().damage = GetBulletDamage;
             newBullet.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            newBullet.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
             newBullet.GetComponent<Projectile>().playerController = this;
             newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBullet, 5f);

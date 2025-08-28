@@ -1392,7 +1392,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -46.912}
+  m_AnchoredPosition: {x: 0, y: -46.91205}
   m_SizeDelta: {x: 0, y: -93.824}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7426128715111792757
@@ -3583,7 +3583,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.2996826, y: -74.78201}
+  m_AnchoredPosition: {x: 2.2995605, y: -74.78204}
   m_SizeDelta: {x: -545.26, y: -149.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4861148856332977966
@@ -8001,7 +8001,20 @@ MonoBehaviour:
   shootToHealToGiveMax: 1
   flameThrowerDurationMin: 0.025
   flameThrowerDurationMax: 0.25
+  bulletKnockbackToGiveMin: 0.15
+  bulletKnockbackToGiveMax: 0.25
+  botMoveSpeedToGiveMin: 0.15
+  botMoveSpeedToGiveMax: 0.25
+  botDamageToGiveMin: 1
+  botDamageToGiveMax: 3.5
+  botFireRateToGiveMin: 0.05
+  botFireRateToGiveMax: 0.1
+  botSprintSpeedToGiveMin: 0.1
+  botSprintSpeedToGiveMax: 0.25
+  botSprintDurationToGiveMin: 0.15
+  botSprintDurationToGiveMax: 0.25
   playerController: {fileID: 0}
+  aiHelperBot: {fileID: 0}
   upgradeButtons:
   - {fileID: 4771453703526806652}
   - {fileID: 2101542839528444814}
@@ -8023,14 +8036,15 @@ MonoBehaviour:
   machineGunPrice: 700
   shotgunPrice: 1000
   flamethrowerPrice: 5000
-  aiMeleeBotPrice: 10
-  aiRangedBotPrice: 10
+  aiMeleeBotPrice: 500
+  aiRangedBotPrice: 500
   doubleGunsPurchased: 0
   machineGunPurchased: 0
   shotgunPurchased: 0
   flamethrowerPurchased: 0
   aiMeleeBotPurchased: 0
   aiRangedBotPurchased: 0
+  aiBotChosen: 0
   doubleGunPriceText: {fileID: 126109677131772095}
   machineGunPriceText: {fileID: 1846813571442380003}
   shotgunPriceText: {fileID: 2811537777789023949}
@@ -11434,7 +11448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 261}
+  m_AnchoredPosition: {x: -0.00012207031, y: 261}
   m_SizeDelta: {x: -593.6254, y: -627.2725}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6361421671021778445
