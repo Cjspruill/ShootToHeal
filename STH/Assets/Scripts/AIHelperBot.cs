@@ -8,19 +8,20 @@ public class AIHelperBot : MonoBehaviour
     [SerializeField] float moveSpeed = 3f;
     [SerializeField] float stoppingDistance = 2f;
     [SerializeField] float followPlayerDistance = 1.5f; // distance to keep when following player
-    [SerializeField] float rotationSpeed = 5f;
 
     [Header("Attack")]
     [SerializeField] float damage = 10f;
-    [SerializeField] float attackSpeed = 1f;
+    [SerializeField] float fireRate = 1f;
     float attackTimer;
     [SerializeField] float knockBackForce = 5f;
     [SerializeField] public bool isMelee = false;
     [SerializeField] public bool isRanged = false;
+    [SerializeField] float meleeDistance;
     [SerializeField] GameObject projectilePrefab;
     [SerializeField] Transform firePoint;
 
     [Header("Sprint")]
+    [SerializeField] float sprintSpeed;
     [SerializeField] float sprintDuration = 2f;
     [SerializeField] float minSprintCooldown = 3f;
     [SerializeField] float maxSprintCooldown = 7f;
@@ -41,6 +42,12 @@ public class AIHelperBot : MonoBehaviour
     PlayerController playerController;
     Transform targetEnemy;
 
+    public float GetMoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+    public float GetDamage { get => damage; set => damage = value; }
+    public float GetFireRate { get => fireRate; set => fireRate = value; }
+    public float GetSprintSpeed { get => sprintSpeed; set => sprintSpeed = value; }
+    public float GetSprintDuration { get => sprintDuration; set => sprintDuration = value; }
+
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -50,7 +57,7 @@ public class AIHelperBot : MonoBehaviour
 
         playerController = FindFirstObjectByType<PlayerController>();
 
-        navMeshAgent.speed = moveSpeed;
+        navMeshAgent.speed = GetMoveSpeed;
         navMeshAgent.stoppingDistance = stoppingDistance;
 
         // random cooldown to stagger sprint starts
@@ -84,7 +91,7 @@ public class AIHelperBot : MonoBehaviour
             if (sprintCooldownTimer <= 0f && Random.value <= chanceToSprint)
             {
                 isSprinting = true;
-                navMeshAgent.speed = moveSpeed * 2f;
+                navMeshAgent.speed = sprintSpeed;
                 meshRenderer.material.color = sprintColor;
             }
         }
@@ -95,11 +102,11 @@ public class AIHelperBot : MonoBehaviour
         if (isSprinting)
         {
             sprintTimer += Time.deltaTime;
-            if (sprintTimer >= sprintDuration)
+            if (sprintTimer >= GetSprintDuration)
             {
                 // end sprint
                 isSprinting = false;
-                navMeshAgent.speed = moveSpeed;
+                navMeshAgent.speed = GetMoveSpeed;
 
                 if (!health.inDamageFlash)
                     meshRenderer.material.color = origColor;
@@ -115,7 +122,7 @@ public class AIHelperBot : MonoBehaviour
             {
                 // start sprint
                 isSprinting = true;
-                navMeshAgent.speed = moveSpeed * 2f; // sprint speed
+                navMeshAgent.speed = GetMoveSpeed * 2f; // sprint speed
                 meshRenderer.material.color = sprintColor;
             }
         }
@@ -132,18 +139,19 @@ public class AIHelperBot : MonoBehaviour
 
         if (isMelee)
         {
-            if (dist <= stoppingDistance + 1f)
+            if (dist <= meleeDistance)
             {
-                attackTimer = attackSpeed;
+                attackTimer = GetFireRate;
                 StartCoroutine(AttackFlash());
 
                 // melee hit
-                targetEnemy.GetComponent<Health>().TakeDamage(damage);
-                Rigidbody rb = targetEnemy.GetComponent<Rigidbody>();
-                if (rb != null)
+                targetEnemy.GetComponent<Health>().TakeDamage(GetDamage);
+                EnemyController enemyController = targetEnemy.GetComponent<EnemyController>();
+                if (enemyController != null)
                 {
                     Vector3 knockDir = (targetEnemy.position - transform.position).normalized;
-                    rb.AddForce(knockDir * knockBackForce, ForceMode.Impulse);
+                    
+                    enemyController.KnockBack(knockDir,knockBackForce,.5f);
                 }
             }
         }
@@ -153,7 +161,7 @@ public class AIHelperBot : MonoBehaviour
 
             if (dist <= detectionRange)
             {
-                attackTimer = attackSpeed;
+                attackTimer = GetFireRate;
                 StartCoroutine(AttackFlash());
 
                 // ranged attack
@@ -164,7 +172,7 @@ public class AIHelperBot : MonoBehaviour
                     prb.AddForce(firePoint.forward * 50, ForceMode.Impulse);
                 }
                 AIHelperBotProjectile p = proj.GetComponent<AIHelperBotProjectile>();
-                if (p != null) p.damage = damage;
+                if (p != null) p.damage = GetDamage;
             }
         }
     }

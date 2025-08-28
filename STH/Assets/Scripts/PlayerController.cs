@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float rotationSpeed;
     [SerializeField] float shootToHeal;
     [SerializeField] float flameThrowerDuration;
-
+    [SerializeField] float bulletKnockback;
     InputSystem_Actions playerInput;
     CharacterController characterController;
     [SerializeField] ParticleSystem[] flameThrower;
@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
     public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
     public float GetCash { get => cash; set => cash = value; }
     public float GetFlameThrowerDuration { get => flameThrowerDuration; set => flameThrowerDuration = value; }
+    public float GetBulletKnockback { get => bulletKnockback; set => bulletKnockback = value; }
     public Transform GetCurrentTarget { get => target; set => target = value; }
 
     void OnEnable()

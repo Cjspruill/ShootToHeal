@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+using System.Collections;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] NavMeshAgent navMeshAgent;
@@ -33,14 +33,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] Color origColor;
     [SerializeField] Color sprintColor;
     [SerializeField] Health health;
-
+    [SerializeField] Rigidbody rb;
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         meshRenderer = GetComponent<MeshRenderer>();
         health = GetComponent<Health>();
         origColor = meshRenderer.material.color;
-
+        rb= GetComponent<Rigidbody>();
         target = FindFirstObjectByType<PlayerController>().transform;
 
         // start cooldown timer randomly to stagger sprints
@@ -66,6 +66,7 @@ public class EnemyController : MonoBehaviour
         navMeshAgent.speed = isSprinting ? sprintSpeed : moveSpeed;
 
         // always move directly to the player
+        if(navMeshAgent.enabled)
         navMeshAgent.SetDestination(target.position);
 
         // smooth rotation directly towards the player
@@ -173,6 +174,31 @@ public class EnemyController : MonoBehaviour
                 Random.Range(-180f, 180f)
             );
             rb.AddTorque(randomTorque);
+        }
+    }
+
+    public void KnockBack(Vector3 dir, float force, float duration)
+    {
+        StartCoroutine(ApplyKnockback(dir, force, duration));
+    }
+
+    IEnumerator ApplyKnockback(Vector3 direction, float force, float duration)
+    {
+        // Disable NavMeshAgent so it doesn’t fight physics
+        if (navMeshAgent != null) navMeshAgent.enabled = false;
+
+        rb.isKinematic = false; // ensure knockback works
+        rb.linearVelocity = direction.normalized * force;
+
+        yield return new WaitForSeconds(duration);
+
+        rb.linearVelocity = Vector3.zero; // stop sliding
+        rb.isKinematic = true;      // go back to navmesh control
+
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.enabled = true;
+            navMeshAgent.nextPosition = transform.position; // sync agent to Rigidbody
         }
     }
 }

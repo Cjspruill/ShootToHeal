@@ -1588,30 +1588,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: isMelee
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: isRanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: sprintSpeed
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: meleeDistance
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: knockBackForce
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
-      propertyPath: stoppingDistance
-      value: 0.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1719,39 +1695,19 @@ PrefabInstance:
       objectReference: {fileID: 1006996408}
     - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: aiMeleeBotPrice
-      value: 5
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: aiRangedBotPrice
-      value: 5
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: playerController
       value: 
       objectReference: {fileID: 724665207}
-    - target: {fileID: 3411995040016937315, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: doubleGunsPurchased
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3857187591952407833, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
       propertyPath: m_Name
       value: HUDCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 4307566420004865039, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.2995605
-      objectReference: {fileID: 0}
-    - target: {fileID: 4307566420004865039, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -74.78204
-      objectReference: {fileID: 0}
-    - target: {fileID: 7740765597543401557, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.00012207031
-      objectReference: {fileID: 0}
-    - target: {fileID: 8289517406425015948, guid: ebbde106095a1604c8cc1f17616b72f7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -46.91205
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
