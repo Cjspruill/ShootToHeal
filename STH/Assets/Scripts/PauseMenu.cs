@@ -101,7 +101,8 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu",LoadSceneMode.Single);
     }
 
     void ShowGameOverPanel()

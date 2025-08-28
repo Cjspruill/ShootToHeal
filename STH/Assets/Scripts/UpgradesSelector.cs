@@ -56,6 +56,8 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button machineGunButton;
     [SerializeField] Button shotgunButton;
     [SerializeField] Button flamethrowerButton;
+    [SerializeField] Button aiMeleeBotButton;
+    [SerializeField] Button aiRangedBotButton;
 
     [SerializeField] GameObject upgradesPanel;
 
@@ -63,18 +65,27 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] float machineGunPrice = 5;
     [SerializeField] float shotgunPrice = 10;
     [SerializeField] float flamethrowerPrice = 10;
+    [SerializeField] float aiMeleeBotPrice = 10;
+    [SerializeField] float aiRangedBotPrice = 10;
+
 
     [SerializeField] bool doubleGunsPurchased;
     [SerializeField] bool machineGunPurchased;
     [SerializeField] bool shotgunPurchased;
     [SerializeField] bool flamethrowerPurchased;
+    [SerializeField] bool aiMeleeBotPurchased;
+    [SerializeField] bool aiRangedBotPurchased;
 
 
     [SerializeField] TextMeshProUGUI doubleGunPriceText;
     [SerializeField] TextMeshProUGUI machineGunPriceText;
     [SerializeField] TextMeshProUGUI shotgunPriceText;
     [SerializeField] TextMeshProUGUI flameThrowerPriceText;
+    [SerializeField] TextMeshProUGUI aiMeleeBotPriceText;
+    [SerializeField] TextMeshProUGUI aiRangedBotPriceText;
 
+
+    [SerializeField] GameObject aiBotToActivate;
     public enum WeaponType
     {
         None,
@@ -170,11 +181,15 @@ public class UpgradesSelector : MonoBehaviour
         machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
         shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
         flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
+        aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
+        aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
 
         doubleGunsButton.gameObject.SetActive(!GameManager.Instance.doubleGunsActive);
         machineGunButton.gameObject.SetActive(!GameManager.Instance.machineGunActive);
         shotgunButton.gameObject.SetActive(!GameManager.Instance.shotgunActive);
         flamethrowerButton.gameObject.SetActive(!GameManager.Instance.flamethrowerActive);
+        aiMeleeBotButton.gameObject.SetActive(!GameManager.Instance.aiMeleeBotActive);
+        aiRangedBotButton.gameObject.SetActive(!GameManager.Instance.aiRangedBotActive);
     }
 
     // === Upgrade Handlers ===
@@ -205,6 +220,10 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowHealthBarsButton() { showHealthBarsButton.gameObject.SetActive(false); GameManager.Instance.showHealthBars = true; StartLevel(); }
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
+   
+    public void ClickAIMeleeBotButton() { aiMeleeBotButton.gameObject.SetActive(false); aiRangedBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiMeleeBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true; StartLevel();}
+    public void ClickAIRangedBotButton() { aiRangedBotButton.gameObject.SetActive(false); aiMeleeBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiRangedBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isRanged = true; StartLevel(); }
+    
     // === Weapon Logic ===
     void SwapWeapon(WeaponType newWeapon)
     {

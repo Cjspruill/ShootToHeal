@@ -14,6 +14,7 @@ public class MiniMapFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transformToFollow == null) return;
         Vector3 newPos = new Vector3(transformToFollow.position.x, transform.position.y, transformToFollow.position.z);
         transform.position = newPos;
     }

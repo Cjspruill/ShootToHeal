@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool machineGunActive;
     [SerializeField] public bool shotgunActive;
     [SerializeField] public bool flamethrowerActive;
+    [SerializeField] public bool aiMeleeBotActive;
+    [SerializeField] public bool aiRangedBotActive;
     [SerializeField] public bool showTargetReticle;
 
     [SerializeField] public bool showXP;

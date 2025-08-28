@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
     public float GetShootToHeal { get => shootToHeal; set => shootToHeal = value; }
     public float GetCash { get => cash; set => cash = value; }
     public float GetFlameThrowerDuration { get => flameThrowerDuration; set => flameThrowerDuration = value; }
+    public Transform GetCurrentTarget { get => target; set => target = value; }
 
     void OnEnable()
     {
@@ -117,7 +118,7 @@ public class PlayerController : MonoBehaviour
             PlaceTargetReticle();
         }
 
-        if (target != null)
+        if (GetCurrentTarget != null)
         {
             fireRateTimer += Time.deltaTime;
             if (fireRateTimer >= GetFireRate)
@@ -281,9 +282,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleFacing()
     {
-        if (target != null && knockbackVelocity == Vector3.zero)
+        if (GetCurrentTarget != null && knockbackVelocity == Vector3.zero)
         {
-            Vector3 direction = target.position - transform.position;
+            Vector3 direction = GetCurrentTarget.position - transform.position;
             direction.y = 0;
             if (direction.sqrMagnitude > 0.01f)
             {
@@ -403,7 +404,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        target = closestEnemy;
+        GetCurrentTarget = closestEnemy;
     }
 
     void UpdateSprintSlider()
@@ -451,19 +452,19 @@ public class PlayerController : MonoBehaviour
 
     void PlaceTargetReticle()
     {
-        if (target != null)
+        if (GetCurrentTarget != null)
         {
             if (!targetReticleGameObject.activeInHierarchy)
                 targetReticleGameObject.SetActive(true);
 
-            if (target.gameObject.name.Contains("Grunt"))
+            if (GetCurrentTarget.gameObject.name.Contains("Grunt"))
                 targetReticle.UpdateReticleSize(targetReticle.gruntReticleSize);
-            if (target.gameObject.name.Contains("Runner"))
+            if (GetCurrentTarget.gameObject.name.Contains("Runner"))
                 targetReticle.UpdateReticleSize(targetReticle.runnerReticleSize);
-            if (target.gameObject.name.Contains("Tank"))
+            if (GetCurrentTarget.gameObject.name.Contains("Tank"))
                 targetReticle.UpdateReticleSize(targetReticle.tankReticleSize);
 
-            Vector3 newPos = new Vector3(target.position.x, 0, target.position.z);
+            Vector3 newPos = new Vector3(GetCurrentTarget.position.x, 0, GetCurrentTarget.position.z);
             targetReticle.transform.position = newPos;
         }
         else

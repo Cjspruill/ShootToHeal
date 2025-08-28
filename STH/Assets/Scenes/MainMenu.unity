@@ -4028,7 +4028,7 @@ MonoBehaviour:
   obstacleHolder: {fileID: 203696301}
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   numOfObstaclesToSpawn: 325
   spawnDelay: 0.15
 --- !u!4 &1491032360

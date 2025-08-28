@@ -1,26 +1,19 @@
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class AIHelperBotProjectile : MonoBehaviour
 {
     [SerializeField] public float damage;
-    [SerializeField] public float shootToHeal;
-    [SerializeField] public PlayerController playerController;
     [SerializeField] GameObject explosionPrefab;
 
     public void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.GetComponent<Projectile>() || other.gameObject.GetComponent<AIHelperBot>()) return;
+        if (other.gameObject.GetComponent<AIHelperBotProjectile>() || other.gameObject.GetComponent<PlayerController>()) return;
 
         Health health = other.gameObject.GetComponent<Health>();
         EnemyController enemyController = other.gameObject.GetComponent<EnemyController>();
 
         if (health != null)
             health.TakeDamage(damage);
-        
-
-        if (playerController)       
-            playerController.GetComponent<Health>().GiveHealth(shootToHeal);
-        
 
         if (enemyController)
             enemyController.PlayHurtAudio();
