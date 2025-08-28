@@ -216,32 +216,33 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        // Read from Input System if on PC
-        Vector2 moveInput = playerInput.Player.Move.ReadValue<Vector2>();
+        // 1️⃣ Platform check
+        bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
+                  || Application.platform == RuntimePlatform.WindowsEditor
+                  || Application.platform == RuntimePlatform.OSXPlayer
+                  || Application.platform == RuntimePlatform.LinuxPlayer;
 
-        // If on mobile, override with touch input
-        if (Touchscreen.current != null && externalMoveInput != Vector2.zero)
-            moveInput = externalMoveInput;
+        // 2️⃣ Get movement input
+        Vector2 moveInput = Vector2.zero;
+        if (isPC)
+            moveInput = playerInput.Player.Move.ReadValue<Vector2>();
+        else if (Touchscreen.current != null && externalMoveInput != Vector2.zero)
+            moveInput = externalMoveInput; // Mobile touch input
 
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-      
-        bool sprintInput = playerInput.Player.Sprint.inProgress;
-
-        bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
-          || Application.platform == RuntimePlatform.WindowsEditor
-          || Application.platform == RuntimePlatform.OSXPlayer
-          || Application.platform == RuntimePlatform.LinuxPlayer;
+        // 3️⃣ Handle sprint
+        float currentSpeed = GetMoveSpeed;
 
         if (isPC)
         {
+            bool sprintInput = playerInput.Player.Sprint.inProgress;
+
             if (sprintInput && sprintCooldownTimer <= 0f)
             {
-                // keep sprinting as long as key is held
                 isSprinting = true;
                 sprintTimer += Time.deltaTime;
 
-                // if sprint time is exceeded, force cooldown
                 if (sprintTimer >= GetSprintTime)
                 {
                     isSprinting = false;
@@ -249,38 +250,93 @@ public class PlayerController : MonoBehaviour
                     sprintCooldownTimer = GetSprintCooldown;
                 }
             }
-            else if (!sprintInput) // only stop sprinting when key is released
+            else if (!sprintInput)
             {
                 if (isSprinting)
                 {
-                    // went from sprinting → released early → partial cooldown
                     float sprintRatio = sprintTimer / GetSprintTime;
                     sprintCooldownTimer = GetSprintCooldown * sprintRatio;
                     sprintTimer = 0f;
                 }
-
                 isSprinting = false;
             }
 
-                if (sprintCooldownTimer > 0f)
-                    sprintCooldownTimer -= Time.deltaTime;
+            if (sprintCooldownTimer > 0f)
+                sprintCooldownTimer -= Time.deltaTime;
         }
+        // Mobile sprint handled in HandleTouchInput()
 
-        // -------------------------------
-        // Movement + Gravity
-        // -------------------------------
-        float currentSpeed = GetMoveSpeed * (isSprinting ? GetSprintMultiplier : 1f);
+        currentSpeed *= isSprinting ? GetSprintMultiplier : 1f;
 
+        // 4️⃣ Gravity
         if (characterController.isGrounded && verticalVelocity.y < 0)
             verticalVelocity.y = -2f;
-
         verticalVelocity.y += gravity * Time.deltaTime;
 
-        Vector3 finalVelocity = (moveDir * currentSpeed) + knockbackVelocity + verticalVelocity;
-        characterController.Move(finalVelocity * Time.deltaTime);
+        // 5️⃣ Safe knockback
+        Vector3 safeKnockback = GetSafeKnockback(knockbackVelocity * Time.deltaTime);
+
+        // 6️⃣ Combine input movement + knockback
+        Vector3 totalMove = moveDir * currentSpeed * Time.deltaTime + safeKnockback;
+
+        // 7️⃣ Collision-safe movement
+        if (totalMove.magnitude > 0.001f)
+        {
+            // Cast capsule in the movement direction
+            if (Physics.CapsuleCast(
+                characterController.transform.position + characterController.center + Vector3.up * -characterController.height / 2,
+                characterController.transform.position + characterController.center + Vector3.up * characterController.height / 2,
+                characterController.radius,
+                totalMove.normalized,
+                out RaycastHit hit,
+                totalMove.magnitude
+            ))
+            {
+                // Slide along wall
+                totalMove = Vector3.ProjectOnPlane(totalMove, hit.normal) * 0.9f;
+            }
+        }
+
+        // 8️⃣ Apply vertical velocity (gravity)
+        totalMove += verticalVelocity * Time.deltaTime;
+
+        // 9️⃣ Move the player
+        characterController.Move(totalMove);
     }
 
+    Vector3 GetSafeKnockback(Vector3 knockback)
+    {
+        if (knockback.magnitude < 0.01f)
+            return Vector3.zero;
 
+        Vector3 safeMove = knockback;
+        int iterations = 3; // multiple small checks per frame
+
+        for (int i = 0; i < iterations; i++)
+        {
+            if (Physics.CapsuleCast(
+                characterController.transform.position + characterController.center + Vector3.up * -characterController.height / 2,
+                characterController.transform.position + characterController.center + Vector3.up * characterController.height / 2,
+                characterController.radius,
+                safeMove.normalized,
+                out RaycastHit hit,
+                safeMove.magnitude * Time.deltaTime
+            ))
+            {
+                // Slide along the wall instead of pushing into it
+                safeMove = Vector3.ProjectOnPlane(safeMove, hit.normal);
+
+                // Slightly reduce magnitude to avoid sticking
+                safeMove *= 0.9f;
+            }
+            else
+            {
+                break; // no collision, safe to move
+            }
+        }
+
+        return safeMove;
+    }
     void HandleFacing()
     {
         if (GetCurrentTarget != null && knockbackVelocity == Vector3.zero)
