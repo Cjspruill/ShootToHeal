@@ -9,6 +9,9 @@ TagManager:
   - CurrentLevelText
   - CurrentXPText
   - CurrentCashText
+  - TutorialSlot
+  - CanSprintText
+  - HealthText
   layers:
   - Default
   - TransparentFX

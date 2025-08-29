@@ -19,6 +19,19 @@ public class XpOrb : MonoBehaviour
             playerController.GetXp += xpToGive;
             PlayAudio();
             gameObject.SetActive(false);
+
+            if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
+            {
+                var currentPage = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
+
+                if (currentPage.header == "Orb Collect")
+                {
+                    TutorialManager.Instance.CompleteStep();
+                }
+
+            }
+
+
             Destroy(gameObject,2f);
         }
     }

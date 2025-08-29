@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 6695042112508444216}
   - component: {fileID: -7597613072018630414}
   - component: {fileID: 9152163104218263581}
+  - component: {fileID: 513492683173575412}
   m_Layer: 0
   m_Name: GruntEnemy
   m_TagString: Untagged
@@ -185,6 +186,7 @@ MonoBehaviour:
   origColor: {r: 0, g: 0, b: 0, a: 0}
   sprintColor: {r: 0.7798742, g: 0.70118076, b: 0.35560295, a: 1}
   health: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!114 &5625938454336629251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +211,7 @@ MonoBehaviour:
   damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
   inDamageFlash: 0
   damageFlashTime: 0.25
+  enemyGruntTutorial: {fileID: 0}
 --- !u!54 &6695042112508444216
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -355,6 +358,18 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &513492683173575412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961342829119255558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac2dc48c4887314fa5d3351809dc377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyGruntTutorial
 --- !u!1 &2124747985303007952
 GameObject:
   m_ObjectHideFlags: 0

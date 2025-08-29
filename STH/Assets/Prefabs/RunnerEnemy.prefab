@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 4088872485180209131}
   - component: {fileID: -2662974694517278332}
   - component: {fileID: -9156695445387191467}
+  - component: {fileID: 1709931847931688243}
   m_Layer: 0
   m_Name: RunnerEnemy
   m_TagString: Runner
@@ -613,6 +614,7 @@ MonoBehaviour:
   origColor: {r: 0, g: 0, b: 0, a: 0}
   sprintColor: {r: 0.31258634, g: 0.91194963, b: 0.89733106, a: 1}
   health: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!114 &4455539684403054978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +639,7 @@ MonoBehaviour:
   damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
   inDamageFlash: 0
   damageFlashTime: 0.25
+  enemyTutorial: {fileID: 0}
 --- !u!54 &4088872485180209131
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -783,6 +786,18 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1709931847931688243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6913178002210030009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac2dc48c4887314fa5d3351809dc377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTutorial
 --- !u!1 &6940525103386120188
 GameObject:
   m_ObjectHideFlags: 0

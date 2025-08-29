@@ -568,6 +568,9 @@ MonoBehaviour:
   gravity: -9.81
   targetReticleGameObject: {fileID: 6368729951141886694}
   targetReticle: {fileID: 0}
+  stuckCheckTime: 5
+  stuckVelocityThreshold: 0.05
+  stuckTimer: 0
 --- !u!114 &5630457118972060912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,6 +595,7 @@ MonoBehaviour:
   damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
   inDamageFlash: 0
   damageFlashTime: 0.25
+  enemyTutorial: {fileID: 0}
 --- !u!82 &4190300513659213305
 AudioSource:
   m_ObjectHideFlags: 0

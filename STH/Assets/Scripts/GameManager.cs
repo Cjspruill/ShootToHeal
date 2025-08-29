@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -68,6 +69,8 @@ public class GameManager : MonoBehaviour
 
     float score;
 
+    public bool tutorialEnemySpawned;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -82,13 +85,25 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         playerController = FindFirstObjectByType<PlayerController>();
+        enemiesDefeatedText = GameObject.FindGameObjectWithTag("EnemiesDefeatedText").GetComponent<TextMeshProUGUI>();
+        currentLevelText = GameObject.FindGameObjectWithTag("CurrentLevelText").GetComponent<TextMeshProUGUI>();
+        currentXPText = GameObject.FindGameObjectWithTag("CurrentXPText").GetComponent<TextMeshProUGUI>();
+        currentCashText = GameObject.FindGameObjectWithTag("CurrentCashText").GetComponent<TextMeshProUGUI>();
+        canSprintText = GameObject.FindGameObjectWithTag("CanSprintText").GetComponent<TextMeshProUGUI>();
+
+        currentLevelText.gameObject.SetActive(false);
+        currentXPText.gameObject.SetActive(false);
+        canSprintText.gameObject.SetActive(false);
 
         for (int i = 0; i < numOfObstaclesToSpawn; i++)
         {
             SpawnObstacles();
         }
 
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;     
+        
         StartLevel();
+        
     }
 
 
@@ -114,6 +129,34 @@ public class GameManager : MonoBehaviour
         {
             EndLevel();
         }
+
+
+
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
+        {
+            var currentPage = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
+
+            if(currentPage.header == "Spawn Grunt" && !tutorialEnemySpawned)
+            {
+                SpawnNormalEnemy();
+                TutorialManager.Instance.CompleteStep();
+                tutorialEnemySpawned = true;
+            }
+
+             if(currentPage.header == "Runners" && !tutorialEnemySpawned)
+            {
+                SpawnRunner();
+                TutorialManager.Instance.CompleteStep();
+                tutorialEnemySpawned = true;
+            }
+
+             if(currentPage.header == "Tank" && !tutorialEnemySpawned)
+            {
+                SpawnTank();
+                TutorialManager.Instance.CompleteStep();
+                tutorialEnemySpawned = true;
+            }
+        }
     }
 
     // ------------------- LEVEL CONTROL -------------------
@@ -127,6 +170,8 @@ public class GameManager : MonoBehaviour
 
         if (spawnRoutine != null) StopCoroutine(spawnRoutine);
         if (runnerRoutine != null) StopCoroutine(runnerRoutine);
+
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;
 
         spawnRoutine = StartCoroutine(SpawnLoop());         // normal enemies
         runnerRoutine = StartCoroutine(RunnerLoop());       // runners
@@ -233,6 +278,21 @@ public class GameManager : MonoBehaviour
         {
             GameObject runner = Instantiate(prefab, spawnLocation, Quaternion.identity, enemyHolder);
             runner.tag = "Runner";
+            enemiesSpawned++;
+        }
+    }
+
+    void SpawnTank()
+    {
+        GameObject prefab = enemiesToSpawn[1];
+
+        // calculate collider bounds to know size
+        Vector3 size = GetPrefabBoundsSize(prefab);
+
+        Vector3 spawnLocation;
+        if (FindSpawnLocation(out spawnLocation, size))
+        {
+            Instantiate(prefab, spawnLocation, Quaternion.identity, enemyHolder);
             enemiesSpawned++;
         }
     }

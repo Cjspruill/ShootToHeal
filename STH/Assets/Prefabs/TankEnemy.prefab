@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 4544032728680141236}
   - component: {fileID: -7818666986310860785}
   - component: {fileID: -8135027436614579605}
+  - component: {fileID: -5773011116678555944}
   m_Layer: 0
   m_Name: TankEnemy
   m_TagString: Untagged
@@ -254,6 +255,7 @@ MonoBehaviour:
   origColor: {r: 0, g: 0, b: 0, a: 0}
   sprintColor: {r: 0.8553459, g: 0.4892133, b: 0.3039436, a: 1}
   health: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!114 &2177771421676855169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +280,7 @@ MonoBehaviour:
   damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
   inDamageFlash: 0
   damageFlashTime: 0.25
+  enemyTutorial: {fileID: 0}
 --- !u!54 &4544032728680141236
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -424,6 +427,18 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-5773011116678555944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716706760683486178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac2dc48c4887314fa5d3351809dc377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTutorial
 --- !u!1 &1252469741762890357
 GameObject:
   m_ObjectHideFlags: 0

@@ -453,7 +453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4693414091180945807
 Transform:
   m_ObjectHideFlags: 0
@@ -562,16 +562,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIHelperBot
   moveSpeed: 5
-  stoppingDistance: 1
+  stoppingDistance: 0.5
   followPlayerDistance: 1.5
-  rotationSpeed: 5
   damage: 10
-  attackSpeed: 1.75
-  knockBackForce: 5
+  fireRate: 1
+  knockBackForce: 2
   isMelee: 0
-  isRanged: 1
+  isRanged: 0
+  meleeDistance: 1.25
   projectilePrefab: {fileID: 2527585790144195176, guid: a4634003d858cc54da0a6cc4aea2a166, type: 3}
   firePoint: {fileID: 9169072683248245593}
+  sprintSpeed: 8
   sprintDuration: 1
   minSprintCooldown: 3
   maxSprintCooldown: 7

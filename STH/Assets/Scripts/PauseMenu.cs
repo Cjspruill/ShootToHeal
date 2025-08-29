@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] GameObject gameOverPanel;
+    [SerializeField] GameObject scorePanel;
 
     [SerializeField] PlayerController playerController;
     [SerializeField] Health playerHealth;
@@ -47,7 +47,8 @@ public class PauseMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        playerController = FindFirstObjectByType<PlayerController>();
+        playerHealth = playerController.GetComponent<Health>();
     }
 
     // Update is called once per frame
@@ -62,6 +63,8 @@ public class PauseMenu : MonoBehaviour
 
         gameIsPaused = !gameIsPaused;
         pausePanel.SetActive(gameIsPaused);
+
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;
 
         if (gameIsPaused)
             Time.timeScale = 0;
@@ -107,7 +110,7 @@ public class PauseMenu : MonoBehaviour
 
     void ShowGameOverPanel()
     {
-        gameOverPanel.SetActive(true);
+        scorePanel.SetActive(true);
     }
 
     public void PauseButtonClicked()

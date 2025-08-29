@@ -66,7 +66,11 @@ public class PlayerController : MonoBehaviour
     bool isTouching = false;
     Vector2 externalMoveInput = Vector2.zero;
 
-
+    [Header("Stuck Detection")]
+    [SerializeField] float stuckCheckTime = 5f; // time before damage
+    [SerializeField] float stuckVelocityThreshold = 0.1f; // considered "not moving"
+    [SerializeField] float stuckTimer = 0f;
+    Vector3 lastPosition;
     // Properties
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
     public float GetCameraViewDistance { get => cameraViewDistance; set => cameraViewDistance = value; }
@@ -104,10 +108,13 @@ public class PlayerController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController>();
         targetReticle = targetReticleGameObject.GetComponent<TargetReticle>();
+
+        lastPosition = transform.position;
     }
 
     void Update()
     {
+        CheckIfStuck();
         HandleKnockback();
         HandleMovement();
         HandleFacing();
@@ -528,7 +535,54 @@ public class PlayerController : MonoBehaviour
         }
         else
             targetReticleGameObject.SetActive(false);
+    }
 
-        
+    void CheckIfStuck()
+    {
+        // Only run on PC or Mobile
+        bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
+                  || Application.platform == RuntimePlatform.WindowsEditor
+                  || Application.platform == RuntimePlatform.OSXPlayer
+                  || Application.platform == RuntimePlatform.LinuxPlayer;
+
+        bool isMobile = Touchscreen.current != null;
+
+        if (!isPC && !isMobile)
+            return;
+
+        // 1️⃣ Detect if movement input is being held
+        bool isMovingInput = false;
+
+        if (isPC)
+        {
+            Vector2 pcMoveInput = playerInput.Player.Move.ReadValue<Vector2>();
+            if (pcMoveInput.sqrMagnitude > 0.01f)
+                isMovingInput = true;
+        }
+        else if (isMobile)
+        {
+            if (externalMoveInput.sqrMagnitude > 0.01f)
+                isMovingInput = true;
+        }
+
+        // 2️⃣ Check velocity (horizontal movement)
+        Vector3 displacement = transform.position - lastPosition;
+
+        if (isMovingInput && displacement.magnitude < stuckVelocityThreshold)
+        {
+            stuckTimer += Time.deltaTime;
+
+            if (stuckTimer >= stuckCheckTime)
+            {
+                health.TakeDamage(1000f);
+                stuckTimer = 0f;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+
+        lastPosition = transform.position;
     }
 }

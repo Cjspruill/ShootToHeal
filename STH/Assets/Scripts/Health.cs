@@ -20,6 +20,7 @@ public class Health : MonoBehaviour
     [SerializeField] Color damageFlashColor = Color.white;
     [SerializeField] public bool inDamageFlash; 
     [SerializeField] float damageFlashTime = .25f;
+    [SerializeField] EnemyTutorial enemyTutorial;
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
 
@@ -30,12 +31,22 @@ public class Health : MonoBehaviour
     {
         meshRenderer = GetComponent<MeshRenderer>();
         origColor = meshRenderer.material.color;
+        enemyTutorial = GetComponent<EnemyTutorial>();
+
+        if (GetComponent<PlayerController>())
+        {
+            healthText = GameObject.FindGameObjectWithTag("HealthText").GetComponent<TextMeshProUGUI>();
+
+        if(TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)        
+            GetMaxHealth = 1000;
+        }
+
+        
 
         ResetHealth();
 
         if(healthBarSlider != null)
         {
-
         healthBarSlider.maxValue = GetMaxHealth;
         healthBarSlider.value = GetHealth;
         }
@@ -93,6 +104,14 @@ public class Health : MonoBehaviour
                 for (int i = 0; i < cashOrbsToDrop; i++) 
                 {
                     enemyController.DropCashOrb();
+                }
+
+                if (enemyTutorial)
+                {
+                    if(TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
+                    {
+                        enemyTutorial.TutorialDeath();
+                    }
                 }
             }
 

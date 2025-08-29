@@ -127,51 +127,143 @@ public class UpgradesSelector : MonoBehaviour
         GameManager.OnLevelEnd -= RandomizeUpgrades;
     }
 
+    private void Start()
+    {
+        playerController = FindFirstObjectByType<PlayerController>();
+        aiHelperBot = FindFirstObjectByType<AIHelperBot>();
+    }
+
     void RandomizeUpgrades()
     {
-        upgradesPanel.SetActive(true);
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
+        {
+            upgradesPanel.SetActive(true);
+            viewRangeToGive = UnityEngine.Random.Range(viewRangeToGiveMin, viewRangeToGiveMax);
+            moveSpeedToGive = UnityEngine.Random.Range(moveSpeedToGiveMin, moveSpeedToGiveMax);
+            enemyDetectionRangeToGive = UnityEngine.Random.Range(enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax);
+            bulletDamageToGive = UnityEngine.Random.Range(bulletDamageToGiveMin, bulletDamageToGiveMax);
+            fireRateToGive = UnityEngine.Random.Range(fireRateToGiveMin, fireRateToGiveMax);
+            sprintTimeToGive = UnityEngine.Random.Range(sprintTimeToGiveMin, sprintTimeToGiveMax);
+            sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin, sprintCooldownToGiveMax);
+            sprintMultiplierToGive = UnityEngine.Random.Range(sprintMultiplierToGiveMin, sprintMultiplierToGiveMax);
+            rotationSpeedToGive = UnityEngine.Random.Range(rotationSpeedToGiveMin, rotationSpeedToGiveMax);
+            shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin, shootToHealToGiveMax);
+            flamethrowerDurationToGive = UnityEngine.Random.Range(flameThrowerDurationMin, flameThrowerDurationMax);
+            bulletKnockbackToGive = UnityEngine.Random.Range(bulletKnockbackToGiveMin, bulletKnockbackToGiveMax);
 
-        healthToGive = UnityEngine.Random.Range(healthToGiveMin, healthToGiveMax);
-        viewRangeToGive = UnityEngine.Random.Range(viewRangeToGiveMin, viewRangeToGiveMax);
-        moveSpeedToGive = UnityEngine.Random.Range(moveSpeedToGiveMin, moveSpeedToGiveMax);
-        enemyDetectionRangeToGive = UnityEngine.Random.Range(enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax);
-        bulletDamageToGive = UnityEngine.Random.Range(bulletDamageToGiveMin, bulletDamageToGiveMax);
-        fireRateToGive = UnityEngine.Random.Range(fireRateToGiveMin, fireRateToGiveMax);
-        sprintTimeToGive = UnityEngine.Random.Range(sprintTimeToGiveMin, sprintTimeToGiveMax);
-        sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin, sprintCooldownToGiveMax);
-        sprintMultiplierToGive = UnityEngine.Random.Range(sprintMultiplierToGiveMin, sprintMultiplierToGiveMax);
-        rotationSpeedToGive = UnityEngine.Random.Range(rotationSpeedToGiveMin, rotationSpeedToGiveMax);
-        shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin, shootToHealToGiveMax);
-        flamethrowerDurationToGive = UnityEngine.Random.Range(flameThrowerDurationMin, flameThrowerDurationMax);
-        bulletKnockbackToGive = UnityEngine.Random.Range(bulletKnockbackToGiveMin,bulletKnockbackToGiveMax);
+            float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
+            float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
+            float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
+            float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
+            float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
+            float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
+            float sprintCooldownRounded = Mathf.Round(sprintCooldownToGive * 100f) / 100f;
+            float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
+            float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
+            float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
+            float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
+            float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
 
-        botMoveSpeedToGive = UnityEngine.Random.Range(botMoveSpeedToGiveMin,botMoveSpeedToGiveMax);
-        botDamageToGive = UnityEngine.Random.Range(botDamageToGiveMin,botDamageToGiveMax);
-        botFireRateToGive = UnityEngine.Random.Range(botFireRateToGiveMin, botFireRateToGiveMax);
-        botSprintSpeedToGive = UnityEngine.Random.Range(botSprintSpeedToGiveMin, botSprintSpeedToGiveMax);
-        botSprintDurationToGive = UnityEngine.Random.Range(botSprintDurationToGiveMin, botSprintDurationToGiveMax);
+            List<(Action action, string name)> allUpgrades = new List<(Action, string)>
+            { 
+    (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
+    (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
+    (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
+    (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
+    (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
+    (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
+    (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
+    (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
+    (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"),
+    (GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback")
+            };
 
-        float healthRounded = Mathf.Round(healthToGive * 100f) / 100f;
-        float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
-        float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
-        float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
-        float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
-        float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
-        float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
-        float sprintCooldownRounded = Mathf.Round(sprintCooldownToGive * 100f) / 100f;
-        float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
-        float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
-        float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
-        float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
-        float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
+            foreach (Button btn in upgradeButtons)
+                btn.onClick.RemoveAllListeners();
 
-        float botMoveSpeedRounded = MathF.Round(botMoveSpeedToGive * 100f) / 100f;
-        float botDamageRounded = MathF.Round(botDamageToGive * 100f) / 100f;
-        float botFireRateRounded = MathF.Round(botFireRateToGive * 100f) / 100f;
-        float botSprintSpeedRounded = MathF.Round(botSprintSpeedToGive * 100f) / 100f;
-        float botSprintDurationRounded = MathF.Round(botSprintDurationToGive * 100f) / 100f;
+            for (int i = 0; i < upgradeButtons.Length; i++)
+            {
+                int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
+                var chosenUpgrade = allUpgrades[randIndex];
 
-        List<(Action action, string name)> allUpgrades = new List<(Action, string)>
+                TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (btnText != null)
+                    btnText.text = chosenUpgrade.name;
+
+                Action upgradeCopy = chosenUpgrade.action;
+                upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
+
+                allUpgrades.RemoveAt(randIndex);
+            }
+
+            doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
+            machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
+            shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
+            flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
+            aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
+            aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
+
+            showHealthBarsButton.interactable = false;
+            showLevelButton.interactable = false;
+            showMiniMapButton.interactable = false;
+            showSprintButton.interactable = false;
+            showTargetReticleButton.interactable = false;
+            showXpButton.interactable = false;
+
+            doubleGunsButton.interactable = false;
+            machineGunButton.interactable = false;
+            shotgunButton.interactable = false;
+            flamethrowerButton.interactable = false;
+
+            aiMeleeBotButton.interactable = false;
+            aiRangedBotButton.interactable = false;
+        }
+        else
+        {
+
+            upgradesPanel.SetActive(true);
+
+            healthToGive = UnityEngine.Random.Range(healthToGiveMin, healthToGiveMax);
+            viewRangeToGive = UnityEngine.Random.Range(viewRangeToGiveMin, viewRangeToGiveMax);
+            moveSpeedToGive = UnityEngine.Random.Range(moveSpeedToGiveMin, moveSpeedToGiveMax);
+            enemyDetectionRangeToGive = UnityEngine.Random.Range(enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax);
+            bulletDamageToGive = UnityEngine.Random.Range(bulletDamageToGiveMin, bulletDamageToGiveMax);
+            fireRateToGive = UnityEngine.Random.Range(fireRateToGiveMin, fireRateToGiveMax);
+            sprintTimeToGive = UnityEngine.Random.Range(sprintTimeToGiveMin, sprintTimeToGiveMax);
+            sprintCooldownToGive = UnityEngine.Random.Range(sprintCooldownToGiveMin, sprintCooldownToGiveMax);
+            sprintMultiplierToGive = UnityEngine.Random.Range(sprintMultiplierToGiveMin, sprintMultiplierToGiveMax);
+            rotationSpeedToGive = UnityEngine.Random.Range(rotationSpeedToGiveMin, rotationSpeedToGiveMax);
+            shootToHealToGive = UnityEngine.Random.Range(shootToHealToGiveMin, shootToHealToGiveMax);
+            flamethrowerDurationToGive = UnityEngine.Random.Range(flameThrowerDurationMin, flameThrowerDurationMax);
+            bulletKnockbackToGive = UnityEngine.Random.Range(bulletKnockbackToGiveMin, bulletKnockbackToGiveMax);
+
+            botMoveSpeedToGive = UnityEngine.Random.Range(botMoveSpeedToGiveMin, botMoveSpeedToGiveMax);
+            botDamageToGive = UnityEngine.Random.Range(botDamageToGiveMin, botDamageToGiveMax);
+            botFireRateToGive = UnityEngine.Random.Range(botFireRateToGiveMin, botFireRateToGiveMax);
+            botSprintSpeedToGive = UnityEngine.Random.Range(botSprintSpeedToGiveMin, botSprintSpeedToGiveMax);
+            botSprintDurationToGive = UnityEngine.Random.Range(botSprintDurationToGiveMin, botSprintDurationToGiveMax);
+
+            float healthRounded = Mathf.Round(healthToGive * 100f) / 100f;
+            float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
+            float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
+            float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
+            float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
+            float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
+            float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
+            float sprintCooldownRounded = Mathf.Round(sprintCooldownToGive * 100f) / 100f;
+            float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
+            float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
+            float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
+            float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
+            float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
+
+            float botMoveSpeedRounded = MathF.Round(botMoveSpeedToGive * 100f) / 100f;
+            float botDamageRounded = MathF.Round(botDamageToGive * 100f) / 100f;
+            float botFireRateRounded = MathF.Round(botFireRateToGive * 100f) / 100f;
+            float botSprintSpeedRounded = MathF.Round(botSprintSpeedToGive * 100f) / 100f;
+            float botSprintDurationRounded = MathF.Round(botSprintDurationToGive * 100f) / 100f;
+
+            List<(Action action, string name)> allUpgrades = new List<(Action, string)>
 {
     (GiveHealthToPlayer, "+" + healthRounded + " Health"),
     (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
@@ -187,57 +279,58 @@ public class UpgradesSelector : MonoBehaviour
 };
 
 
-        // ✅ Only add SprintCooldown upgrade if player still has cooldown > 0
-        if (playerController.GetSprintCooldown > 0)        
-            allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
-        
-        // ✅ Only add Flamethrower Duration if purchased
-        if (flamethrowerPurchased)        
-            allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
+            // ✅ Only add SprintCooldown upgrade if player still has cooldown > 0
+            if (playerController.GetSprintCooldown > 0)
+                allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
 
-        // ✅ Only add bot upgrades if a bot is active
-        if (aiMeleeBotPurchased || aiRangedBotPurchased)
-        {
-            allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
-            allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
-            allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
-            allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
-            allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurationRounded + " Bot Sprint Duration"));
+            // ✅ Only add Flamethrower Duration if purchased
+            if (flamethrowerPurchased)
+                allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
+
+            // ✅ Only add bot upgrades if a bot is active
+            if (aiMeleeBotPurchased || aiRangedBotPurchased)
+            {
+                allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
+                allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
+                allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
+                allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
+                allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurationRounded + " Bot Sprint Duration"));
+            }
+
+
+            foreach (Button btn in upgradeButtons)
+                btn.onClick.RemoveAllListeners();
+
+            for (int i = 0; i < upgradeButtons.Length; i++)
+            {
+                int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
+                var chosenUpgrade = allUpgrades[randIndex];
+
+                TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (btnText != null)
+                    btnText.text = chosenUpgrade.name;
+
+                Action upgradeCopy = chosenUpgrade.action;
+                upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
+
+                allUpgrades.RemoveAt(randIndex);
+            }
+
+            doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
+            machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
+            shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
+            flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
+            aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
+            aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
+
+            doubleGunsButton.gameObject.SetActive(!GameManager.Instance.doubleGunsActive);
+            machineGunButton.gameObject.SetActive(!GameManager.Instance.machineGunActive);
+            shotgunButton.gameObject.SetActive(!GameManager.Instance.shotgunActive);
+            flamethrowerButton.gameObject.SetActive(!GameManager.Instance.flamethrowerActive);
+
+            aiMeleeBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiMeleeBotActive);
+            aiRangedBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiRangedBotActive);
         }
-
-
-        foreach (Button btn in upgradeButtons)
-            btn.onClick.RemoveAllListeners();
-
-        for (int i = 0; i < upgradeButtons.Length; i++)
-        {
-            int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
-            var chosenUpgrade = allUpgrades[randIndex];
-
-            TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-            if (btnText != null)
-                btnText.text = chosenUpgrade.name;
-
-            Action upgradeCopy = chosenUpgrade.action;
-            upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
-
-            allUpgrades.RemoveAt(randIndex);
-        }
-
-        doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
-        machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
-        shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
-        flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
-        aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
-        aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
-
-        doubleGunsButton.gameObject.SetActive(!GameManager.Instance.doubleGunsActive);
-        machineGunButton.gameObject.SetActive(!GameManager.Instance.machineGunActive);
-        shotgunButton.gameObject.SetActive(!GameManager.Instance.shotgunActive);
-        flamethrowerButton.gameObject.SetActive(!GameManager.Instance.flamethrowerActive);
-
-        aiMeleeBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiMeleeBotActive);
-        aiRangedBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiRangedBotActive);
     }
 
     // === Upgrade Handlers ===
@@ -249,18 +342,18 @@ public class UpgradesSelector : MonoBehaviour
         StartLevel();
     }
 
-    void GiveViewRangeToPlayer() { playerController.GetCameraViewDistance += viewRangeToGive; StartLevel(); }
-    void GiveMoveSpeedToPlayer() { playerController.GetMoveSpeed += moveSpeedToGive; StartLevel(); }
-    void GiveEnemyDetectionRangeToPlayer() { playerController.GetEnemyDetectionRange += enemyDetectionRangeToGive; StartLevel(); }
-    void GiveBulletDamageToPlayer() { playerController.GetBulletDamage += bulletDamageToGive; StartLevel(); }
-    void GiveFireRateToPlayer() { playerController.GetFireRate -= fireRateToGive; StartLevel(); }
-    void GiveSprintTimeToPlayer() { playerController.GetSprintTime += sprintTimeToGive; StartLevel(); }
-    void GiveSprintCooldownToPlayer() { playerController.GetSprintCooldown -= sprintCooldownToGive; StartLevel(); }
-    void GiveSprintMultiplierToPlayer() { playerController.GetSprintMultiplier += sprintMultiplierToGive; StartLevel(); }
-    void GiveRotationSpeedToPlayer() { playerController.GetRotationSpeed += rotationSpeedToGive; StartLevel(); }
-    void GiveShootToHealToPlayer() { playerController.GetShootToHeal += shootToHealToGive; StartLevel(); }
-    void GiveFlamethrowerDurationToPlayer() { playerController.GetFlameThrowerDuration += flamethrowerDurationToGive; StartLevel(); }
-    void GiveBulletKnockbackToPlayer() { playerController.GetBulletKnockback += bulletKnockbackToGive; StartLevel(); }
+    void GiveViewRangeToPlayer() { playerController.GetCameraViewDistance += viewRangeToGive; StartLevel(); AbilitySelect(); }
+    void GiveMoveSpeedToPlayer() { playerController.GetMoveSpeed += moveSpeedToGive; StartLevel(); AbilitySelect(); }
+    void GiveEnemyDetectionRangeToPlayer() { playerController.GetEnemyDetectionRange += enemyDetectionRangeToGive; StartLevel(); AbilitySelect(); }
+    void GiveBulletDamageToPlayer() { playerController.GetBulletDamage += bulletDamageToGive; StartLevel(); AbilitySelect(); }
+    void GiveFireRateToPlayer() { playerController.GetFireRate -= fireRateToGive; StartLevel(); AbilitySelect(); }
+    void GiveSprintTimeToPlayer() { playerController.GetSprintTime += sprintTimeToGive; StartLevel(); AbilitySelect(); }
+    void GiveSprintCooldownToPlayer() { playerController.GetSprintCooldown -= sprintCooldownToGive; StartLevel(); AbilitySelect(); }
+    void GiveSprintMultiplierToPlayer() { playerController.GetSprintMultiplier += sprintMultiplierToGive; StartLevel(); AbilitySelect(); }
+    void GiveRotationSpeedToPlayer() { playerController.GetRotationSpeed += rotationSpeedToGive; StartLevel(); AbilitySelect(); }
+    void GiveShootToHealToPlayer() { playerController.GetShootToHeal += shootToHealToGive; StartLevel(); AbilitySelect(); }
+    void GiveFlamethrowerDurationToPlayer() { playerController.GetFlameThrowerDuration += flamethrowerDurationToGive; StartLevel(); AbilitySelect(); }
+    void GiveBulletKnockbackToPlayer() { playerController.GetBulletKnockback += bulletKnockbackToGive; StartLevel(); AbilitySelect(); }
 
 
     void GiveMoveSpeedToBot() { aiHelperBot.GetMoveSpeed += botMoveSpeedToGive; StartLevel(); }
@@ -345,5 +438,18 @@ public class UpgradesSelector : MonoBehaviour
     {
         GameManager.Instance.StartLevel();
         upgradesPanel.SetActive(false);
+    }
+
+    void AbilitySelect()
+    {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) 
+        {
+            var currentPage = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
+
+            if (currentPage.header == "Ability Select")
+            {
+                TutorialManager.Instance.CompleteStep();
+            }
+        }
     }
 }
