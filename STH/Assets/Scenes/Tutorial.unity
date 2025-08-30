@@ -1827,6 +1827,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
+      propertyPath: tutorialPages.Array.data[2].explanation
+      value: On the pause menu. You can see your current player stats.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[4].explanation
       value: Now try and move about with those inputs. Careful of the edges of the
         map. If you fall. You will perish!
@@ -1838,14 +1842,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[6].explanation
-      value: Now. Lets get to the enemies. Lets go with an easy one. The basic enemy
-        is the grunt. It is a brown enemy. Not the fastest. Not the strongest.
+      value: Now. Lets get to the enemies. Lets go with an easy one.
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[7].explanation
-      value: An enemy is on the way! Get ready. Just move about. The player will
-        auto rotate and auto fire at them when they are in range. Give him 5 to 10
-        seconds to get to you as he is spawned randomly on the map.
+      value: Get ready. Just move about. The player will auto rotate and auto fire
+        at them when they are in range.
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[8].explanation
@@ -1858,8 +1860,7 @@ PrefabInstance:
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[10].explanation
       value: When an enemy is destroyed it will explode and release blue xp orbs
-        and yellow cash orbs. Collect these at your leisure when you can during the
-        fray.
+        and yellow cash orbs.
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[11].explanation
@@ -1868,9 +1869,8 @@ PrefabInstance:
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[12].explanation
       value: When you collect blue xp orbs you will level up if enough are collected.
-        When you do, you will be able to increase your abilities. These are located
-        in the middle column and are randomized every level. As well as the amount
-        they give. Select one on the following screen.
+        When you do, you will be able to increase your abilities. Select one on the
+        following screen.
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[13].explanation
@@ -1878,14 +1878,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[14].explanation
-      value: Now you got some more power. You can see these stat updates in the pause
-        menu. Now lets see how you do with the second enemy type.
+      value: Now you got some more power. Now lets see how you do with the second
+        enemy type.
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[15].explanation
-      value: Runners are the fastest of the 3 enemy types in the game. As they sprint
-        the fastest and most often. They will often bump you off the map if not careful.
-        You must use your sprint to keep distance! So use it wisely.
+      value: Runners are the fastest of the 3 enemy types in the game. Use your sprint
+        wisely!
       objectReference: {fileID: 0}
     - target: {fileID: 2050192320340128371, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: tutorialPages.Array.data[16].explanation
@@ -2114,6 +2113,14 @@ PrefabInstance:
     - target: {fileID: 4094373164379368127, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7646717594338116812, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 303.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 7646717594338116812, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -814.1393
       objectReference: {fileID: 0}
     - target: {fileID: 7713595538686048935, guid: 1b39d5ac7eea7ea4f9657691c537d701, type: 3}
       propertyPath: m_Name
