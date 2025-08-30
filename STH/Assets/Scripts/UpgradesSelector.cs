@@ -131,6 +131,9 @@ public class UpgradesSelector : MonoBehaviour
     {
         playerController = FindFirstObjectByType<PlayerController>();
         aiHelperBot = FindFirstObjectByType<AIHelperBot>();
+        aiBotToActivate = aiHelperBot.gameObject;
+
+        aiBotToActivate.SetActive(false);
     }
 
     void RandomizeUpgrades()

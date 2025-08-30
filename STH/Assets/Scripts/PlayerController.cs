@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        CheckIfStuck();
+        //CheckIfStuck();
         HandleKnockback();
         HandleMovement();
         HandleFacing();
@@ -129,10 +129,23 @@ public class PlayerController : MonoBehaviour
         if (GetCurrentTarget != null)
         {
             fireRateTimer += Time.deltaTime;
-            if (fireRateTimer >= GetFireRate)
+
+
+            if (GameManager.Instance.flamethrowerActive)
             {
-                ShootAtEnemy();
-                fireRateTimer = 0;
+                if (fireRateTimer >= flameThrowerDuration * 2)
+                {
+                    FireFlameThrower();
+                    fireRateTimer = 0;
+                }
+            }
+            else
+            {
+                if (fireRateTimer >= GetFireRate)
+                {
+                    ShootAtEnemy();
+                    fireRateTimer = 0;
+                }
             }
         }
 
@@ -376,6 +389,7 @@ public class PlayerController : MonoBehaviour
             newBulletLeft.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
             newBulletLeft.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
             newBulletLeft.GetComponent<Projectile>().playerController = this;
+            newBulletLeft.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBulletLeft, 5f);
 
             GameObject newBulletRight = Instantiate(bulletPrefab, doubleGunBarrelOutRight.position, doubleGunBarrelOutRight.rotation);
@@ -383,6 +397,7 @@ public class PlayerController : MonoBehaviour
             newBulletRight.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
             newBulletRight.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
             newBulletRight.GetComponent<Projectile>().playerController = this;
+            newBulletRight.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBulletRight, 5f);
         }
         else if (GameManager.Instance.shotgunActive)
@@ -416,17 +431,7 @@ public class PlayerController : MonoBehaviour
                 Destroy(pellet, 5f);
             }
         }
-        else if (GameManager.Instance.flamethrowerActive)
-        {
-            for (int i = 0; i < flameThrower.Length; i++)
-                flameThrower[i].Play();
-
-            flameThrower[0].gameObject.GetComponent<AudioSource>().Play();
-            flameThrower[0].gameObject.GetComponent<FlameThrower>().shootToHeal = GetShootToHeal * .045f;
-            flameThrower[0].gameObject.GetComponent<FlameThrower>().damage = GetBulletDamage * .045f;
-
-            Invoke("StopFlamethrower", flameThrowerDuration);
-        }
+        
         else
         {
             audioSource.clip = machineGunAudioClip;
@@ -440,6 +445,19 @@ public class PlayerController : MonoBehaviour
             newBullet.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
             Destroy(newBullet, 5f);
         }
+    }
+
+    void FireFlameThrower()
+    {
+        for (int i = 0; i < flameThrower.Length; i++)
+            flameThrower[i].Play();
+
+        flameThrower[0].gameObject.GetComponent<AudioSource>().Play();
+        flameThrower[0].gameObject.GetComponent<FlameThrower>().shootToHeal = GetShootToHeal * .045f;
+        flameThrower[0].gameObject.GetComponent<FlameThrower>().damage = GetBulletDamage * .045f;
+
+        Invoke("StopFlamethrower", flameThrowerDuration);
+
     }
 
     void StopFlamethrower()
