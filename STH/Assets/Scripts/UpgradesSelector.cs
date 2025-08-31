@@ -9,59 +9,77 @@ public class UpgradesSelector : MonoBehaviour
     float healthToGive;
     [SerializeField] float healthToGiveMin;
     [SerializeField] float healthToGiveMax;
+    [SerializeField] float healthToGiveCap;
     float viewRangeToGive;
     [SerializeField] float viewRangeToGiveMin;
     [SerializeField] float viewRangeToGiveMax;
+    [SerializeField] float viewRangeToGiveCap;
     float moveSpeedToGive;
     [SerializeField] float moveSpeedToGiveMin;
     [SerializeField] float moveSpeedToGiveMax;
+    [SerializeField] float moveSpeedToGiveCap;
     float enemyDetectionRangeToGive;
     [SerializeField] float enemyDetectionRangeToGiveMin;
     [SerializeField] float enemyDetectionRangeToGiveMax;
+    [SerializeField] float enemyDetectionRangeToGiveCap;
     float bulletDamageToGive;
     [SerializeField] float bulletDamageToGiveMin;
     [SerializeField] float bulletDamageToGiveMax;
+    [SerializeField] float bulletDamageToGiveCap;
     float fireRateToGive;
     [SerializeField] float fireRateToGiveMin;
     [SerializeField] float fireRateToGiveMax;
+    [SerializeField] float fireRateToGiveCap;
     float sprintTimeToGive;
     [SerializeField] float sprintTimeToGiveMin;
     [SerializeField] float sprintTimeToGiveMax;
+    [SerializeField] float sprintTimeToGiveCap;
     float sprintCooldownToGive;
     [SerializeField] float sprintCooldownToGiveMin;
     [SerializeField] float sprintCooldownToGiveMax;
+    [SerializeField] float sprintCooldownToGiveCap;
     float sprintMultiplierToGive;
     [SerializeField] float sprintMultiplierToGiveMin;
     [SerializeField] float sprintMultiplierToGiveMax;
+    [SerializeField] float sprintMultiplierToGiveCap;
     float rotationSpeedToGive;
     [SerializeField] float rotationSpeedToGiveMin;
     [SerializeField] float rotationSpeedToGiveMax;
+    [SerializeField] float rotationSpeedToGiveCap;
     float shootToHealToGive;
     [SerializeField] float shootToHealToGiveMin;
     [SerializeField] float shootToHealToGiveMax;
+    [SerializeField] float shootToHealToGiveCap;
     float flamethrowerDurationToGive;
     [SerializeField] float flameThrowerDurationMin;
     [SerializeField] float flameThrowerDurationMax;
+    [SerializeField] float flameThrowerDurationCap;
     float bulletKnockbackToGive;
     [SerializeField] float bulletKnockbackToGiveMin;
     [SerializeField] float bulletKnockbackToGiveMax;
+    [SerializeField] float bulletKnockbackToGiveCap;
 
     //Bot
     float botMoveSpeedToGive;
     [SerializeField] float botMoveSpeedToGiveMin;
     [SerializeField] float botMoveSpeedToGiveMax;
+    [SerializeField] float botMoveSpeedToGiveCap;
     float botDamageToGive;
     [SerializeField] float botDamageToGiveMin;
     [SerializeField] float botDamageToGiveMax;
+    [SerializeField] float botDamageToGiveCap;
     float botFireRateToGive;
     [SerializeField] float botFireRateToGiveMin;
     [SerializeField] float botFireRateToGiveMax;
+    [SerializeField] float botFireRateToGiveCap;
     float botSprintSpeedToGive;
     [SerializeField] float botSprintSpeedToGiveMin;
     [SerializeField] float botSprintSpeedToGiveMax;
+    [SerializeField] float botSprintSpeedToGiveCap;
     float botSprintDurationToGive;
     [SerializeField] float botSprintDurationToGiveMin;
     [SerializeField] float botSprintDurationToGiveMax;
+    [SerializeField] float botSprintDurationToGiveCap;
 
     [SerializeField] PlayerController playerController;
     [SerializeField] AIHelperBot aiHelperBot;
@@ -119,12 +137,19 @@ public class UpgradesSelector : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnLevelEnd += RandomizeUpgrades;
+        GameManager.OnLevelEnd += HandleLevelEnd;
     }
+
 
     private void OnDisable()
     {
-        GameManager.OnLevelEnd -= RandomizeUpgrades;
+        GameManager.OnLevelEnd -= HandleLevelEnd;
+
+        // Make sure to unsubscribe when destroyed
+        if (LevelPlayAds.Instance != null)
+        {
+            LevelPlayAds.Instance.OnAnyAdClosed -= ShowUpgradesAfterAd;
+        }
     }
 
     private void Start()
@@ -132,7 +157,6 @@ public class UpgradesSelector : MonoBehaviour
         playerController = FindFirstObjectByType<PlayerController>();
         aiHelperBot = FindFirstObjectByType<AIHelperBot>();
         aiBotToActivate = aiHelperBot.gameObject;
-
         aiBotToActivate.SetActive(false);
     }
 
@@ -251,7 +275,7 @@ public class UpgradesSelector : MonoBehaviour
             float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
             float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
             float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
-            float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
+            float fireRateRounded = Mathf.Round(fireRateToGive * 10000f) / 10000f;
             float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
             float sprintCooldownRounded = Mathf.Round(sprintCooldownToGive * 100f) / 100f;
             float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
@@ -262,42 +286,52 @@ public class UpgradesSelector : MonoBehaviour
 
             float botMoveSpeedRounded = MathF.Round(botMoveSpeedToGive * 100f) / 100f;
             float botDamageRounded = MathF.Round(botDamageToGive * 100f) / 100f;
-            float botFireRateRounded = MathF.Round(botFireRateToGive * 100f) / 100f;
+            float botFireRateRounded = MathF.Round(botFireRateToGive * 10000f) / 10000f;
             float botSprintSpeedRounded = MathF.Round(botSprintSpeedToGive * 100f) / 100f;
             float botSprintDurationRounded = MathF.Round(botSprintDurationToGive * 100f) / 100f;
 
-            List<(Action action, string name)> allUpgrades = new List<(Action, string)>
-{
-    (GiveHealthToPlayer, "+" + healthRounded + " Health"),
-    (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
-    (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
-    (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
-    (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
-    (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
-    (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
-    (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
-    (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
-    (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"),
-    (GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback")
-};
+            List<(Action action, string name)> allUpgrades = new List<(Action, string)> { };
 
-
-            // ✅ Only add SprintCooldown upgrade if player still has cooldown > 0
-            if (playerController.GetSprintCooldown > 0)
+            if (playerController.GetMaxHealth < healthToGiveCap)
+                allUpgrades.Add((GiveHealthToPlayer, "+" + healthRounded + " Health"));
+            if (playerController.GetCameraViewDistance < viewRangeToGiveCap)
+                allUpgrades.Add((GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"));
+            if (playerController.GetMoveSpeed < moveSpeedToGiveCap)
+                allUpgrades.Add((GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"));
+            if (playerController.GetEnemyDetectionRange < enemyDetectionRangeToGiveCap)
+                allUpgrades.Add((GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"));
+            if (playerController.GetBulletDamage < bulletDamageToGiveCap)
+                allUpgrades.Add((GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"));
+            if (playerController.GetFireRate > fireRateToGiveCap)
+                allUpgrades.Add((GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"));
+            if (playerController.GetSprintTime > sprintTimeToGiveCap)
+                allUpgrades.Add((GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"));
+            if (playerController.GetSprintMultiplier < sprintMultiplierToGiveCap)
+                allUpgrades.Add((GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"));
+            if (playerController.GetRotationSpeed < rotationSpeedToGiveCap)
+                allUpgrades.Add((GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"));
+            if (playerController.GetShootToHeal < shootToHealToGiveCap)
+                allUpgrades.Add((GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"));
+            if (playerController.GetBulletKnockback < bulletKnockbackToGiveCap)
+                allUpgrades.Add((GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback"));
+            if (playerController.GetSprintCooldown > sprintCooldownToGiveCap)
                 allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
-
-            // ✅ Only add Flamethrower Duration if purchased
             if (flamethrowerPurchased)
                 allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
 
             // ✅ Only add bot upgrades if a bot is active
             if (aiMeleeBotPurchased || aiRangedBotPurchased)
             {
-                allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
-                allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
-                allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
-                allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
-                allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurationRounded + " Bot Sprint Duration"));
+                if (aiHelperBot.GetMoveSpeed < botMoveSpeedToGiveCap)
+                    allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
+                if (aiHelperBot.GetDamage < botDamageToGiveCap)
+                    allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
+                if (aiHelperBot.GetFireRate < botFireRateToGiveCap)
+                    allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
+                if (aiHelperBot.GetSprintSpeed < botSprintSpeedToGiveCap)
+                    allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
+                if (aiHelperBot.GetSprintDuration < botSprintDurationToGiveCap)
+                    allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurationRounded + " Bot Sprint Duration"));
             }
 
 
@@ -454,5 +488,27 @@ public class UpgradesSelector : MonoBehaviour
                 TutorialManager.Instance.CompleteStep();
             }
         }
+    }
+
+    private void HandleLevelEnd()
+    {
+        // Check if we should wait for an ad before upgrades
+        if (LevelPlayAds.Instance != null && LevelPlayAds.Instance.IsAdPlaying())
+        {
+            Debug.Log("Ad is currently playing → will show upgrades after ad.");
+            LevelPlayAds.Instance.OnAnyAdClosed += ShowUpgradesAfterAd;
+        }
+        else
+        {
+            Debug.Log("No ad playing → showing upgrades now.");
+            RandomizeUpgrades();
+        }
+    }
+
+    private void ShowUpgradesAfterAd()
+    {
+        Debug.Log("Ad finished → showing upgrades.");
+        LevelPlayAds.Instance.OnAnyAdClosed -= ShowUpgradesAfterAd;
+        RandomizeUpgrades();
     }
 }

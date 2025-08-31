@@ -1558,7 +1558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5585369192156571109, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7685000401578077412, guid: 4fc5fdb189006d148a7e3b104a088b4c, type: 3}
       propertyPath: isMelee

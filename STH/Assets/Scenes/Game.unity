@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &57338911 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2261464989147165790, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &155170873
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +368,10 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 1552464186}
+    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
+      propertyPath: sprintSlider
+      value: 
+      objectReference: {fileID: 57338911}
     - target: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: m_Name
       value: Player
@@ -507,6 +522,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightController
   mainLight: {fileID: 0}
+--- !u!1 &490230969 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7644232425112010609, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602405099
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,11 +712,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 707615741354071480, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 579
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 707615741354071480, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 260.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 707615741354071480, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -745,6 +765,10 @@ PrefabInstance:
     - target: {fileID: 6259310462264460364, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: m_Name
       value: HUDHolder
+      objectReference: {fileID: 0}
+    - target: {fileID: 7049221666264654597, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1100,6 +1124,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d178f596009183409b84565672e6e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelPlayAds
+  appKey: 2369c7645
+  cashAdUnitId: smmmnqrxt18at15u
+  healthAdUnitId: 8uf2fme1jfgrdo5e
+  upgradesPanel: {fileID: 490230969}
+  adIsPlaying: 0
 --- !u!1 &1552464184
 GameObject:
   m_ObjectHideFlags: 0

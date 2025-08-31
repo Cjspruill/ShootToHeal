@@ -20,6 +20,12 @@ public class PlayerTutorial : MonoBehaviour
         input.Player.Enable();
     }
 
+    private void OnDisable()
+    {
+        input.UI.Disable();
+        input.Player.Disable();
+    }
+
     // Update is called once per frame
     void Update()
     {

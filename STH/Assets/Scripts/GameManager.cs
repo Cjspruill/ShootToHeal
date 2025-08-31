@@ -181,6 +181,33 @@ public class GameManager : MonoBehaviour
     {
         if (levelEnded) return;
 
+
+
+        //// Only reward every 5 levels between 5 and 100
+        if (level > 0 && level <= 1000 && level % 5 == 0)
+        {
+            if (playerController.health.GetHealth > 25)
+            {
+                if (LevelPlayAds.Instance.IsCashAdReady())
+                    LevelPlayAds.Instance.ShowCashAd();
+                else
+                {
+                    Debug.Log("Cash ad not ready. Loading...");
+                    LevelPlayAds.Instance.LoadCashAd();
+                }
+            }
+        else if(playerController.health.GetHealth <= 25)
+            {
+                if (LevelPlayAds.Instance.IsHealthAdReady())
+                    LevelPlayAds.Instance.ShowHealthAd();
+                else
+                {
+                    Debug.Log("Health ad not ready. Loading...");
+                    LevelPlayAds.Instance.LoadHealthAd();
+                }
+            }
+        }
+
         levelEnded = true;
         Time.timeScale = 0;
         OnLevelEnd?.Invoke();
@@ -398,5 +425,15 @@ public class GameManager : MonoBehaviour
         int scoreRounded = Mathf.RoundToInt(baseScore + xpScore + cashScore + levelBonus);
 
         return scoreRounded;
+    }
+
+    public int GetLevel()
+    {
+        return level;
+    }
+
+    public int GetEnemiesDefeated()
+    {
+        return totalEnemiesDestroyed;
     }
 }

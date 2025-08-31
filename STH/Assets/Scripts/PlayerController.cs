@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform doubleGunBarrelOutLeft;
     [SerializeField] Transform doubleGunBarrelOutRight;
     [SerializeField] Transform target;
-    [SerializeField] Health health;
+    [SerializeField]public Health health;
     [SerializeField] CinemachineCamera cam;
     [SerializeField] CinemachineFollow camFollow;
     [SerializeField] AudioSource audioSource;
@@ -532,6 +532,12 @@ public class PlayerController : MonoBehaviour
     public void UpdateHealth(float value)
     {
         health.GetHealth += value;
+
+        //Cap health to max health
+        if(health.GetHealth > health.GetMaxHealth)
+        {
+            health.GetHealth = health.GetMaxHealth;
+        }
     }
 
     void PlaceTargetReticle()
