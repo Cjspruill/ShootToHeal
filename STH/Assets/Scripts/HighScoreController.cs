@@ -163,4 +163,22 @@ public class HighScoreController : MonoBehaviour
     {
         DisplayHighScores();
     }
+
+    public void ShowHighScores()
+    {
+        highScores.Clear();
+
+        // Load existing scores
+        for (int i = 0; i < maxHighScores; i++)
+        {
+            string name = PlayerPrefs.GetString($"HighScoreName{i}", "AAA");
+            int level = PlayerPrefs.GetInt($"LevelValue{i}", 1);
+            int enemiesDefeated = PlayerPrefs.GetInt($"EnemiesDefeatedValue{i}", 0);
+            int score = PlayerPrefs.GetInt($"HighScoreValue{i}", 0);
+
+            highScores.Add(new HighScoreEntry(name, level, enemiesDefeated, score));
+        }
+
+        DisplayHighScores();
+    }
 }

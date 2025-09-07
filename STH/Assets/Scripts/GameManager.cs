@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
 
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;     
         
-        StartLevel();
+        //StartLevel();
         
     }
 
@@ -435,5 +435,17 @@ public class GameManager : MonoBehaviour
     public int GetEnemiesDefeated()
     {
         return totalEnemiesDestroyed;
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+        Debug.Log("Game paused.");
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        Debug.Log("Game resumed.");
     }
 }

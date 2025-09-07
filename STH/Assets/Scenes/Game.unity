@@ -766,15 +766,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUDHolder
       objectReference: {fileID: 0}
-    - target: {fileID: 7049221666264654597, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+--- !u!1 &809624392 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6069661474700842468, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &809624393 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5196974100937905928, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &809624394 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3267095634104944801, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &809624395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5885644607792254686, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+  m_PrefabInstance: {fileID: 809624391}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,7 +1162,13 @@ MonoBehaviour:
   cashAdUnitId: smmmnqrxt18at15u
   healthAdUnitId: 8uf2fme1jfgrdo5e
   upgradesPanel: {fileID: 490230969}
+  adsPanel: {fileID: 809624392}
+  adsHeaderText: {fileID: 809624395}
+  yesButton: {fileID: 809624394}
+  noButton: {fileID: 809624393}
   adIsPlaying: 0
+  maxRevives: 3
+  reviveCount: 0
 --- !u!1 &1552464184
 GameObject:
   m_ObjectHideFlags: 0

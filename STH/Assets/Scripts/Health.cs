@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
@@ -24,7 +24,7 @@ public class Health : MonoBehaviour
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
 
-   
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -96,31 +96,88 @@ public class Health : MonoBehaviour
 
             if (enemyController)
             {
+                // --- ENEMY DEATH ---
                 GameManager.Instance.EnemyDestroyed();
                 enemyController.DropXpOrb();
 
-                float cashOrbsToDrop = Random.Range(1, 5);
-
-                for (int i = 0; i < cashOrbsToDrop; i++) 
-                {
+                float cashOrbsToDrop = Random.Range(1, 6);
+                for (int i = 0; i < cashOrbsToDrop; i++)
                     enemyController.DropCashOrb();
-                }
 
                 if (enemyTutorial)
                 {
-                    if(TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
-                    {
+                    if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
                         enemyTutorial.TutorialDeath();
-                    }
+                }
+
+                Destroy(gameObject); // ✅ enemy still gets destroyed
+            }
+            else if (playerController)
+            {
+                Debug.Log("Player reached 0 HP. Prompting revive ad...");
+
+                // Pause immediately when player "dies"
+                GameManager.Instance.PauseGame();
+
+                if (LevelPlayAds.Instance != null && LevelPlayAds.Instance.CanRevive())
+                {
+                    LevelPlayAds ads = LevelPlayAds.Instance;
+                    ads.adsPanel.SetActive(true);
+                    ads.adsHeaderText.text = $"Watch an ad to revive with 50 health? ({ads.maxRevives - ads.reviveCount} left)";
+
+                    ads.yesButton.onClick.RemoveAllListeners();
+                    ads.noButton.onClick.RemoveAllListeners();
+
+                    // YES = revive via ad
+                    ads.yesButton.onClick.AddListener(() =>
+                    {
+                        if (ads.IsHealthAdReady())
+                        {
+                            ads.OnAnyAdClosed += () =>
+                            {
+                                Debug.Log("Revive ad finished. Restoring player health.");
+                                health = 50f;
+                                ads.IncrementReviveCount();
+                                ads.adsPanel.SetActive(false);
+
+                                // ✅ Resume game after revive
+                                GameManager.Instance.ResumeGame();
+                            };
+
+                            ads.ShowHealthAd();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Health ad not ready. Ending game instead.");
+                            ads.LoadHealthAd();
+                            ads.adsPanel.SetActive(false);
+
+                            // Resume briefly so GameOver flow can run
+                            GameManager.Instance.ResumeGame();
+                            GameManager.Instance.GameOver();
+                            Destroy(gameObject);
+                        }
+                    });
+
+                    // NO = normal death
+                    ads.noButton.onClick.AddListener(() =>
+                    {
+                        ads.adsPanel.SetActive(false);
+
+                        // Resume briefly so GameOver flow can run
+                        GameManager.Instance.ResumeGame();
+                        GameManager.Instance.GameOver();
+                        Destroy(gameObject);
+                    });
+                }
+                else
+                {
+                    Debug.Log("No revives left or LevelPlayAds missing. Game over.");
+                    GameManager.Instance.ResumeGame();
+                    GameManager.Instance.GameOver();
+                    Destroy(gameObject);
                 }
             }
-
-            if (playerController)
-            {
-                GameManager.Instance.GameOver();
-            }
-
-            Destroy(gameObject);
         }
     }
 

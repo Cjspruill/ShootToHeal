@@ -304,7 +304,7 @@ public class UpgradesSelector : MonoBehaviour
                 allUpgrades.Add((GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"));
             if (playerController.GetFireRate > fireRateToGiveCap)
                 allUpgrades.Add((GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"));
-            if (playerController.GetSprintTime > sprintTimeToGiveCap)
+            if (playerController.GetSprintTime < sprintTimeToGiveCap)
                 allUpgrades.Add((GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"));
             if (playerController.GetSprintMultiplier < sprintMultiplierToGiveCap)
                 allUpgrades.Add((GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"));

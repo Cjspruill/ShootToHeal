@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 using Unity.Services.LevelPlay;
+using TMPro;
+using Unity.AppUI.UI;
 
 public class LevelPlayAds : MonoBehaviour
 {
@@ -21,14 +21,31 @@ public class LevelPlayAds : MonoBehaviour
 
     PlayerController playerController;
     [SerializeField] GameObject upgradesPanel;
-    [SerializeField]public bool adIsPlaying;
+    [SerializeField] public GameObject adsPanel;
+    [SerializeField] public TextMeshProUGUI adsHeaderText;
+    [SerializeField] public UnityEngine.UI.Button yesButton;
+    [SerializeField] public UnityEngine.UI.Button noButton;
+    [SerializeField] public bool adIsPlaying;
     public event Action OnAnyAdClosed;
+
+    [SerializeField] public int maxRevives = 3;
+    public int reviveCount = 0;
+
+    public bool CanRevive()
+    {
+        return reviveCount < maxRevives;
+    }
+
+    public void IncrementReviveCount()
+    {
+        reviveCount++;
+    }
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+     
     }
 
 
@@ -41,6 +58,13 @@ public class LevelPlayAds : MonoBehaviour
         LevelPlay.OnInitFailed += OnInitFailed;
 
         LevelPlay.Init(appKey);
+
+        adsPanel.SetActive(true);
+        adsHeaderText.text = "Do you wish to watch an add for 200 cash?";
+
+        // Hook up button listeners
+        yesButton.onClick.AddListener(OnYesClicked);
+        noButton.onClick.AddListener(OnNoClicked);
     }
 
     void OnInitSuccess(LevelPlayConfiguration config)
@@ -86,15 +110,15 @@ public class LevelPlayAds : MonoBehaviour
         {
             adIsPlaying = true;
             if (upgradesPanel != null)
-                upgradesPanel.SetActive(false);  // ✅ hide when ad shows
+                upgradesPanel.SetActive(false);  // ✅ always hide on display    
             Debug.Log($"{type} ad displayed.");
         };
 
         ad.OnAdDisplayFailed += (error) =>
         {
             adIsPlaying = false;
-            if (upgradesPanel != null)
-                upgradesPanel.SetActive(true);   // ✅ re-show in case of failure
+            if (upgradesPanel != null && GameManager.Instance != null && GameManager.Instance.levelEnded)
+                upgradesPanel.SetActive(true);   // ✅ only re-show if level ended
             Debug.LogError($"{type} ad display failed: {error}");
         };
 
@@ -103,8 +127,8 @@ public class LevelPlayAds : MonoBehaviour
         ad.OnAdClosed += (info) =>
         {
             adIsPlaying = false;
-            if (upgradesPanel != null)
-                upgradesPanel.SetActive(true);   // ✅ re-show when ad closes
+            if (upgradesPanel != null && GameManager.Instance != null && GameManager.Instance.levelEnded)
+                upgradesPanel.SetActive(true);   // ✅ only re-show if level ended
             Debug.Log($"{type} ad closed. Preloading next ad...");
             LoadAd(ad, type);
         };
@@ -237,5 +261,39 @@ public class LevelPlayAds : MonoBehaviour
         ad.OnAdClosed -= (info) => Debug.Log("Ad closed.");
         //ad.OnAdRewarded -= HandleReward;
         ad.OnAdInfoChanged -= (info) => Debug.Log("Ad info changed.");
+    }
+
+    private void OnYesClicked()
+    {
+        Debug.Log("Yes button clicked - trying to show Cash Ad.");
+
+        if (IsCashAdReady())
+        {
+            // Subscribe one-time listener to start game after ad
+            OnAnyAdClosed += StartGameAfterAd;
+            ShowCashAd();
+        }
+        else
+        {
+            Debug.LogWarning("Cash ad not ready, loading... Starting game without ad.");
+            LoadCashAd();
+            adsPanel.SetActive(false);
+            GameManager.Instance.StartLevel();
+        }
+    }
+
+    private void OnNoClicked()
+    {
+        Debug.Log("No button clicked - starting game without ad.");
+        adsPanel.SetActive(false);
+        GameManager.Instance.StartLevel();
+    }
+
+    private void StartGameAfterAd()
+    {
+        Debug.Log("Ad finished, starting game...");
+        OnAnyAdClosed -= StartGameAfterAd; // ✅ Remove listener so it doesn't stack
+        adsPanel.SetActive(false);
+        GameManager.Instance.StartLevel();
     }
 }
