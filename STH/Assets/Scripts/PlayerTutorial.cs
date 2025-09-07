@@ -87,11 +87,11 @@ public class PlayerTutorial : MonoBehaviour
                     // Normalize drag like joystick
                     Vector2 moveInputTouch = dragDelta.normalized;
 
-                    if (moveInputTouch.x >= .1f)               
+                    if (moveInputTouch.x >= .1f)
                         TutorialManager.Instance.CompleteStep();
                     else if (moveInputTouch.x <= -.1f)
                         TutorialManager.Instance.CompleteStep();
-                    if (moveInputTouch.y >= .1f)               
+                    if (moveInputTouch.y >= .1f)
                         TutorialManager.Instance.CompleteStep();
                     else if (moveInputTouch.y <= -.1f)
                         TutorialManager.Instance.CompleteStep();
@@ -102,8 +102,7 @@ public class PlayerTutorial : MonoBehaviour
                     externalMoveInput = Vector2.zero;
                 }
             }
-
-            if(currentPage.header == "Sprinting")
+            if (currentPage.header == "Sprinting")
             {
                 bool sprintInput = input.Player.Sprint.triggered;
 
@@ -111,6 +110,14 @@ public class PlayerTutorial : MonoBehaviour
                 {
                     TutorialManager.Instance.CompleteStep();
                 }
+
+                bool isPC = Application.platform == RuntimePlatform.WindowsPlayer
+                || Application.platform == RuntimePlatform.WindowsEditor
+                || Application.platform == RuntimePlatform.OSXPlayer
+                || Application.platform == RuntimePlatform.LinuxPlayer;
+
+                if (isPC) return; // no touchscreen available
+
                 int activeTouchCount = 0;
                 foreach (var touch in Touchscreen.current.touches)
                 {
@@ -125,6 +132,7 @@ public class PlayerTutorial : MonoBehaviour
                     TutorialManager.Instance.CompleteStep();
                 }
             }
+
         }
     }
 }

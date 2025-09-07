@@ -369,6 +369,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1552464186}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
+      propertyPath: shadowTime
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
+      propertyPath: shadowPrefab
+      value: 
+      objectReference: {fileID: 6626270891717559413, guid: 6f058ae63c31efd48afb71700988596b, type: 3}
+    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: sprintSlider
       value: 
       objectReference: {fileID: 57338911}

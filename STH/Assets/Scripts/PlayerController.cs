@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using Unity.Cinemachine;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
-
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform doubleGunBarrelOutLeft;
     [SerializeField] Transform doubleGunBarrelOutRight;
     [SerializeField] Transform target;
-    [SerializeField]public Health health;
+    [SerializeField] public Health health;
     [SerializeField] CinemachineCamera cam;
     [SerializeField] CinemachineFollow camFollow;
     [SerializeField] AudioSource audioSource;
@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip shotgunAudioClip;
     [SerializeField] UnityEngine.UI.Slider sprintSlider;
     [SerializeField] float bulletForce = 100f;
+    [SerializeField] GameObject shadowPrefab;
+    [SerializeField] float shadowTime;
+    [SerializeField] float shadowTimer;
+    [SerializeField] private float shadowEffectTime = 1.0f; // Duration to fade out the shadow
 
     [Header("Stats")]
     [SerializeField] float maxHealth;
@@ -201,7 +205,14 @@ public class PlayerController : MonoBehaviour
         {
             // keep sprinting as long as key is held
             isSprinting = true;
+            
+
+            if (shadowTimer >= shadowTime) {
+                SpawnShadow();
+                shadowTimer = 0;
+            }
             sprintTimer += Time.deltaTime;
+            shadowTimer += Time.deltaTime;
 
             // if sprint time is exceeded, force cooldown
             if (sprintTimer >= GetSprintTime)
@@ -224,8 +235,8 @@ public class PlayerController : MonoBehaviour
             isSprinting = false;
 
         }
-            if (sprintCooldownTimer > 0f)
-                sprintCooldownTimer -= Time.deltaTime;
+        if (sprintCooldownTimer > 0f)
+            sprintCooldownTimer -= Time.deltaTime;
     }
 
     void ApplyTouchMovement(Vector2 moveInput)
@@ -261,7 +272,13 @@ public class PlayerController : MonoBehaviour
             if (sprintInput && sprintCooldownTimer <= 0f)
             {
                 isSprinting = true;
+                if (shadowTimer >= shadowTime)
+                {
+                    SpawnShadow();
+                    shadowTimer = 0;
+                }
                 sprintTimer += Time.deltaTime;
+                shadowTimer += Time.deltaTime;
 
                 if (sprintTimer >= GetSprintTime)
                 {
@@ -382,7 +399,7 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.clip = doubleGunAudioClip;
             audioSource.Play();
-            
+
 
             GameObject newBulletLeft = Instantiate(bulletPrefab, doubleGunBarrelOutLeft.position, doubleGunBarrelOutLeft.rotation);
             newBulletLeft.GetComponent<Projectile>().damage = GetBulletDamage;
@@ -431,7 +448,7 @@ public class PlayerController : MonoBehaviour
                 Destroy(pellet, 5f);
             }
         }
-        
+
         else
         {
             audioSource.clip = machineGunAudioClip;
@@ -534,7 +551,7 @@ public class PlayerController : MonoBehaviour
         health.GetHealth += value;
 
         //Cap health to max health
-        if(health.GetHealth > health.GetMaxHealth)
+        if (health.GetHealth > health.GetMaxHealth)
         {
             health.GetHealth = health.GetMaxHealth;
         }
@@ -608,5 +625,41 @@ public class PlayerController : MonoBehaviour
         }
 
         lastPosition = transform.position;
+    }
+    void SpawnShadow() //Spawn Shadow (sprint)
+    {
+       GameObject newShadow = Instantiate(shadowPrefab, transform.position, Quaternion.identity);
+        // Start fading coroutine
+        StartCoroutine(FadeShadow(newShadow));
+    }
+    private IEnumerator FadeShadow(GameObject shadow)
+    {
+        MeshRenderer renderer = shadow.GetComponent<MeshRenderer>();
+
+        if (renderer == null)
+        {
+            Debug.LogWarning("No MeshRenderer found on shadow object.");
+            yield break;
+        }
+
+        Material mat = renderer.material; // This creates a unique instance of the material
+        Color originalColor = mat.color;
+
+        float elapsed = 0f;
+
+        while (elapsed < shadowEffectTime)
+        {
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / shadowEffectTime);
+            mat.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Set final alpha to 0
+        mat.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+
+        // Optionally destroy the shadow after fading out
+        Destroy(shadow);
     }
 }
