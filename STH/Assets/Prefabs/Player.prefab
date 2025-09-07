@@ -541,6 +541,10 @@ MonoBehaviour:
   shotgunAudioClip: {fileID: 8300000, guid: 9183922decb2160469e2f7e9fe1a9c07, type: 3}
   sprintSlider: {fileID: 0}
   bulletForce: 50
+  shadowPrefab: {fileID: 6626270891717559413, guid: 6f058ae63c31efd48afb71700988596b, type: 3}
+  shadowTime: 0.05
+  shadowTimer: 0
+  shadowEffectTime: 1
   maxHealth: 100
   moveSpeed: 4
   enemyDetectionRange: 7
