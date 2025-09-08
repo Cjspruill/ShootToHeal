@@ -1,8 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI canSprintText;
 
     [Header("Obstacles")]
-    [SerializeField] GameObject cubePrefab;
+    [SerializeField] private List<GameObject> obstaclePrefabs; // drag multiple prefabs here
     [SerializeField] Transform obstacleHolder;
 
     [Header("Spawn Settings")]
@@ -97,7 +99,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < numOfObstaclesToSpawn; i++)
         {
-            SpawnObstacles();
+            StartCoroutine(SpawnObstacles());
         }
 
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;     
@@ -335,17 +337,19 @@ public class GameManager : MonoBehaviour
         return Vector3.one;
     }
 
-    private bool FindSpawnLocation(out Vector3 spawnLocation, Vector3 objectSize, float paddingXZ = 2f)
+    private bool FindSpawnLocation(out Vector3 spawnLocation, Vector3 objectSize, float paddingXZ = 2f, Quaternion? rotation = null)
     {
         spawnLocation = Vector3.zero;
-        int maxAttempts = 30; // try more times for fairness
+        int maxAttempts = 30;
 
-        // Half extents: add padding only to X/Z so tall obstacles don’t fail
+        // Half extents: add padding only to X/Z so tall obstacles donâ€™t fail
         Vector3 halfExtents = new Vector3(
             (objectSize.x * 0.5f) + paddingXZ,
-            objectSize.y * 0.5f, // no padding in Y
+            objectSize.y * 0.5f,
             (objectSize.z * 0.5f) + paddingXZ
         );
+
+        Quaternion rot = rotation ?? Quaternion.identity;
 
         for (int i = 0; i < maxAttempts; i++)
         {
@@ -357,7 +361,7 @@ public class GameManager : MonoBehaviour
             Collider[] colliders = Physics.OverlapBox(
                 spawnLocation,
                 halfExtents,
-                Quaternion.identity,
+                rot,
                 ~spawnIgnoreLayers
             );
 
@@ -367,6 +371,71 @@ public class GameManager : MonoBehaviour
 
         Debug.LogWarning("Couldn't find free spawn spot after " + maxAttempts + " attempts!");
         return false;
+    }
+
+    private bool FindObstacleSpawnLocation(GameObject prefab, out Vector3 spawnLocation, Quaternion rotation, Vector3 scale, int maxAttempts = 30)
+    {
+        spawnLocation = Vector3.zero;
+
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            // Random X/Z position inside spawn area
+            float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
+            float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
+            Vector3 candidatePos = new Vector3(randX, 0f, randZ);
+
+            // Temporary instance
+            GameObject temp = Instantiate(prefab, candidatePos, rotation);
+            temp.SetActive(false); // hide it during check
+            temp.transform.localScale = scale;
+
+            bool blocked = false;
+
+            // Find the "Colliders" sub-object anywhere in the hierarchy
+            Transform collidersRoot = null;
+            foreach (Transform t in temp.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "Colliders")
+                {
+                    collidersRoot = t;
+                    break;
+                }
+            }
+
+            if (collidersRoot == null)
+            {
+                Debug.LogWarning($"Prefab '{prefab.name}' has no 'Colliders' sub-object! Attempt #{attempt + 1}");
+                Destroy(temp);
+                continue;
+            }
+
+            // Check each BoxCollider
+            foreach (BoxCollider col in collidersRoot.GetComponentsInChildren<BoxCollider>(true))
+            {
+                // Calculate world-space center
+                Vector3 worldCenter = col.transform.position + col.transform.rotation * Vector3.Scale(col.center, col.transform.lossyScale);
+
+                // Calculate half-size in world space
+                Vector3 worldHalfSize = Vector3.Scale(col.size, col.transform.lossyScale) * 0.5f;
+
+                // Check for overlaps
+                if (Physics.CheckBox(worldCenter, worldHalfSize, col.transform.rotation, ~spawnIgnoreLayers))
+                {
+                    blocked = true;
+                    break;
+                }
+            }
+
+            Destroy(temp);
+
+            if (!blocked)
+            {
+                spawnLocation = candidatePos;
+                return true; // valid placement
+            }
+        }
+
+        return false; // failed to find a spot
     }
 
     // ------------------- ENEMY TRACKING -------------------
@@ -395,25 +464,139 @@ public class GameManager : MonoBehaviour
 
     // ------------------- OBSTACLES -------------------
 
-    public void SpawnObstacles()
+    public IEnumerator SpawnObstacles()
     {
-        if (cubePrefab == null || spawnArea == null) return;
+        if (obstaclePrefabs == null || obstaclePrefabs.Count == 0 || spawnArea == null)
+            yield break;
 
-        // Pick random size for this obstacle
-        Vector3 randomScale = new Vector3(
-            Random.Range(2, 10),
-            Random.Range(5, 10),
-            Random.Range(2, 10)
-        );
+        int maxAttempts = 50;
+        int obstacleLayer = LayerMask.NameToLayer("NavMeshObstacleIgnore");
 
-        Vector3 spawnLocation;
-        // add padding so obstacles don’t get wedged together
-        if (!FindSpawnLocation(out spawnLocation, randomScale, paddingXZ: 2f)) return;
+        // Pick a random prefab
+        int randomIndex = Random.Range(0, obstaclePrefabs.Count);
+        GameObject prefabToSpawn = obstaclePrefabs[randomIndex];
 
-        GameObject newObstacle = Instantiate(cubePrefab, spawnLocation, Quaternion.identity, obstacleHolder);
-        newObstacle.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
-        newObstacle.transform.localScale = randomScale;
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            // Random XZ position within spawn area
+            float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
+            float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
+            Vector3 candidatePos = new Vector3(randX, spawnArea.bounds.max.y + 20f, randZ);
+
+            // Instantiate ghost
+            GameObject ghost = Instantiate(prefabToSpawn, candidatePos, Quaternion.identity, obstacleHolder);
+
+            // Set scale
+            ghost.transform.localScale = (randomIndex == 0)
+                ? new Vector3(Random.Range(2, 10), Random.Range(5, 10), Random.Range(2, 10))
+                : Vector3.one;
+
+            // Set rotation
+            Quaternion rotation;
+            if (randomIndex == 0)
+                rotation = Quaternion.identity;
+            else if (randomIndex == 1 || randomIndex == 2)
+                rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+            else
+                rotation = Quaternion.identity;
+            ghost.transform.rotation = rotation;
+
+            // Set layer recursively
+            SetLayerRecursively(ghost, obstacleLayer);
+
+            // Disable renderers until confirmed placement
+            foreach (Renderer r in ghost.GetComponentsInChildren<Renderer>())
+                r.enabled = false;
+
+            // Enable placement colliders
+            Transform collidersRoot = FindCollidersDeep(ghost.transform);
+            if (collidersRoot == null)
+            {
+                Debug.LogWarning($"Prefab '{prefabToSpawn.name}' missing 'Colliders' sub-object!");
+                Destroy(ghost);
+                yield break;
+            }
+
+            BoxCollider[] placementColliders = collidersRoot.GetComponentsInChildren<BoxCollider>();
+            foreach (BoxCollider c in placementColliders)
+                c.enabled = true;
+
+            // Raycast down to find ground height (ignore layers in spawnIgnoreLayers)
+            if (!Physics.Raycast(candidatePos, Vector3.down, out RaycastHit hit, 100f, ~spawnIgnoreLayers))
+            {
+                Destroy(ghost);
+                continue;
+            }
+            ghost.transform.position = hit.point + Vector3.up * 0.01f;
+
+            // Wait a physics frame
+            yield return new WaitForFixedUpdate();
+
+            // --------- Accurate overlap check using Bounds.Intersects ---------
+            bool intersects = false;
+
+            foreach (BoxCollider c in placementColliders)
+            {
+                Bounds worldBounds = c.bounds;
+
+                foreach (Transform otherObstacle in obstacleHolder)
+                {
+                    if (otherObstacle.gameObject == ghost) continue;
+
+                    BoxCollider[] otherColliders = otherObstacle.GetComponentsInChildren<BoxCollider>();
+                    foreach (BoxCollider other in otherColliders)
+                    {
+                        if (worldBounds.Intersects(other.bounds))
+                        {
+                            intersects = true;
+                            break;
+                        }
+                    }
+                    if (intersects) break;
+                }
+
+                if (intersects) break;
+            }
+            // -----------------------------------------------------------------
+
+            if (!intersects)
+            {
+                // Valid placement: show renderers
+                foreach (Renderer r in ghost.GetComponentsInChildren<Renderer>())
+                    r.enabled = true;
+
+                // Keep Colliders sub-object for gameplay
+                yield break; // placed successfully
+            }
+
+            // Failed attempt
+            Destroy(ghost);
+        }
+
+        Debug.LogWarning($"Could not place obstacle '{prefabToSpawn.name}' after {maxAttempts} attempts!");
     }
+
+
+    // --- Helper Methods ---
+    private Transform FindCollidersDeep(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == "Colliders") return child;
+            Transform found = FindCollidersDeep(child);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform t in obj.GetComponentsInChildren<Transform>())
+            t.gameObject.layer = layer;
+    }
+    
+
 
     public int GetScore()
     {

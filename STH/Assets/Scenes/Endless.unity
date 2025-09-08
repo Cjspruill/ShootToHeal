@@ -586,7 +586,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 63
+    m_Bits: 447
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -929,7 +929,7 @@ MonoBehaviour:
   playerController: {fileID: 0}
   spawnIgnoreLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 136
   enemiesToSpawn:
   - {fileID: 1961342829119255558, guid: fadd007ca0db72f44a4ec19e2c26a7cd, type: 3}
   - {fileID: 716706760683486178, guid: 2cceba202066f2843a8e9ce19ee5ab9c, type: 3}
@@ -941,7 +941,10 @@ MonoBehaviour:
   currentXPText: {fileID: 0}
   currentCashText: {fileID: 0}
   canSprintText: {fileID: 0}
-  cubePrefab: {fileID: 5660823980138371029, guid: 2de18de84aca8104b8d9f21ff21d081d, type: 3}
+  obstaclePrefabs:
+  - {fileID: 8582180655768096383, guid: d651a2e05f483144fa9069ddad6e1ed4, type: 3}
+  - {fileID: 2216352827814397507, guid: 14b62b7114c88ef429d1faf08f6185d1, type: 3}
+  - {fileID: 9128204638848036961, guid: db232a539492c4b4d86c588bbc605554, type: 3}
   obstacleHolder: {fileID: 994115428}
   baseSpawnInterval: 3
   spawnIntervalDecrease: 0.2
@@ -1301,7 +1304,7 @@ GameObject:
   - component: {fileID: 1807172971}
   - component: {fileID: 1807172970}
   - component: {fileID: 1807172974}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
