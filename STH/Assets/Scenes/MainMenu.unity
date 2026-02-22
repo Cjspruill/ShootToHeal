@@ -2478,7 +2478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.000026703, y: -67.075}
+  m_AnchoredPosition: {x: -0.000029345, y: -124.31}
   m_SizeDelta: {x: 510.0428, y: 134.15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &670219746
@@ -7713,7 +7713,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713675394}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000040322}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7727,8 +7727,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -40.671}
-  m_SizeDelta: {x: 0, y: -81.343}
+  m_AnchoredPosition: {x: -0, y: -124.31}
+  m_SizeDelta: {x: 0, y: -248.62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1713675396
 MonoBehaviour:
@@ -11274,8 +11274,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 496.00787, y: -113.19989}
-  m_SizeDelta: {x: 510.0613, y: 72.7333}
+  m_AnchoredPosition: {x: 434.738, y: -113.19989}
+  m_SizeDelta: {x: 632.6, y: 72.733}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &877718098123740638
 GameObject:
@@ -12170,7 +12170,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HighScoreController
   highScoreHolderPrefab: {fileID: 682102778973434853, guid: 916fefc8d71793d4cbc3d3c803573d61, type: 3}
   highScoreParent: {fileID: 619881437869891297}
-  maxHighScores: 11
   nameInputField: {fileID: 8522554494324484578}
   nameEntryPanel: {fileID: 6990709154253088035}
 --- !u!224 &1403688096484379490
@@ -14499,8 +14498,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1311.9, y: -113.2}
-  m_SizeDelta: {x: 567.71, y: 72.7333}
+  m_AnchoredPosition: {x: 1175, y: -113.2}
+  m_SizeDelta: {x: 365.887, y: 72.733}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &2788365616411304547
 RectTransform:
@@ -20815,8 +20814,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 889.5491, y: -113.20001}
-  m_SizeDelta: {x: 277.0083, y: 72.7333}
+  m_AnchoredPosition: {x: 778.19507, y: -113.20001}
+  m_SizeDelta: {x: 236.819, y: 72.733}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5782588949916429804
 MonoBehaviour:
@@ -21598,60 +21597,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9cf3549f5a9d844d82ae9551043bc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradesSelector
-  healthToGiveMin: 2
-  healthToGiveMax: 4
-  healthToGiveCap: 200
+  enemyDetectionRangeToGiveMin: 0.1
+  enemyDetectionRangeToGiveMax: 0.2
+  enemyDetectionRangeToGiveCap: 10
   viewRangeToGiveMin: 0.15
   viewRangeToGiveMax: 0.3
   viewRangeToGiveCap: 15
   moveSpeedToGiveMin: 0.11
   moveSpeedToGiveMax: 0.22
   moveSpeedToGiveCap: 11
-  enemyDetectionRangeToGiveMin: 0.1
-  enemyDetectionRangeToGiveMax: 0.2
-  enemyDetectionRangeToGiveCap: 10
-  bulletDamageToGiveMin: 0.2
-  bulletDamageToGiveMax: 0.4
-  bulletDamageToGiveCap: 20
-  fireRateToGiveMin: 0.0015
-  fireRateToGiveMax: 0.003
-  fireRateToGiveCap: 0.15
   sprintTimeToGiveMin: 0.05
   sprintTimeToGiveMax: 0.1
   sprintTimeToGiveCap: 5
-  sprintCooldownToGiveMin: 0.01
-  sprintCooldownToGiveMax: 0.02
-  sprintCooldownToGiveCap: 1
   sprintMultiplierToGiveMin: 0.02
   sprintMultiplierToGiveMax: 0.04
   sprintMultiplierToGiveCap: 2
+  sprintCooldownToGiveMin: 0.01
+  sprintCooldownToGiveMax: 0.02
+  sprintCooldownToGiveCap: 1
   rotationSpeedToGiveMin: 2
   rotationSpeedToGiveMax: 4
   rotationSpeedToGiveCap: 200
   shootToHealToGiveMin: 0.03
   shootToHealToGiveMax: 0.06
   shootToHealToGiveCap: 3
+  healthToGiveMin: 2
+  healthToGiveMax: 4
+  healthToGiveCap: 200
+  bulletDamageToGiveMin: 0.2
+  bulletDamageToGiveMax: 0.4
+  bulletDamageToGiveCap: 20
+  fireRateToGiveMin: 0.0015
+  fireRateToGiveMax: 0.003
+  fireRateToGiveCap: 0.15
   flameThrowerDurationMin: 0.02
   flameThrowerDurationMax: 0.04
   flameThrowerDurationCap: 2
   bulletKnockbackToGiveMin: 0.05
   bulletKnockbackToGiveMax: 0.1
   bulletKnockbackToGiveCap: 5
-  botMoveSpeedToGiveMin: 0.11
-  botMoveSpeedToGiveMax: 0.22
-  botMoveSpeedToGiveCap: 11
-  botDamageToGiveMin: 0.2
-  botDamageToGiveMax: 0.4
-  botDamageToGiveCap: 20
-  botFireRateToGiveMin: 0.0015
-  botFireRateToGiveMax: 0.003
-  botFireRateToGiveCap: 0.15
-  botSprintSpeedToGiveMin: 0.15
-  botSprintSpeedToGiveMax: 0.3
-  botSprintSpeedToGiveCap: 15
   botSprintDurationToGiveMin: 0.05
   botSprintDurationToGiveMax: 0.1
   botSprintDurationToGiveCap: 5
+  botMoveSpeedToGiveMin: 0.11
+  botMoveSpeedToGiveMax: 0.22
+  botMoveSpeedToGiveCap: 11
+  botSprintSpeedToGiveMin: 0.15
+  botSprintSpeedToGiveMax: 0.3
+  botSprintSpeedToGiveCap: 15
+  botFireRateToGiveMin: 0.0015
+  botFireRateToGiveMax: 0.003
+  botFireRateToGiveCap: 0.15
+  botDamageToGiveMin: 0.2
+  botDamageToGiveMax: 0.4
+  botDamageToGiveCap: 20
   playerController: {fileID: 0}
   aiHelperBot: {fileID: 0}
   upgradeButtons:
@@ -23607,7 +23606,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enemies Defeated
+  m_text: Enemies
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -24998,8 +24997,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -393.79047, y: -113.19989}
-  m_SizeDelta: {x: 314.8309, y: 72.7333}
+  m_AnchoredPosition: {x: -279.40387, y: -113.19989}
+  m_SizeDelta: {x: 308.019, y: 72.733}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8408505286089533799
 GameObject:
