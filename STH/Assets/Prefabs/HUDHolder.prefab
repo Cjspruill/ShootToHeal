@@ -7739,60 +7739,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9cf3549f5a9d844d82ae9551043bc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradesSelector
-  healthToGiveMin: 2
-  healthToGiveMax: 4
-  healthToGiveCap: 200
-  viewRangeToGiveMin: 0.15
-  viewRangeToGiveMax: 0.3
-  viewRangeToGiveCap: 15
-  moveSpeedToGiveMin: 0.11
-  moveSpeedToGiveMax: 0.22
-  moveSpeedToGiveCap: 11
-  enemyDetectionRangeToGiveMin: 0.1
-  enemyDetectionRangeToGiveMax: 0.2
+  enemyDetectionRangeToGiveMin: 0.25
+  enemyDetectionRangeToGiveMax: 0.5
   enemyDetectionRangeToGiveCap: 10
-  bulletDamageToGiveMin: 0.2
-  bulletDamageToGiveMax: 0.4
-  bulletDamageToGiveCap: 20
-  fireRateToGiveMin: 0.0015
-  fireRateToGiveMax: 0.003
-  fireRateToGiveCap: 0.15
-  sprintTimeToGiveMin: 0.05
-  sprintTimeToGiveMax: 0.1
+  viewRangeToGiveMin: 0.375
+  viewRangeToGiveMax: 0.75
+  viewRangeToGiveCap: 15
+  moveSpeedToGiveMin: 0.275
+  moveSpeedToGiveMax: 0.55
+  moveSpeedToGiveCap: 11
+  sprintTimeToGiveMin: 0.125
+  sprintTimeToGiveMax: 0.25
   sprintTimeToGiveCap: 5
-  sprintCooldownToGiveMin: 0.01
-  sprintCooldownToGiveMax: 0.02
-  sprintCooldownToGiveCap: 1
-  sprintMultiplierToGiveMin: 0.02
-  sprintMultiplierToGiveMax: 0.04
+  sprintMultiplierToGiveMin: 0.05
+  sprintMultiplierToGiveMax: 0.1
   sprintMultiplierToGiveCap: 2
-  rotationSpeedToGiveMin: 2
-  rotationSpeedToGiveMax: 4
+  sprintCooldownToGiveMin: 0.025
+  sprintCooldownToGiveMax: 0.05
+  sprintCooldownToGiveCap: 1
+  rotationSpeedToGiveMin: 5
+  rotationSpeedToGiveMax: 10
   rotationSpeedToGiveCap: 200
-  shootToHealToGiveMin: 0.03
-  shootToHealToGiveMax: 0.06
+  shootToHealToGiveMin: 0.075
+  shootToHealToGiveMax: 0.15
   shootToHealToGiveCap: 3
-  flameThrowerDurationMin: 0.02
-  flameThrowerDurationMax: 0.04
+  healthToGiveMin: 5
+  healthToGiveMax: 10
+  healthToGiveCap: 200
+  bulletDamageToGiveMin: 0.5
+  bulletDamageToGiveMax: 1
+  bulletDamageToGiveCap: 20
+  fireRateToGiveMin: 0.00375
+  fireRateToGiveMax: 0.0075
+  fireRateToGiveCap: 0.15
+  flameThrowerDurationMin: 0.05
+  flameThrowerDurationMax: 0.1
   flameThrowerDurationCap: 2
-  bulletKnockbackToGiveMin: 0.05
-  bulletKnockbackToGiveMax: 0.1
+  bulletKnockbackToGiveMin: 0.125
+  bulletKnockbackToGiveMax: 0.25
   bulletKnockbackToGiveCap: 5
-  botMoveSpeedToGiveMin: 0.11
-  botMoveSpeedToGiveMax: 0.22
-  botMoveSpeedToGiveCap: 11
-  botDamageToGiveMin: 0.2
-  botDamageToGiveMax: 0.4
-  botDamageToGiveCap: 20
-  botFireRateToGiveMin: 0.0015
-  botFireRateToGiveMax: 0.003
-  botFireRateToGiveCap: 0.15
-  botSprintSpeedToGiveMin: 0.15
-  botSprintSpeedToGiveMax: 0.3
-  botSprintSpeedToGiveCap: 15
-  botSprintDurationToGiveMin: 0.05
-  botSprintDurationToGiveMax: 0.1
+  botSprintDurationToGiveMin: 0.125
+  botSprintDurationToGiveMax: 0.25
   botSprintDurationToGiveCap: 5
+  botMoveSpeedToGiveMin: 0.275
+  botMoveSpeedToGiveMax: 0.55
+  botMoveSpeedToGiveCap: 11
+  botSprintSpeedToGiveMin: 0.375
+  botSprintSpeedToGiveMax: 0.75
+  botSprintSpeedToGiveCap: 15
+  botFireRateToGiveMin: 0.00375
+  botFireRateToGiveMax: 0.0075
+  botFireRateToGiveCap: 0.15
+  botDamageToGiveMin: 0.5
+  botDamageToGiveMax: 1
+  botDamageToGiveCap: 20
   playerController: {fileID: 0}
   aiHelperBot: {fileID: 0}
   upgradeButtons:
@@ -13326,7 +13326,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HighScoreController
   highScoreHolderPrefab: {fileID: 682102778973434853, guid: 916fefc8d71793d4cbc3d3c803573d61, type: 3}
   highScoreParent: {fileID: 619881437605543334}
-  maxHighScores: 11
   nameInputField: {fileID: 8522554493523413669}
   nameEntryPanel: {fileID: 6990709153443497572}
 --- !u!1 &7057816199153072930
