@@ -103,15 +103,23 @@ public class HighScoreController : MonoBehaviour
         }
 
         // Check if current game score beats any existing score
+        bool isNewHighScore = false;
         if (GameManager.Instance != null)
         {
-            bool isNewHighScore = highScores.Any(entry => GameManager.Instance.GetScore() > entry.score);
-
-            // Toggle the name entry panel based on if it's a high score
-            if (isNewHighScore) {
-                nameEntryPanel?.SetActive(isNewHighScore);
+            int currentScore = GameManager.Instance.GetScore();
+            foreach (var entry in highScores)
+            {
+                if (currentScore > entry.score)
+                {
+                    isNewHighScore = true;
+                    break;
+                }
             }
         }
+
+        // Toggle the name entry panel based on if it's a high score
+        if (nameEntryPanel != null)
+            nameEntryPanel.SetActive(isNewHighScore);
     }
 
     private void SaveHighScores()
