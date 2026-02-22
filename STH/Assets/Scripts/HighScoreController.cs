@@ -10,9 +10,9 @@ public class HighScoreEntry
     public int level;
     public int enemiesDefeated;
 
-    public HighScoreEntry(string name, int level, int enemiesDefeated, int score)
+    public HighScoreEntry(string playerName, int level, int enemiesDefeated, int score)
     {
-        this.playerName = name;
+        this.playerName = playerName;
         this.level = level;
         this.enemiesDefeated = enemiesDefeated;
         this.score = score;
@@ -26,7 +26,7 @@ public class HighScoreController : MonoBehaviour
     [Header("Setup")]
     [SerializeField] private GameObject highScoreHolderPrefab; // Prefab with TMP_Text refs
     [SerializeField] private Transform highScoreParent; // Where to spawn the UI
-    [SerializeField] private int maxHighScores = 11;
+    [SerializeField] private readonly int maxHighScores = 11;
 
     [Header("UI Input")]
     [SerializeField] private TMP_InputField nameInputField;
@@ -97,9 +97,9 @@ public class HighScoreController : MonoBehaviour
         {
             string name = PlayerPrefs.GetString($"HighScoreName{i}", "AAA");
             int level = PlayerPrefs.GetInt($"LevelValue{i}", 1);
-            int enemiesDefeated = PlayerPrefs.GetInt($"EnemiesDefeatedValue{i}", 0);
-            int score = PlayerPrefs.GetInt($"HighScoreValue{i}", 0);
-            highScores.Add(new HighScoreEntry(name, level,enemiesDefeated, score));
+            int enemiesDefeated = PlayerPrefs.GetInt($"EnemiesDefeatedValue{i}");
+            int score = PlayerPrefs.GetInt($"HighScoreValue{i}");
+            highScores.Add(new HighScoreEntry(name, level, enemiesDefeated, score));
         }
 
         // Check if current game score beats any existing score
@@ -127,8 +127,8 @@ public class HighScoreController : MonoBehaviour
         for (int i = 0; i < highScores.Count; i++)
         {
             PlayerPrefs.SetString($"HighScoreName{i}", highScores[i].playerName);
-            PlayerPrefs.SetString($"LevelValue{i}", highScores[i].level.ToString());
-            PlayerPrefs.SetString($"EnemiesDefeatedValue{i}", highScores[i].enemiesDefeated.ToString());
+            PlayerPrefs.SetInt($"LevelValue{i}", highScores[i].level);
+            PlayerPrefs.SetInt($"EnemiesDefeatedValue{i}", highScores[i].enemiesDefeated);
             PlayerPrefs.SetInt($"HighScoreValue{i}", highScores[i].score);
         }
 
@@ -173,8 +173,8 @@ public class HighScoreController : MonoBehaviour
         {
             string name = PlayerPrefs.GetString($"HighScoreName{i}", "AAA");
             int level = PlayerPrefs.GetInt($"LevelValue{i}", 1);
-            int enemiesDefeated = PlayerPrefs.GetInt($"EnemiesDefeatedValue{i}", 0);
-            int score = PlayerPrefs.GetInt($"HighScoreValue{i}", 0);
+            int enemiesDefeated = PlayerPrefs.GetInt($"EnemiesDefeatedValue{i}");
+            int score = PlayerPrefs.GetInt($"HighScoreValue{i}");
 
             highScores.Add(new HighScoreEntry(name, level, enemiesDefeated, score));
         }
