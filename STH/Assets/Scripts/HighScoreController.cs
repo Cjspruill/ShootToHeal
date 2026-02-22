@@ -5,10 +5,10 @@ using TMPro;
 [System.Serializable]
 public class HighScoreEntry
 {
-    string playerName;
-    int score;
-    int level;
-    int enemiesDefeated;
+    public string playerName;
+    public int score;
+    public int level;
+    public int enemiesDefeated;
 
     public HighScoreEntry(string playerName, int level, int enemiesDefeated, int score)
     {
