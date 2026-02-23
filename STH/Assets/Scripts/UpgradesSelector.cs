@@ -140,16 +140,9 @@ public class UpgradesSelector : MonoBehaviour
         GameManager.OnLevelEnd += HandleLevelEnd;
     }
 
-
     private void OnDisable()
     {
         GameManager.OnLevelEnd -= HandleLevelEnd;
-
-        // Make sure to unsubscribe when destroyed
-        if (LevelPlayAds.Instance != null)
-        {
-            LevelPlayAds.Instance.OnAnyAdClosed -= ShowUpgradesAfterAd;
-        }
     }
 
     private void Start()
@@ -192,7 +185,7 @@ public class UpgradesSelector : MonoBehaviour
             float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
 
             List<(Action action, string name)> allUpgrades = new List<(Action, string)>
-            { 
+            {
     (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
     (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
     (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
@@ -319,7 +312,7 @@ public class UpgradesSelector : MonoBehaviour
             if (flamethrowerPurchased)
                 allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
 
-            // ✅ Only add bot upgrades if a bot is active
+            // Only add bot upgrades if a bot is active
             if (aiMeleeBotPurchased || aiRangedBotPurchased)
             {
                 if (aiHelperBot.GetMoveSpeed < botMoveSpeedToGiveCap)
@@ -392,7 +385,6 @@ public class UpgradesSelector : MonoBehaviour
     void GiveFlamethrowerDurationToPlayer() { playerController.GetFlameThrowerDuration += flamethrowerDurationToGive; StartLevel(); AbilitySelect(); }
     void GiveBulletKnockbackToPlayer() { playerController.GetBulletKnockback += bulletKnockbackToGive; StartLevel(); AbilitySelect(); }
 
-
     void GiveMoveSpeedToBot() { aiHelperBot.GetMoveSpeed += botMoveSpeedToGive; StartLevel(); }
     void GiveDamageToBot() { aiHelperBot.GetDamage += botDamageToGive; StartLevel(); }
     void GiveFireRateToBot() { aiHelperBot.GetFireRate -= botFireRateToGive; StartLevel(); }
@@ -406,10 +398,10 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowHealthBarsButton() { showHealthBarsButton.gameObject.SetActive(false); GameManager.Instance.showHealthBars = true; StartLevel(); }
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
-   
-    public void ClickAIMeleeBotButton() { aiMeleeBotButton.gameObject.SetActive(false); aiRangedBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiMeleeBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true; aiBotChosen = true; StartLevel();}
+
+    public void ClickAIMeleeBotButton() { aiMeleeBotButton.gameObject.SetActive(false); aiRangedBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiMeleeBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true; aiBotChosen = true; StartLevel(); }
     public void ClickAIRangedBotButton() { aiRangedBotButton.gameObject.SetActive(false); aiMeleeBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiRangedBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isRanged = true; aiBotChosen = true; StartLevel(); }
-    
+
     // === Weapon Logic ===
     void SwapWeapon(WeaponType newWeapon)
     {
@@ -479,7 +471,7 @@ public class UpgradesSelector : MonoBehaviour
 
     void AbilitySelect()
     {
-        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) 
+        if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
         {
             var currentPage = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
 
@@ -492,23 +484,6 @@ public class UpgradesSelector : MonoBehaviour
 
     private void HandleLevelEnd()
     {
-        // Check if we should wait for an ad before upgrades
-        if (LevelPlayAds.Instance != null && LevelPlayAds.Instance.IsAdPlaying())
-        {
-            Debug.Log("Ad is currently playing → will show upgrades after ad.");
-            LevelPlayAds.Instance.OnAnyAdClosed += ShowUpgradesAfterAd;
-        }
-        else
-        {
-            Debug.Log("No ad playing → showing upgrades now.");
-            RandomizeUpgrades();
-        }
-    }
-
-    private void ShowUpgradesAfterAd()
-    {
-        Debug.Log("Ad finished → showing upgrades.");
-        LevelPlayAds.Instance.OnAnyAdClosed -= ShowUpgradesAfterAd;
         RandomizeUpgrades();
     }
 }

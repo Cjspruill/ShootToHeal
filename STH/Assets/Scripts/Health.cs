@@ -18,15 +18,13 @@ public class Health : MonoBehaviour
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] Color origColor;
     [SerializeField] Color damageFlashColor = Color.white;
-    [SerializeField] public bool inDamageFlash; 
+    [SerializeField] public bool inDamageFlash;
     [SerializeField] float damageFlashTime = .25f;
     [SerializeField] EnemyTutorial enemyTutorial;
+
     public float GetHealth { get => health; set => health = value; }
     public float GetMaxHealth { get => maxHealth; set => maxHealth = value; }
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
@@ -37,29 +35,26 @@ public class Health : MonoBehaviour
         {
             healthText = GameObject.FindGameObjectWithTag("HealthText").GetComponent<TextMeshProUGUI>();
 
-        if(TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)        
-            GetMaxHealth = 1000;
+            if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
+                GetMaxHealth = 1000;
         }
-
-        
 
         ResetHealth();
 
-        if(healthBarSlider != null)
+        if (healthBarSlider != null)
         {
-        healthBarSlider.maxValue = GetMaxHealth;
-        healthBarSlider.value = GetHealth;
+            healthBarSlider.maxValue = GetMaxHealth;
+            healthBarSlider.value = GetHealth;
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!canDamage)
         {
             damageTimer += Time.deltaTime;
 
-            if(damageTimer >= damageTime)
+            if (damageTimer >= damageTime)
             {
                 canDamage = true;
                 damageTimer = 0;
@@ -68,14 +63,13 @@ public class Health : MonoBehaviour
 
         if (healthText)
             healthText.text = "Health: " + GetRoundedHealth() + "/ " + GetRoundedMaxHealth();
-        
 
         if (GameManager.Instance.showHealthBars)
         {
             if (healthBarSlider != null)
             {
-            healthBarSlider.gameObject.SetActive(true);
-            healthBarSlider.value = GetHealth;
+                healthBarSlider.gameObject.SetActive(true);
+                healthBarSlider.value = GetHealth;
             }
         }
     }
@@ -110,73 +104,16 @@ public class Health : MonoBehaviour
                         enemyTutorial.TutorialDeath();
                 }
 
-                Destroy(gameObject); // ✅ enemy still gets destroyed
+                Destroy(gameObject);
             }
             else if (playerController)
             {
-                Debug.Log("Player reached 0 HP. Prompting revive ad...");
+                // --- PLAYER DEATH ---
+                // Clamp health to 0 so UI doesn't show negative
+                health = 0;
 
-                // Pause immediately when player "dies"
-                GameManager.Instance.PauseGame();
-
-                if (LevelPlayAds.Instance != null && LevelPlayAds.Instance.CanRevive())
-                {
-                    LevelPlayAds ads = LevelPlayAds.Instance;
-                    ads.adsPanel.SetActive(true);
-                    ads.adsHeaderText.text = $"Watch an ad to revive with 50 health? ({ads.maxRevives - ads.reviveCount} left)";
-
-                    ads.yesButton.onClick.RemoveAllListeners();
-                    ads.noButton.onClick.RemoveAllListeners();
-
-                    // YES = revive via ad
-                    ads.yesButton.onClick.AddListener(() =>
-                    {
-                        if (ads.IsHealthAdReady())
-                        {
-                            ads.OnAnyAdClosed += () =>
-                            {
-                                Debug.Log("Revive ad finished. Restoring player health.");
-                                health = 50f;
-                                ads.IncrementReviveCount();
-                                ads.adsPanel.SetActive(false);
-
-                                // ✅ Resume game after revive
-                                GameManager.Instance.ResumeGame();
-                            };
-
-                            ads.ShowHealthAd();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Health ad not ready. Ending game instead.");
-                            ads.LoadHealthAd();
-                            ads.adsPanel.SetActive(false);
-
-                            // Resume briefly so GameOver flow can run
-                            GameManager.Instance.ResumeGame();
-                            GameManager.Instance.GameOver();
-                            Destroy(gameObject);
-                        }
-                    });
-
-                    // NO = normal death
-                    ads.noButton.onClick.AddListener(() =>
-                    {
-                        ads.adsPanel.SetActive(false);
-
-                        // Resume briefly so GameOver flow can run
-                        GameManager.Instance.ResumeGame();
-                        GameManager.Instance.GameOver();
-                        Destroy(gameObject);
-                    });
-                }
-                else
-                {
-                    Debug.Log("No revives left or LevelPlayAds missing. Game over.");
-                    GameManager.Instance.ResumeGame();
-                    GameManager.Instance.GameOver();
-                    Destroy(gameObject);
-                }
+                // Delegate entirely to GameManager which owns lives, coins, and UI routing
+                GameManager.Instance.PlayerDied();
             }
         }
     }
@@ -186,25 +123,22 @@ public class Health : MonoBehaviour
         health += value;
 
         if (health >= GetMaxHealth)
-        {
             health = GetMaxHealth;
-        }
     }
 
-    void ResetHealth() 
+    void ResetHealth()
     {
         health = GetMaxHealth;
     }
 
     public int GetRoundedHealth()
     {
-        int roundedHealth = Mathf.RoundToInt(health);
-        return roundedHealth;
+        return Mathf.RoundToInt(health);
     }
+
     public int GetRoundedMaxHealth()
     {
-        int roundedMaxHealth = Mathf.RoundToInt(GetMaxHealth);
-        return roundedMaxHealth;
+        return Mathf.RoundToInt(GetMaxHealth);
     }
 
     IEnumerator DamageFlash()
