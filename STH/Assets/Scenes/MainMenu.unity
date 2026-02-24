@@ -11455,6 +11455,7 @@ MonoBehaviour:
   playerController: {fileID: 0}
   playerHealth: {fileID: 0}
   pausePanel: {fileID: 6641028921145935677}
+  optionsPanel: {fileID: 0}
   healthText: {fileID: 4334543088307336597}
   shootToHealText: {fileID: 9025976627931064076}
   fireRateText: {fileID: 2634679274992279956}

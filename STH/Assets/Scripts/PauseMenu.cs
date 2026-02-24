@@ -12,10 +12,12 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] PlayerController playerController;
     [SerializeField] Health playerHealth;
     [SerializeField] GameObject pausePanel;
+    [SerializeField] GameObject optionsPanel;
 
     InputSystem_Actions playerInput;
 
     bool gameIsPaused = false;
+    bool optionsPanelOpen = false;
 
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] TextMeshProUGUI shootToHealText;
@@ -100,6 +102,7 @@ public class PauseMenu : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1;
     }
 
     public void ReturnToMainMenu()
@@ -126,5 +129,17 @@ public class PauseMenu : MonoBehaviour
             Time.timeScale = 1;
     }
 
-  
+    public void ToggleOptionsPanel() 
+    {
+        if(optionsPanelOpen)
+        {
+            optionsPanelOpen = false;
+            optionsPanel.SetActive(false);
+        }
+        else if (!optionsPanelOpen)
+        {
+            optionsPanelOpen=true;
+            optionsPanel.SetActive(true);
+        }
+    }
 }
