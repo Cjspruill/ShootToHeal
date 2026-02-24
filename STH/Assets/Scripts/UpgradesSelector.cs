@@ -399,6 +399,21 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
 
+
+    void SpawnBotNearPlayer()
+    {
+        Vector3 spawnOrigin = playerController.transform.position + playerController.transform.forward * 2f;
+
+        if (UnityEngine.AI.NavMesh.SamplePosition(spawnOrigin, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            aiBotToActivate.transform.position = hit.position;
+        }
+        else
+        {
+            aiBotToActivate.transform.position = playerController.transform.position;
+        }
+    }
+
     public void ClickAIMeleeBotButton()
     {
         if (!aiMeleeBotPurchased)
@@ -407,6 +422,7 @@ public class UpgradesSelector : MonoBehaviour
             playerController.GetCash -= aiMeleeBotPrice;
             aiMeleeBotPurchased = true;
             aiMeleeBotPriceText.text = "";
+            SpawnBotNearPlayer(); // Only on first purchase
         }
 
         aiMeleeBotButton.gameObject.SetActive(false);
@@ -417,6 +433,7 @@ public class UpgradesSelector : MonoBehaviour
         aiBotChosen = true;
         StartLevel();
     }
+
     public void ClickAIRangedBotButton()
     {
         if (!aiRangedBotPurchased)
@@ -425,6 +442,7 @@ public class UpgradesSelector : MonoBehaviour
             playerController.GetCash -= aiRangedBotPrice;
             aiRangedBotPurchased = true;
             aiRangedBotPriceText.text = "";
+            SpawnBotNearPlayer(); // Only on first purchase
         }
 
         aiRangedBotButton.gameObject.SetActive(false);
