@@ -399,8 +399,42 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
 
-    public void ClickAIMeleeBotButton() { aiMeleeBotButton.gameObject.SetActive(false); aiRangedBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiMeleeBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true; aiBotChosen = true; StartLevel(); }
-    public void ClickAIRangedBotButton() { aiRangedBotButton.gameObject.SetActive(false); aiMeleeBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiRangedBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isRanged = true; aiBotChosen = true; StartLevel(); }
+    public void ClickAIMeleeBotButton()
+    {
+        if (!aiMeleeBotPurchased)
+        {
+            if (playerController.GetCash < aiMeleeBotPrice) return;
+            playerController.GetCash -= aiMeleeBotPrice;
+            aiMeleeBotPurchased = true;
+            aiMeleeBotPriceText.text = "";
+        }
+
+        aiMeleeBotButton.gameObject.SetActive(false);
+        aiRangedBotButton.gameObject.SetActive(false);
+        aiBotToActivate.gameObject.SetActive(true);
+        GameManager.Instance.aiMeleeBotActive = true;
+        aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true;
+        aiBotChosen = true;
+        StartLevel();
+    }
+    public void ClickAIRangedBotButton()
+    {
+        if (!aiRangedBotPurchased)
+        {
+            if (playerController.GetCash < aiRangedBotPrice) return;
+            playerController.GetCash -= aiRangedBotPrice;
+            aiRangedBotPurchased = true;
+            aiRangedBotPriceText.text = "";
+        }
+
+        aiRangedBotButton.gameObject.SetActive(false);
+        aiMeleeBotButton.gameObject.SetActive(false);
+        aiBotToActivate.gameObject.SetActive(true);
+        GameManager.Instance.aiRangedBotActive = true;
+        aiBotToActivate.GetComponent<AIHelperBot>().isRanged = true;
+        aiBotChosen = true;
+        StartLevel();
+    }
 
     // === Weapon Logic ===
     void SwapWeapon(WeaponType newWeapon)
