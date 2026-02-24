@@ -4,83 +4,77 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// ─────────────────────────────────────────────
+//  Weapon definition — configure in Inspector
+// ─────────────────────────────────────────────
+[System.Serializable]
+public class WeaponData
+{
+    public string weaponName;
+    public UpgradesSelector.WeaponType weaponType;
+    public float price;
+    [HideInInspector] public bool purchased;
+    [HideInInspector] public Button button;
+    [HideInInspector] public TextMeshProUGUI priceText;
+}
+
+// ─────────────────────────────────────────────
+//  Bot definition — configure in Inspector
+// ─────────────────────────────────────────────
+[System.Serializable]
+public class BotData
+{
+    public string botName;
+    public UpgradesSelector.BotType botType;
+    public float price;
+    [HideInInspector] public bool purchased;
+    [HideInInspector] public Button button;
+    [HideInInspector] public TextMeshProUGUI priceText;
+}
+
 public class UpgradesSelector : MonoBehaviour
 {
+    // ── Stat ranges ───────────────────────────────────────────────────
     float enemyDetectionRangeToGive;
-    [SerializeField] float enemyDetectionRangeToGiveMin;
-    [SerializeField] float enemyDetectionRangeToGiveMax;
-    [SerializeField] float enemyDetectionRangeToGiveCap;
+    [SerializeField] float enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax, enemyDetectionRangeToGiveCap;
     float viewRangeToGive;
-    [SerializeField] float viewRangeToGiveMin;
-    [SerializeField] float viewRangeToGiveMax;
-    [SerializeField] float viewRangeToGiveCap;
+    [SerializeField] float viewRangeToGiveMin, viewRangeToGiveMax, viewRangeToGiveCap;
     float moveSpeedToGive;
-    [SerializeField] float moveSpeedToGiveMin;
-    [SerializeField] float moveSpeedToGiveMax;
-    [SerializeField] float moveSpeedToGiveCap;
+    [SerializeField] float moveSpeedToGiveMin, moveSpeedToGiveMax, moveSpeedToGiveCap;
     float sprintTimeToGive;
-    [SerializeField] float sprintTimeToGiveMin;
-    [SerializeField] float sprintTimeToGiveMax;
-    [SerializeField] float sprintTimeToGiveCap;
+    [SerializeField] float sprintTimeToGiveMin, sprintTimeToGiveMax, sprintTimeToGiveCap;
     float sprintMultiplierToGive;
-    [SerializeField] float sprintMultiplierToGiveMin;
-    [SerializeField] float sprintMultiplierToGiveMax;
-    [SerializeField] float sprintMultiplierToGiveCap;
+    [SerializeField] float sprintMultiplierToGiveMin, sprintMultiplierToGiveMax, sprintMultiplierToGiveCap;
     float sprintCooldownToGive;
-    [SerializeField] float sprintCooldownToGiveMin;
-    [SerializeField] float sprintCooldownToGiveMax;
-    [SerializeField] float sprintCooldownToGiveCap;
+    [SerializeField] float sprintCooldownToGiveMin, sprintCooldownToGiveMax, sprintCooldownToGiveCap;
     float rotationSpeedToGive;
-    [SerializeField] float rotationSpeedToGiveMin;
-    [SerializeField] float rotationSpeedToGiveMax;
-    [SerializeField] float rotationSpeedToGiveCap;
+    [SerializeField] float rotationSpeedToGiveMin, rotationSpeedToGiveMax, rotationSpeedToGiveCap;
     float shootToHealToGive;
-    [SerializeField] float shootToHealToGiveMin;
-    [SerializeField] float shootToHealToGiveMax;
-    [SerializeField] float shootToHealToGiveCap;
+    [SerializeField] float shootToHealToGiveMin, shootToHealToGiveMax, shootToHealToGiveCap;
     float healthToGive;
-    [SerializeField] float healthToGiveMin;
-    [SerializeField] float healthToGiveMax;
-    [SerializeField] float healthToGiveCap;
+    [SerializeField] float healthToGiveMin, healthToGiveMax, healthToGiveCap;
     float bulletDamageToGive;
-    [SerializeField] float bulletDamageToGiveMin;
-    [SerializeField] float bulletDamageToGiveMax;
-    [SerializeField] float bulletDamageToGiveCap;
+    [SerializeField] float bulletDamageToGiveMin, bulletDamageToGiveMax, bulletDamageToGiveCap;
     float fireRateToGive;
-    [SerializeField] float fireRateToGiveMin;
-    [SerializeField] float fireRateToGiveMax;
-    [SerializeField] float fireRateToGiveCap;
+    [SerializeField] float fireRateToGiveMin, fireRateToGiveMax, fireRateToGiveCap;
     float flamethrowerDurationToGive;
-    [SerializeField] float flameThrowerDurationMin;
-    [SerializeField] float flameThrowerDurationMax;
-    [SerializeField] float flameThrowerDurationCap;
+    [SerializeField] float flameThrowerDurationMin, flameThrowerDurationMax, flameThrowerDurationCap;
     float bulletKnockbackToGive;
-    [SerializeField] float bulletKnockbackToGiveMin;
-    [SerializeField] float bulletKnockbackToGiveMax;
-    [SerializeField] float bulletKnockbackToGiveCap;
+    [SerializeField] float bulletKnockbackToGiveMin, bulletKnockbackToGiveMax, bulletKnockbackToGiveCap;
 
-    //Bot
+    // Bot stats
     float botSprintDurationToGive;
-    [SerializeField] float botSprintDurationToGiveMin;
-    [SerializeField] float botSprintDurationToGiveMax;
-    [SerializeField] float botSprintDurationToGiveCap;
+    [SerializeField] float botSprintDurationToGiveMin, botSprintDurationToGiveMax, botSprintDurationToGiveCap;
     float botMoveSpeedToGive;
-    [SerializeField] float botMoveSpeedToGiveMin;
-    [SerializeField] float botMoveSpeedToGiveMax;
-    [SerializeField] float botMoveSpeedToGiveCap;
+    [SerializeField] float botMoveSpeedToGiveMin, botMoveSpeedToGiveMax, botMoveSpeedToGiveCap;
     float botSprintSpeedToGive;
-    [SerializeField] float botSprintSpeedToGiveMin;
-    [SerializeField] float botSprintSpeedToGiveMax;
-    [SerializeField] float botSprintSpeedToGiveCap;
+    [SerializeField] float botSprintSpeedToGiveMin, botSprintSpeedToGiveMax, botSprintSpeedToGiveCap;
     float botFireRateToGive;
-    [SerializeField] float botFireRateToGiveMin;
-    [SerializeField] float botFireRateToGiveMax;
-    [SerializeField] float botFireRateToGiveCap;
+    [SerializeField] float botFireRateToGiveMin, botFireRateToGiveMax, botFireRateToGiveCap;
     float botDamageToGive;
-    [SerializeField] float botDamageToGiveMin;
-    [SerializeField] float botDamageToGiveMax;
-    [SerializeField] float botDamageToGiveCap;
+    [SerializeField] float botDamageToGiveMin, botDamageToGiveMax, botDamageToGiveCap;
 
+    // ── References ────────────────────────────────────────────────────
     [SerializeField] PlayerController playerController;
     [SerializeField] AIHelperBot aiHelperBot;
 
@@ -91,41 +85,25 @@ public class UpgradesSelector : MonoBehaviour
     [SerializeField] Button showHealthBarsButton;
     [SerializeField] Button showTargetReticleButton;
     [SerializeField] Button showMiniMapButton;
-    [SerializeField] Button doubleGunsButton;
-    [SerializeField] Button machineGunButton;
-    [SerializeField] Button shotgunButton;
-    [SerializeField] Button flamethrowerButton;
-    [SerializeField] Button aiMeleeBotButton;
-    [SerializeField] Button aiRangedBotButton;
 
     [SerializeField] GameObject upgradesPanel;
-
-    [SerializeField] float doubleGunsPrice = 5;
-    [SerializeField] float machineGunPrice = 5;
-    [SerializeField] float shotgunPrice = 10;
-    [SerializeField] float flamethrowerPrice = 10;
-    [SerializeField] float aiMeleeBotPrice = 10;
-    [SerializeField] float aiRangedBotPrice = 10;
-
-
-    [SerializeField] bool doubleGunsPurchased;
-    [SerializeField] bool machineGunPurchased;
-    [SerializeField] bool shotgunPurchased;
-    [SerializeField] bool flamethrowerPurchased;
-    [SerializeField] bool aiMeleeBotPurchased;
-    [SerializeField] bool aiRangedBotPurchased;
-    [SerializeField] bool aiBotChosen;
-
-
-    [SerializeField] TextMeshProUGUI doubleGunPriceText;
-    [SerializeField] TextMeshProUGUI machineGunPriceText;
-    [SerializeField] TextMeshProUGUI shotgunPriceText;
-    [SerializeField] TextMeshProUGUI flameThrowerPriceText;
-    [SerializeField] TextMeshProUGUI aiMeleeBotPriceText;
-    [SerializeField] TextMeshProUGUI aiRangedBotPriceText;
-
-
     [SerializeField] GameObject aiBotToActivate;
+
+    // ── Dynamic weapon buttons ─────────────────────────────────────────
+    [Header("Dynamic Weapon Buttons")]
+    [SerializeField] List<WeaponData> weapons;
+    [SerializeField] Button weaponButtonPrefab;
+    [SerializeField] Transform weaponButtonContainer;
+
+    // ── Dynamic bot buttons ────────────────────────────────────────────
+    [Header("Dynamic Bot Buttons")]
+    [SerializeField] List<BotData> bots;
+    [SerializeField] Button botButtonPrefab;
+    [SerializeField] Transform botButtonContainer;
+
+    // Runtime bot state
+    bool aiBotChosen;
+
     public enum WeaponType
     {
         None,
@@ -135,15 +113,16 @@ public class UpgradesSelector : MonoBehaviour
         Flamethrower
     }
 
-    private void OnEnable()
+    public enum BotType
     {
-        GameManager.OnLevelEnd += HandleLevelEnd;
+        None,
+        MeleeBot,
+        RangedBot
     }
 
-    private void OnDisable()
-    {
-        GameManager.OnLevelEnd -= HandleLevelEnd;
-    }
+    // ── Lifecycle ─────────────────────────────────────────────────────
+    private void OnEnable() => GameManager.OnLevelEnd += HandleLevelEnd;
+    private void OnDisable() => GameManager.OnLevelEnd -= HandleLevelEnd;
 
     private void Start()
     {
@@ -153,11 +132,98 @@ public class UpgradesSelector : MonoBehaviour
         aiBotToActivate.SetActive(false);
     }
 
+    // ── Weapon helpers ────────────────────────────────────────────────
+    WeaponData GetWeaponData(WeaponType type) => weapons.Find(w => w.weaponType == type);
+
+    bool IsWeaponActive(WeaponType type)
+    {
+        switch (type)
+        {
+            case WeaponType.DoubleGuns: return GameManager.Instance.doubleGunsActive;
+            case WeaponType.MachineGun: return GameManager.Instance.machineGunActive;
+            case WeaponType.Shotgun: return GameManager.Instance.shotgunActive;
+            case WeaponType.Flamethrower: return GameManager.Instance.flamethrowerActive;
+            default: return false;
+        }
+    }
+
+    bool IsFlamethrowerPurchased()
+    {
+        var data = GetWeaponData(WeaponType.Flamethrower);
+        return data != null && data.purchased;
+    }
+
+    // ── Bot helpers ───────────────────────────────────────────────────
+    bool IsBotActive(BotType type)
+    {
+        switch (type)
+        {
+            case BotType.MeleeBot: return GameManager.Instance.aiMeleeBotActive;
+            case BotType.RangedBot: return GameManager.Instance.aiRangedBotActive;
+            default: return false;
+        }
+    }
+
+    // ── Dynamic button builders ───────────────────────────────────────
+    void BuildWeaponButtons()
+    {
+        foreach (Transform child in weaponButtonContainer)
+            Destroy(child.gameObject);
+
+        foreach (WeaponData weapon in weapons)
+        {
+            Button btn = Instantiate(weaponButtonPrefab, weaponButtonContainer);
+            weapon.button = btn;
+
+            TextMeshProUGUI[] tmps = btn.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length >= 1) tmps[0].text = weapon.weaponName;
+            if (tmps.Length >= 2)
+            {
+                weapon.priceText = tmps[1];
+                weapon.priceText.text = weapon.purchased ? "" : "$ " + weapon.price;
+            }
+
+            btn.gameObject.SetActive(!IsWeaponActive(weapon.weaponType));
+
+            WeaponData captured = weapon;
+            btn.onClick.AddListener(() => BuyWeapon(captured));
+        }
+    }
+
+    void BuildBotButtons()
+    {
+        foreach (Transform child in botButtonContainer)
+            Destroy(child.gameObject);
+
+        foreach (BotData bot in bots)
+        {
+            Button btn = Instantiate(botButtonPrefab, botButtonContainer);
+            bot.button = btn;
+
+            TextMeshProUGUI[] tmps = btn.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length >= 1) tmps[0].text = bot.botName;
+            if (tmps.Length >= 2)
+            {
+                bot.priceText = tmps[1];
+                bot.priceText.text = bot.purchased ? "" : "$ " + bot.price;
+            }
+
+            // Hide only the bot that was actually chosen/activated
+            bool isChosen = aiBotChosen && IsBotActive(bot.botType);
+            btn.gameObject.SetActive(!isChosen);
+
+            BotData captured = bot;
+            btn.onClick.AddListener(() => BuyBot(captured));
+        }
+    }
+
+    // ── Upgrade randomisation ─────────────────────────────────────────
     void RandomizeUpgrades()
     {
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
         {
             upgradesPanel.SetActive(true);
+
             viewRangeToGive = UnityEngine.Random.Range(viewRangeToGiveMin, viewRangeToGiveMax);
             moveSpeedToGive = UnityEngine.Random.Range(moveSpeedToGiveMin, moveSpeedToGiveMax);
             enemyDetectionRangeToGive = UnityEngine.Random.Range(enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax);
@@ -173,7 +239,7 @@ public class UpgradesSelector : MonoBehaviour
 
             float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
             float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
-            float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
+            float enemyDetectionRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
             float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
             float fireRateRounded = Mathf.Round(fireRateToGive * 100f) / 100f;
             float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
@@ -181,21 +247,20 @@ public class UpgradesSelector : MonoBehaviour
             float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
             float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
             float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
-            float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
             float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
 
-            List<(Action action, string name)> allUpgrades = new List<(Action, string)>
+            var allUpgrades = new List<(Action action, string name)>
             {
-    (GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"),
-    (GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"),
-    (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"),
-    (GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"),
-    (GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"),
-    (GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"),
-    (GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"),
-    (GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"),
-    (GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"),
-    (GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback")
+                (GiveViewRangeToPlayer,           "+" + viewRangeRounded        + " View Range"),
+                (GiveMoveSpeedToPlayer,           "+" + moveSpeedRounded        + " Move Speed"),
+                (GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRounded   + " Enemy Detection"),
+                (GiveBulletDamageToPlayer,        "+" + bulletDamageRounded     + " Bullet Damage"),
+                (GiveFireRateToPlayer,            "+" + fireRateRounded         + " Fire Rate"),
+                (GiveSprintTimeToPlayer,          "+" + sprintTimeRounded       + " Sprint Time"),
+                (GiveSprintMultiplierToPlayer,    "+" + sprintMultiplierRounded + " Sprint Multiplier"),
+                (GiveRotationSpeedToPlayer,       "+" + rotationSpeedRounded    + " Rotation Speed"),
+                (GiveShootToHealToPlayer,         "+" + shootToHealRounded      + " Shoot To Heal"),
+                (GiveBulletKnockbackToPlayer,     "+" + bulletKnockbackRounded  + " Bullet Knockback"),
             };
 
             foreach (Button btn in upgradeButtons)
@@ -204,24 +269,12 @@ public class UpgradesSelector : MonoBehaviour
             for (int i = 0; i < upgradeButtons.Length; i++)
             {
                 int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
-                var chosenUpgrade = allUpgrades[randIndex];
-
-                TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                if (btnText != null)
-                    btnText.text = chosenUpgrade.name;
-
-                Action upgradeCopy = chosenUpgrade.action;
-                upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
-
+                var chosen = allUpgrades[randIndex];
+                upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = chosen.name;
+                Action copy = chosen.action;
+                upgradeButtons[i].onClick.AddListener(() => copy());
                 allUpgrades.RemoveAt(randIndex);
             }
-
-            doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
-            machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
-            shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
-            flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
-            aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
-            aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
 
             showHealthBarsButton.interactable = false;
             showLevelButton.interactable = false;
@@ -230,17 +283,17 @@ public class UpgradesSelector : MonoBehaviour
             showTargetReticleButton.interactable = false;
             showXpButton.interactable = false;
 
-            doubleGunsButton.interactable = false;
-            machineGunButton.interactable = false;
-            shotgunButton.interactable = false;
-            flamethrowerButton.interactable = false;
+            // Build buttons but disable all in tutorial
+            BuildWeaponButtons();
+            foreach (WeaponData w in weapons)
+                if (w.button != null) w.button.interactable = false;
 
-            aiMeleeBotButton.interactable = false;
-            aiRangedBotButton.interactable = false;
+            BuildBotButtons();
+            foreach (BotData b in bots)
+                if (b.button != null) b.button.interactable = false;
         }
         else
         {
-
             upgradesPanel.SetActive(true);
 
             healthToGive = UnityEngine.Random.Range(healthToGiveMin, healthToGiveMax);
@@ -266,7 +319,7 @@ public class UpgradesSelector : MonoBehaviour
             float healthRounded = Mathf.Round(healthToGive * 100f) / 100f;
             float viewRangeRounded = Mathf.Round(viewRangeToGive * 100f) / 100f;
             float moveSpeedRounded = Mathf.Round(moveSpeedToGive * 100f) / 100f;
-            float enemyDetectionRangeRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
+            float enemyDetectionRounded = Mathf.Round(enemyDetectionRangeToGive * 100f) / 100f;
             float bulletDamageRounded = Mathf.Round(bulletDamageToGive * 100f) / 100f;
             float fireRateRounded = Mathf.Round(fireRateToGive * 10000f) / 10000f;
             float sprintTimeRounded = Mathf.Round(sprintTimeToGive * 100f) / 100f;
@@ -274,59 +327,40 @@ public class UpgradesSelector : MonoBehaviour
             float sprintMultiplierRounded = Mathf.Round(sprintMultiplierToGive * 100f) / 100f;
             float rotationSpeedRounded = Mathf.Round(rotationSpeedToGive * 100f) / 100f;
             float shootToHealRounded = Mathf.Round(shootToHealToGive * 100f) / 100f;
-            float flamethrowerDurationRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
+            float flamethrowerDurRounded = Mathf.Round(flamethrowerDurationToGive * 100f) / 100f;
             float bulletKnockbackRounded = Mathf.Round(bulletKnockbackToGive * 100f) / 100f;
 
             float botMoveSpeedRounded = MathF.Round(botMoveSpeedToGive * 100f) / 100f;
             float botDamageRounded = MathF.Round(botDamageToGive * 100f) / 100f;
             float botFireRateRounded = MathF.Round(botFireRateToGive * 10000f) / 10000f;
             float botSprintSpeedRounded = MathF.Round(botSprintSpeedToGive * 100f) / 100f;
-            float botSprintDurationRounded = MathF.Round(botSprintDurationToGive * 100f) / 100f;
+            float botSprintDurRounded = MathF.Round(botSprintDurationToGive * 100f) / 100f;
 
-            List<(Action action, string name)> allUpgrades = new List<(Action, string)> { };
+            var allUpgrades = new List<(Action action, string name)>();
 
-            if (playerController.GetMaxHealth < healthToGiveCap)
-                allUpgrades.Add((GiveHealthToPlayer, "+" + healthRounded + " Health"));
-            if (playerController.GetCameraViewDistance < viewRangeToGiveCap)
-                allUpgrades.Add((GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"));
-            if (playerController.GetMoveSpeed < moveSpeedToGiveCap)
-                allUpgrades.Add((GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"));
-            if (playerController.GetEnemyDetectionRange < enemyDetectionRangeToGiveCap)
-                allUpgrades.Add((GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRangeRounded + " Enemy Detection"));
-            if (playerController.GetBulletDamage < bulletDamageToGiveCap)
-                allUpgrades.Add((GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"));
-            if (playerController.GetFireRate > fireRateToGiveCap)
-                allUpgrades.Add((GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"));
-            if (playerController.GetSprintTime < sprintTimeToGiveCap)
-                allUpgrades.Add((GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"));
-            if (playerController.GetSprintMultiplier < sprintMultiplierToGiveCap)
-                allUpgrades.Add((GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"));
-            if (playerController.GetRotationSpeed < rotationSpeedToGiveCap)
-                allUpgrades.Add((GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"));
-            if (playerController.GetShootToHeal < shootToHealToGiveCap)
-                allUpgrades.Add((GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"));
-            if (playerController.GetBulletKnockback < bulletKnockbackToGiveCap)
-                allUpgrades.Add((GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback"));
-            if (playerController.GetSprintCooldown > sprintCooldownToGiveCap)
-                allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
-            if (flamethrowerPurchased)
-                allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurationRounded + " Flamethrower Duration"));
+            if (playerController.GetMaxHealth < healthToGiveCap) allUpgrades.Add((GiveHealthToPlayer, "+" + healthRounded + " Health"));
+            if (playerController.GetCameraViewDistance < viewRangeToGiveCap) allUpgrades.Add((GiveViewRangeToPlayer, "+" + viewRangeRounded + " View Range"));
+            if (playerController.GetMoveSpeed < moveSpeedToGiveCap) allUpgrades.Add((GiveMoveSpeedToPlayer, "+" + moveSpeedRounded + " Move Speed"));
+            if (playerController.GetEnemyDetectionRange < enemyDetectionRangeToGiveCap) allUpgrades.Add((GiveEnemyDetectionRangeToPlayer, "+" + enemyDetectionRounded + " Enemy Detection"));
+            if (playerController.GetBulletDamage < bulletDamageToGiveCap) allUpgrades.Add((GiveBulletDamageToPlayer, "+" + bulletDamageRounded + " Bullet Damage"));
+            if (playerController.GetFireRate > fireRateToGiveCap) allUpgrades.Add((GiveFireRateToPlayer, "+" + fireRateRounded + " Fire Rate"));
+            if (playerController.GetSprintTime < sprintTimeToGiveCap) allUpgrades.Add((GiveSprintTimeToPlayer, "+" + sprintTimeRounded + " Sprint Time"));
+            if (playerController.GetSprintMultiplier < sprintMultiplierToGiveCap) allUpgrades.Add((GiveSprintMultiplierToPlayer, "+" + sprintMultiplierRounded + " Sprint Multiplier"));
+            if (playerController.GetRotationSpeed < rotationSpeedToGiveCap) allUpgrades.Add((GiveRotationSpeedToPlayer, "+" + rotationSpeedRounded + " Rotation Speed"));
+            if (playerController.GetShootToHeal < shootToHealToGiveCap) allUpgrades.Add((GiveShootToHealToPlayer, "+" + shootToHealRounded + " Shoot To Heal"));
+            if (playerController.GetBulletKnockback < bulletKnockbackToGiveCap) allUpgrades.Add((GiveBulletKnockbackToPlayer, "+" + bulletKnockbackRounded + " Bullet Knockback"));
+            if (playerController.GetSprintCooldown > sprintCooldownToGiveCap) allUpgrades.Add((GiveSprintCooldownToPlayer, "+" + sprintCooldownRounded + " Sprint Cooldown"));
+            if (IsFlamethrowerPurchased())
+                allUpgrades.Add((GiveFlamethrowerDurationToPlayer, "+" + flamethrowerDurRounded + " Flamethrower Duration"));
 
-            // Only add bot upgrades if a bot is active
-            if (aiMeleeBotPurchased || aiRangedBotPurchased)
+            if (GameManager.Instance.aiMeleeBotActive || GameManager.Instance.aiRangedBotActive)
             {
-                if (aiHelperBot.GetMoveSpeed < botMoveSpeedToGiveCap)
-                    allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
-                if (aiHelperBot.GetDamage < botDamageToGiveCap)
-                    allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
-                if (aiHelperBot.GetFireRate < botFireRateToGiveCap)
-                    allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
-                if (aiHelperBot.GetSprintSpeed < botSprintSpeedToGiveCap)
-                    allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
-                if (aiHelperBot.GetSprintDuration < botSprintDurationToGiveCap)
-                    allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurationRounded + " Bot Sprint Duration"));
+                if (aiHelperBot.GetMoveSpeed < botMoveSpeedToGiveCap) allUpgrades.Add((GiveMoveSpeedToBot, "+" + botMoveSpeedRounded + " Bot Move Speed"));
+                if (aiHelperBot.GetDamage < botDamageToGiveCap) allUpgrades.Add((GiveDamageToBot, "+" + botDamageRounded + " Bot Damage"));
+                if (aiHelperBot.GetFireRate < botFireRateToGiveCap) allUpgrades.Add((GiveFireRateToBot, "+" + botFireRateRounded + " Bot Fire Rate"));
+                if (aiHelperBot.GetSprintSpeed < botSprintSpeedToGiveCap) allUpgrades.Add((GiveSprintSpeedToBot, "+" + botSprintSpeedRounded + " Bot Sprint Speed"));
+                if (aiHelperBot.GetSprintDuration < botSprintDurationToGiveCap) allUpgrades.Add((GiveSprintDurationToBot, "+" + botSprintDurRounded + " Bot Sprint Duration"));
             }
-
 
             foreach (Button btn in upgradeButtons)
                 btn.onClick.RemoveAllListeners();
@@ -334,36 +368,19 @@ public class UpgradesSelector : MonoBehaviour
             for (int i = 0; i < upgradeButtons.Length; i++)
             {
                 int randIndex = UnityEngine.Random.Range(0, allUpgrades.Count);
-                var chosenUpgrade = allUpgrades[randIndex];
-
-                TextMeshProUGUI btnText = upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                if (btnText != null)
-                    btnText.text = chosenUpgrade.name;
-
-                Action upgradeCopy = chosenUpgrade.action;
-                upgradeButtons[i].onClick.AddListener(() => upgradeCopy());
-
+                var chosen = allUpgrades[randIndex];
+                upgradeButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = chosen.name;
+                Action copy = chosen.action;
+                upgradeButtons[i].onClick.AddListener(() => copy());
                 allUpgrades.RemoveAt(randIndex);
             }
 
-            doubleGunPriceText.text = doubleGunsPurchased ? "" : "$ " + doubleGunsPrice;
-            machineGunPriceText.text = machineGunPurchased ? "" : "$ " + machineGunPrice;
-            shotgunPriceText.text = shotgunPurchased ? "" : "$ " + shotgunPrice;
-            flameThrowerPriceText.text = flamethrowerPurchased ? "" : "$ " + flamethrowerPrice;
-            aiMeleeBotPriceText.text = aiMeleeBotPurchased ? "" : "$ " + aiMeleeBotPrice;
-            aiRangedBotPriceText.text = aiRangedBotPurchased ? "" : "$ " + aiRangedBotPrice;
-
-            doubleGunsButton.gameObject.SetActive(!GameManager.Instance.doubleGunsActive);
-            machineGunButton.gameObject.SetActive(!GameManager.Instance.machineGunActive);
-            shotgunButton.gameObject.SetActive(!GameManager.Instance.shotgunActive);
-            flamethrowerButton.gameObject.SetActive(!GameManager.Instance.flamethrowerActive);
-
-            aiMeleeBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiMeleeBotActive);
-            aiRangedBotButton.gameObject.SetActive(!aiBotChosen && !GameManager.Instance.aiRangedBotActive);
+            BuildWeaponButtons();
+            BuildBotButtons();
         }
     }
 
-    // === Upgrade Handlers ===
+    // ── Upgrade Handlers ──────────────────────────────────────────────
     void GiveHealthToPlayer()
     {
         playerController.GetMaxHealth += healthToGive;
@@ -391,7 +408,7 @@ public class UpgradesSelector : MonoBehaviour
     void GiveSprintSpeedToBot() { aiHelperBot.GetSprintSpeed += botSprintSpeedToGive; StartLevel(); }
     void GiveSprintDurationToBot() { aiHelperBot.GetSprintDuration += botSprintDurationToGive; StartLevel(); }
 
-    // === Info Buttons ===
+    // ── Info Buttons ──────────────────────────────────────────────────
     public void ClickShowSprintButton() { showSprintButton.gameObject.SetActive(false); GameManager.Instance.showSprintSlider = true; StartLevel(); }
     public void ClickShowXpButton() { showXpButton.gameObject.SetActive(false); GameManager.Instance.showXP = true; StartLevel(); }
     public void ClickShowLevelButton() { showLevelButton.gameObject.SetActive(false); StartLevel(); }
@@ -399,10 +416,7 @@ public class UpgradesSelector : MonoBehaviour
     public void ClickShowTargetReticleButton() { showTargetReticleButton.gameObject.SetActive(false); GameManager.Instance.showTargetReticle = true; StartLevel(); }
     public void ClickShowMiniMapButton() { showMiniMapButton.gameObject.SetActive(false); StartLevel(); }
 
-    public void ClickAIMeleeBotButton() { aiMeleeBotButton.gameObject.SetActive(false); aiRangedBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiMeleeBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isMelee = true; aiBotChosen = true; StartLevel(); }
-    public void ClickAIRangedBotButton() { aiRangedBotButton.gameObject.SetActive(false); aiMeleeBotButton.gameObject.SetActive(false); aiBotToActivate.gameObject.SetActive(true); GameManager.Instance.aiRangedBotActive = true; aiBotToActivate.GetComponent<AIHelperBot>().isRanged = true; aiBotChosen = true; StartLevel(); }
-
-    // === Weapon Logic ===
+    // ── Weapon Logic ──────────────────────────────────────────────────
     void SwapWeapon(WeaponType newWeapon)
     {
         if (GameManager.Instance.machineGunActive)
@@ -413,56 +427,83 @@ public class UpgradesSelector : MonoBehaviour
         GameManager.Instance.shotgunActive = false;
         GameManager.Instance.flamethrowerActive = false;
 
-        doubleGunsButton.gameObject.SetActive(true);
-        machineGunButton.gameObject.SetActive(true);
-        shotgunButton.gameObject.SetActive(true);
-        flamethrowerButton.gameObject.SetActive(true);
+        foreach (WeaponData w in weapons)
+            if (w.button != null) w.button.gameObject.SetActive(true);
 
         switch (newWeapon)
         {
             case WeaponType.DoubleGuns:
                 GameManager.Instance.doubleGunsActive = true;
-                doubleGunsButton.gameObject.SetActive(false);
                 break;
             case WeaponType.MachineGun:
                 GameManager.Instance.machineGunActive = true;
                 playerController.GetFireRate *= .35f;
-                machineGunButton.gameObject.SetActive(false);
                 break;
             case WeaponType.Shotgun:
                 GameManager.Instance.shotgunActive = true;
-                shotgunButton.gameObject.SetActive(false);
                 break;
             case WeaponType.Flamethrower:
                 GameManager.Instance.flamethrowerActive = true;
-                flamethrowerButton.gameObject.SetActive(false);
                 break;
         }
+
+        WeaponData active = GetWeaponData(newWeapon);
+        if (active?.button != null)
+            active.button.gameObject.SetActive(false);
     }
 
-    void BuyWeapon(WeaponType weaponType, ref bool purchasedFlag, float price, TextMeshProUGUI priceText)
+    void BuyWeapon(WeaponData weapon)
     {
-        if (purchasedFlag)
+        if (!weapon.purchased)
         {
-            SwapWeapon(weaponType);
-            StartLevel();
-            return;
+            if (playerController.GetCash < weapon.price) return;
+            playerController.GetCash -= weapon.price;
+            weapon.purchased = true;
+            if (weapon.priceText != null) weapon.priceText.text = "";
         }
 
-        if (playerController.GetCash < price) return;
-
-        playerController.GetCash -= price;
-        purchasedFlag = true;
-        priceText.text = "";
-        SwapWeapon(weaponType);
+        SwapWeapon(weapon.weaponType);
         StartLevel();
     }
 
-    public void BuyDoubleGunsButton() => BuyWeapon(WeaponType.DoubleGuns, ref doubleGunsPurchased, doubleGunsPrice, doubleGunPriceText);
-    public void BuyMachineGun() => BuyWeapon(WeaponType.MachineGun, ref machineGunPurchased, machineGunPrice, machineGunPriceText);
-    public void BuyShotGunButton() => BuyWeapon(WeaponType.Shotgun, ref shotgunPurchased, shotgunPrice, shotgunPriceText);
-    public void BuyFlamethrower() => BuyWeapon(WeaponType.Flamethrower, ref flamethrowerPurchased, flamethrowerPrice, flameThrowerPriceText);
+    // ── Bot Logic ─────────────────────────────────────────────────────
+    void BuyBot(BotData bot)
+    {
+        if (!bot.purchased)
+        {
+            if (playerController.GetCash < bot.price) return;
+            playerController.GetCash -= bot.price;
+            bot.purchased = true;
+            if (bot.priceText != null) bot.priceText.text = "";
+        }
 
+        // Hide only the chosen bot's button; the other bot's button stays visible
+        if (bot.button != null)
+            bot.button.gameObject.SetActive(false);
+
+        aiBotToActivate.SetActive(true);
+        aiBotChosen = true;
+
+        AIHelperBot helperBot = aiBotToActivate.GetComponent<AIHelperBot>();
+
+        switch (bot.botType)
+        {
+            case BotType.MeleeBot:
+                GameManager.Instance.aiMeleeBotActive = true;
+                helperBot.isMelee = true;
+                helperBot.isRanged = false;
+                break;
+            case BotType.RangedBot:
+                GameManager.Instance.aiRangedBotActive = true;
+                helperBot.isRanged = true;
+                helperBot.isMelee = false;
+                break;
+        }
+
+        StartLevel();
+    }
+
+    // ── Internals ─────────────────────────────────────────────────────
     void StartLevel()
     {
         GameManager.Instance.StartLevel();
@@ -473,17 +514,11 @@ public class UpgradesSelector : MonoBehaviour
     {
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
         {
-            var currentPage = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
-
-            if (currentPage.header == "Ability Select")
-            {
+            var page = TutorialManager.Instance.GetTutorialPages[TutorialManager.Instance.GetCurrentPageIndex];
+            if (page.header == "Ability Select")
                 TutorialManager.Instance.CompleteStep();
-            }
         }
     }
 
-    private void HandleLevelEnd()
-    {
-        RandomizeUpgrades();
-    }
+    private void HandleLevelEnd() => RandomizeUpgrades();
 }
