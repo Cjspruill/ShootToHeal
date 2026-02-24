@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -124,8 +125,128 @@ public class UpgradesSelector : MonoBehaviour
     private void OnEnable() => GameManager.OnLevelEnd += HandleLevelEnd;
     private void OnDisable() => GameManager.OnLevelEnd -= HandleLevelEnd;
 
+
+    #region GameData
+    public const float MAX_LEVEL = 15f;
+
+    public TextAsset gameData; // Assets/Resources/gameData.json
+
+    [System.Serializable]
+    public class BotGameData
+    {
+        float sprintDuration;
+        float moveSpeed;
+        float sprintSpeed;
+        float fireRate;
+        float damage;
+    }
+
+    [System.Serializable]
+    public class GameData
+    {
+        float enemyDetectionRange;
+        float viewRange;
+        float moveSpeed;
+        float sprintTime;
+        float sprintMultiplier;
+        float sprintCooldown;
+        float rotationSpeed;
+        float health;
+        float bulletDamage;
+        float fireRate;
+        float flameThrowerDuration;
+        float bulletKnockback;
+        BotGameData bot;
+    }
+
+    static float CalcMax(float num)
+    {
+        return num / MAX_LEVEL;
+    }
+
+    static float CalcMin(float num)
+    {
+        return CalcMax(num) / 2f;
+    }
+
+    void LoadGameData()
+    {
+        GameData data = JsonUtility.FromJson<GameData>(gameData.text);
+
+        enemyDetectionRangeToGiveCap = data?.enemyDetectionRange ?? 0f;
+        enemyDetectionRangeToGiveMin = CalcMin(enemyDetectionRangeToGiveCap);
+        enemyDetectionRangeToGiveMax = CalcMax(enemyDetectionRangeToGiveCap);
+
+        viewRangeToGiveCap = data?.viewRange ?? 0f;
+        viewRangeToGiveMin = CalcMin(viewRangeToGiveCap);
+        viewRangeToGiveMax = CalcMax(viewRangeToGiveCap);
+
+        moveSpeedToGiveCap = data?.moveSpeed ?? 0f;
+        moveSpeedToGiveMin = CalcMin(moveSpeedToGiveCap);
+        moveSpeedToGiveMax = CalcMax(moveSpeedToGiveCap);
+
+        sprintTimeToGiveCap = data?.sprintTime ?? 0f;
+        sprintTimeToGiveMin = CalcMin(sprintTimeToGiveCap);
+        sprintTimeToGiveMax = CalcMax(sprintTimeToGiveCap);
+
+        sprintMultiplierToGiveCap = data?.sprintMultiplier ?? 0f;
+        sprintMultiplierToGiveMin = CalcMin(sprintMultiplierToGiveCap);
+        sprintMultiplierToGiveMax = CalcMax(sprintMultiplierToGiveCap);
+
+        sprintCooldownToGiveCap = data?.sprintCooldown ?? 0f;
+        sprintCooldownToGiveMin = CalcMin(sprintCooldownToGiveCap);
+        sprintCooldownToGiveMax = CalcMax(sprintCooldownToGiveCap);
+
+        rotationSpeedToGiveCap = data?.rotationSpeed ?? 0f;
+        rotationSpeedToGiveMin = CalcMin(rotationSpeedToGiveCap);
+        rotationSpeedToGiveMax = CalcMax(rotationSpeedToGiveCap);
+
+        healthToGiveCap = data?.health ?? 0f;
+        healthToGiveMin = CalcMin(healthToGiveCap);
+        healthToGiveMax = CalcMax(healthToGiveCap);
+
+        bulletDamageToGiveCap = data?.bulletDamage ?? 0f;
+        bulletDamageToGiveMin = CalcMin(bulletDamageToGiveCap);
+        bulletDamageToGiveMax = CalcMax(bulletDamageToGiveCap);
+
+        fireRateToGiveCap = data?.fireRate ?? 0f;
+        fireRateToGiveMin = CalcMin(fireRateToGiveCap);
+        fireRateToGiveMax = CalcMax(fireRateToGiveCap);
+
+        flameThrowerDurationCap = data?.flameThrowerDuration ?? 0f;
+        flameThrowerDurationMin = CalcMin(flameThrowerDurationCap);
+        flameThrowerDurationMax = CalcMax(flameThrowerDurationCap);
+
+        bulletKnockbackToGiveCap = data?.bulletKnockback ?? 0f;
+        bulletKnockbackToGiveMin = CalcMin(bulletKnockbackToGiveCap);
+        bulletKnockbackToGiveMax = CalcMax(bulletKnockbackToGiveCap);
+
+        botSprintDurationToGiveCap = data?.bot?.sprintDuration ?? 0f;
+        botSprintDurationToGiveMin = CalcMin(botSprintDurationToGiveCap);
+        botSprintDurationToGiveMax = CalcMax(botSprintDurationToGiveCap);
+
+        botMoveSpeedToGiveCap = data?.bot?.moveSpeed ?? 0f;
+        botMoveSpeedToGiveMin = CalcMin(botMoveSpeedToGiveCap);
+        botMoveSpeedToGiveMax = CalcMax(botMoveSpeedToGiveCap);
+
+        botSprintSpeedToGiveCap = data?.bot?.sprintSpeed ?? 0f;
+        botSprintSpeedToGiveMin = CalcMin(botSprintSpeedToGiveCap);
+        botSprintSpeedToGiveMax = CalcMax(botSprintSpeedToGiveCap);
+
+        botFireRateToGiveCap = data?.bot?.fireRate ?? 0f;
+        botFireRateToGiveMin = CalcMin(botFireRateToGiveCap);
+        botFireRateToGiveMax = CalcMax(botFireRateToGiveCap);
+
+        botDamageToGiveCap = data?.bot?.damage ?? 0f;
+        botDamageToGiveMin = CalcMin(botDamageToGiveCap);
+        botDamageToGiveMax = CalcMax(botDamageToGiveCap);
+    }
+    #endregion
+
     private void Start()
     {
+        LoadGameData();
+
         playerController = FindFirstObjectByType<PlayerController>();
         aiHelperBot = FindFirstObjectByType<AIHelperBot>();
         aiBotToActivate = aiHelperBot.gameObject;

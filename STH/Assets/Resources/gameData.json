@@ -1,0 +1,21 @@
+{
+    "enemyDetectionRange": 10,
+    "viewRange": 15,
+    "moveSpeed": 11,
+    "sprintTime": 5,
+    "sprintMultiplier": 2,
+    "sprintCooldown": 1,
+    "rotationSpeed": 200,
+    "health": 3,
+    "bulletDamage": 20,
+    "fireRate": 0.15,
+    "flameThrowerDuration": 2,
+    "bulletKnockback": 5,
+    "bot": {
+        "sprintDuration": 5,
+        "moveSpeed": 11,
+        "sprintSpeed": 15,
+        "fireRate": 0.15,
+        "damage": 20
+    }
+}
