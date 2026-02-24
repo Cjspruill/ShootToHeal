@@ -7602,14 +7602,19 @@ MonoBehaviour:
       m_Calls: []
   m_text: '-Credits-
 
+
     Game Designers
+
 
     Colton Spruill
 
     Wyatt Sniff
 
-    Chat
-    GPT used in code generation and refactoring'
+    Chris
+    Post
+
+
+    Chat GPT and Claude.ai used in code generation and refactoring.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
