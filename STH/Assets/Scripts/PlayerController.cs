@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip doubleGunAudioClip;
     [SerializeField] AudioClip machineGunAudioClip;
     [SerializeField] AudioClip shotgunAudioClip;
+    [SerializeField] AudioClip rocketLauncherClip;
     [SerializeField] UnityEngine.UI.Slider sprintSlider;
     [SerializeField] float bulletForce = 100f;
     [SerializeField] GameObject shadowPrefab;
@@ -206,7 +207,7 @@ public class PlayerController : MonoBehaviour
         {
             // keep sprinting as long as key is held
             isSprinting = true;
-            
+
 
             if (shadowTimer >= shadowTime) {
                 SpawnShadow();
@@ -454,7 +455,20 @@ public class PlayerController : MonoBehaviour
                 Destroy(pellet, 5f);
             }
         }
+        else if (GameManager.Instance.rocketLauncherActive)
+        {
+            audioSource.clip = rocketLauncherClip;
+            audioSource.Play();
 
+            GameObject rocket = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
+            rocket.GetComponent<Projectile>().damage = GetBulletDamage;
+            rocket.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            rocket.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
+            rocket.GetComponent<Projectile>().playerController = this;
+            rocket.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
+
+            Destroy(rocket, 5f);
+        }
         else
         {
             audioSource.clip = machineGunAudioClip;
