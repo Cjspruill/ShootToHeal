@@ -37,43 +37,43 @@ public class UpgradesSelector : MonoBehaviour
 {
     // ── Stat ranges ───────────────────────────────────────────────────
     float enemyDetectionRangeToGive;
-    [SerializeField] float enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax, enemyDetectionRangeToGiveCap;
+    float enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax, enemyDetectionRangeToGiveCap;
     float viewRangeToGive;
-    [SerializeField] float viewRangeToGiveMin, viewRangeToGiveMax, viewRangeToGiveCap;
+    float viewRangeToGiveMin, viewRangeToGiveMax, viewRangeToGiveCap;
     float moveSpeedToGive;
-    [SerializeField] float moveSpeedToGiveMin, moveSpeedToGiveMax, moveSpeedToGiveCap;
+    float moveSpeedToGiveMin, moveSpeedToGiveMax, moveSpeedToGiveCap;
     float sprintTimeToGive;
-    [SerializeField] float sprintTimeToGiveMin, sprintTimeToGiveMax, sprintTimeToGiveCap;
+    float sprintTimeToGiveMin, sprintTimeToGiveMax, sprintTimeToGiveCap;
     float sprintMultiplierToGive;
-    [SerializeField] float sprintMultiplierToGiveMin, sprintMultiplierToGiveMax, sprintMultiplierToGiveCap;
+    float sprintMultiplierToGiveMin, sprintMultiplierToGiveMax, sprintMultiplierToGiveCap;
     float sprintCooldownToGive;
-    [SerializeField] float sprintCooldownToGiveMin, sprintCooldownToGiveMax, sprintCooldownToGiveCap;
+    float sprintCooldownToGiveMin, sprintCooldownToGiveMax, sprintCooldownToGiveCap;
     float rotationSpeedToGive;
-    [SerializeField] float rotationSpeedToGiveMin, rotationSpeedToGiveMax, rotationSpeedToGiveCap;
+    float rotationSpeedToGiveMin, rotationSpeedToGiveMax, rotationSpeedToGiveCap;
     float shootToHealToGive;
-    [SerializeField] float shootToHealToGiveMin, shootToHealToGiveMax, shootToHealToGiveCap;
+    float shootToHealToGiveMin, shootToHealToGiveMax, shootToHealToGiveCap;
     float healthToGive;
-    [SerializeField] float healthToGiveMin, healthToGiveMax, healthToGiveCap;
+    float healthToGiveMin, healthToGiveMax, healthToGiveCap;
     float bulletDamageToGive;
-    [SerializeField] float bulletDamageToGiveMin, bulletDamageToGiveMax, bulletDamageToGiveCap;
+    float bulletDamageToGiveMin, bulletDamageToGiveMax, bulletDamageToGiveCap;
     float fireRateToGive;
-    [SerializeField] float fireRateToGiveMin, fireRateToGiveMax, fireRateToGiveCap;
+    float fireRateToGiveMin, fireRateToGiveMax, fireRateToGiveCap;
     float flamethrowerDurationToGive;
-    [SerializeField] float flameThrowerDurationMin, flameThrowerDurationMax, flameThrowerDurationCap;
+    float flameThrowerDurationMin, flameThrowerDurationMax, flameThrowerDurationCap;
     float bulletKnockbackToGive;
-    [SerializeField] float bulletKnockbackToGiveMin, bulletKnockbackToGiveMax, bulletKnockbackToGiveCap;
+    float bulletKnockbackToGiveMin, bulletKnockbackToGiveMax, bulletKnockbackToGiveCap;
 
     // Bot stats
     float botSprintDurationToGive;
-    [SerializeField] float botSprintDurationToGiveMin, botSprintDurationToGiveMax, botSprintDurationToGiveCap;
+    float botSprintDurationToGiveMin, botSprintDurationToGiveMax, botSprintDurationToGiveCap;
     float botMoveSpeedToGive;
-    [SerializeField] float botMoveSpeedToGiveMin, botMoveSpeedToGiveMax, botMoveSpeedToGiveCap;
+    float botMoveSpeedToGiveMin, botMoveSpeedToGiveMax, botMoveSpeedToGiveCap;
     float botSprintSpeedToGive;
-    [SerializeField] float botSprintSpeedToGiveMin, botSprintSpeedToGiveMax, botSprintSpeedToGiveCap;
+    float botSprintSpeedToGiveMin, botSprintSpeedToGiveMax, botSprintSpeedToGiveCap;
     float botFireRateToGive;
-    [SerializeField] float botFireRateToGiveMin, botFireRateToGiveMax, botFireRateToGiveCap;
+    float botFireRateToGiveMin, botFireRateToGiveMax, botFireRateToGiveCap;
     float botDamageToGive;
-    [SerializeField] float botDamageToGiveMin, botDamageToGiveMax, botDamageToGiveCap;
+    float botDamageToGiveMin, botDamageToGiveMax, botDamageToGiveCap;
 
     // ── References ────────────────────────────────────────────────────
     [SerializeField] PlayerController playerController;
