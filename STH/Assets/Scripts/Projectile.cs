@@ -10,7 +10,7 @@ public class Projectile : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.GetComponent<Projectile>() || other.gameObject.GetComponent<AIHelperBot>()) return;
+        if (other.gameObject.GetComponent<Projectile>() || other.gameObject.GetComponent<AIHelperBot>() || other.gameObject.CompareTag("Player")) return;
 
         Health health = other.gameObject.GetComponent<Health>();
         EnemyController enemyController = other.gameObject.GetComponent<EnemyController>();
@@ -49,6 +49,7 @@ public class Projectile : MonoBehaviour
             enemyController.KnockBack(transform.forward, bulletPushback, newPushBackDur);
 
         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+       
 
         Destroy(gameObject);
     }

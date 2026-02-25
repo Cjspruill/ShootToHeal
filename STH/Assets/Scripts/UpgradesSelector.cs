@@ -113,7 +113,8 @@ public class UpgradesSelector : MonoBehaviour
         Shotgun,
         Flamethrower,
         Staff,
-        RocketLauncher
+        RocketLauncher,
+        ThrowingKnife
     }
 
     public enum BotType
@@ -268,6 +269,7 @@ public class UpgradesSelector : MonoBehaviour
             case WeaponType.Flamethrower: return GameManager.Instance.flamethrowerActive;
             case WeaponType.Staff: return GameManager.Instance.staffActive;
             case WeaponType.RocketLauncher: return GameManager.Instance.rocketLauncherActive;
+            case WeaponType.ThrowingKnife: return GameManager.Instance.throwingKnifeActive;
             default: return false;
         }
     }
@@ -578,6 +580,10 @@ public class UpgradesSelector : MonoBehaviour
                 break;
             case WeaponType.RocketLauncher:
                 GameManager.Instance.rocketLauncherActive = true;
+                playerController.rocketLauncher.gameObject.SetActive(true);
+                break;
+            case WeaponType.ThrowingKnife:
+                GameManager.Instance.throwingKnifeActive = true;
                 break;
         }
 

@@ -7,6 +7,7 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] public GameObject rocketLauncher;
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] Transform barrelOut;
     [SerializeField] Transform doubleGunBarrelOutLeft;
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public StaffWeapon staffWeapon;
     [SerializeField] public GameObject rocketPrefab;
     [SerializeField] public Transform rocketBarrelOut;
+    [SerializeField] GameObject throwingKnifePrefab;
     [SerializeField] Transform target;
     [SerializeField] public Health health;
     [SerializeField] CinemachineCamera cam;
@@ -162,7 +164,7 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.showSprintSlider)
             UpdateSprintSlider();
 
-        HandleTouchInput(); // 👈 add this here
+        HandleTouchInput(); 
     }
     void HandleTouchInput()
     {
@@ -399,12 +401,23 @@ public class PlayerController : MonoBehaviour
 
     void ShootAtEnemy()
     {
-        if (GameManager.Instance.staffActive)
+        if (GameManager.Instance.throwingKnifeActive)
+        {
+            GameObject knife = Instantiate(throwingKnifePrefab, barrelOut.position, barrelOut.rotation);
+            knife.GetComponent<Projectile>().damage = GetBulletDamage * 1.15f;
+            knife.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
+            knife.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
+            knife.GetComponent<Projectile>().playerController = this;
+            knife.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
+            Destroy(knife, 5f);
+            return;
+        }
+        else if (GameManager.Instance.staffActive)
         {
             staffWeapon.FireBurst(GetBulletDamage, GetShootToHeal, GetBulletKnockback);
             return;
         }
-        if (GameManager.Instance.doubleGunsActive)
+        else if (GameManager.Instance.doubleGunsActive)
         {
             audioSource.clip = doubleGunAudioClip;
             audioSource.Play();
