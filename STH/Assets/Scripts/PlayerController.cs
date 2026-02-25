@@ -461,10 +461,9 @@ public class PlayerController : MonoBehaviour
             audioSource.Play();
 
             GameObject rocket = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
-            rocket.GetComponent<Projectile>().damage = GetBulletDamage * 2f;
-            rocket.GetComponent<Projectile>().shootToHeal = GetShootToHeal;
-            rocket.GetComponent<Projectile>().bulletPushback = GetBulletKnockback;
-            rocket.GetComponent<Projectile>().playerController = this;
+            rocket.GetComponent<RocketProjectile>().damage = GetBulletDamage * 2f;
+            rocket.GetComponent<RocketProjectile>().shootToHeal = GetShootToHeal;
+            rocket.GetComponent<RocketProjectile>().playerController = this;
             rocket.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
 
             Destroy(rocket, 5f);
