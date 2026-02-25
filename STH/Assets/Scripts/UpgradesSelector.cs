@@ -36,44 +36,44 @@ public class BotData
 public class UpgradesSelector : MonoBehaviour
 {
     // ── Stat ranges ───────────────────────────────────────────────────
-    float enemyDetectionRangeToGive;
-    float enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax, enemyDetectionRangeToGiveCap;
-    float viewRangeToGive;
-    float viewRangeToGiveMin, viewRangeToGiveMax, viewRangeToGiveCap;
-    float moveSpeedToGive;
-    float moveSpeedToGiveMin, moveSpeedToGiveMax, moveSpeedToGiveCap;
-    float sprintTimeToGive;
-    float sprintTimeToGiveMin, sprintTimeToGiveMax, sprintTimeToGiveCap;
-    float sprintMultiplierToGive;
-    float sprintMultiplierToGiveMin, sprintMultiplierToGiveMax, sprintMultiplierToGiveCap;
-    float sprintCooldownToGive;
-    float sprintCooldownToGiveMin, sprintCooldownToGiveMax, sprintCooldownToGiveCap;
-    float rotationSpeedToGive;
-    float rotationSpeedToGiveMin, rotationSpeedToGiveMax, rotationSpeedToGiveCap;
-    float shootToHealToGive;
-    float shootToHealToGiveMin, shootToHealToGiveMax, shootToHealToGiveCap;
-    float healthToGive;
-    float healthToGiveMin, healthToGiveMax, healthToGiveCap;
-    float bulletDamageToGive;
-    float bulletDamageToGiveMin, bulletDamageToGiveMax, bulletDamageToGiveCap;
-    float fireRateToGive;
-    float fireRateToGiveMin, fireRateToGiveMax, fireRateToGiveCap;
-    float flamethrowerDurationToGive;
-    float flameThrowerDurationMin, flameThrowerDurationMax, flameThrowerDurationCap;
-    float bulletKnockbackToGive;
-    float bulletKnockbackToGiveMin, bulletKnockbackToGiveMax, bulletKnockbackToGiveCap;
+    private float enemyDetectionRangeToGive;
+    private float enemyDetectionRangeToGiveMin, enemyDetectionRangeToGiveMax, enemyDetectionRangeToGiveCap;
+    private float viewRangeToGive;
+    private float viewRangeToGiveMin, viewRangeToGiveMax, viewRangeToGiveCap;
+    private float moveSpeedToGive;
+    private float moveSpeedToGiveMin, moveSpeedToGiveMax, moveSpeedToGiveCap;
+    private float sprintTimeToGive;
+    private float sprintTimeToGiveMin, sprintTimeToGiveMax, sprintTimeToGiveCap;
+    private float sprintMultiplierToGive;
+    private float sprintMultiplierToGiveMin, sprintMultiplierToGiveMax, sprintMultiplierToGiveCap;
+    private float sprintCooldownToGive;
+    private float sprintCooldownToGiveMin, sprintCooldownToGiveMax, sprintCooldownToGiveCap;
+    private float rotationSpeedToGive;
+    private float rotationSpeedToGiveMin, rotationSpeedToGiveMax, rotationSpeedToGiveCap;
+    private float shootToHealToGive;
+    private float shootToHealToGiveMin, shootToHealToGiveMax, shootToHealToGiveCap;
+    private float healthToGive;
+    private float healthToGiveMin, healthToGiveMax, healthToGiveCap;
+    private float bulletDamageToGive;
+    private float bulletDamageToGiveMin, bulletDamageToGiveMax, bulletDamageToGiveCap;
+    private float fireRateToGive;
+    private float fireRateToGiveMin, fireRateToGiveMax, fireRateToGiveCap;
+    private float flamethrowerDurationToGive;
+    private float flameThrowerDurationMin, flameThrowerDurationMax, flameThrowerDurationCap;
+    private float bulletKnockbackToGive;
+    private float bulletKnockbackToGiveMin, bulletKnockbackToGiveMax, bulletKnockbackToGiveCap;
 
     // Bot stats
-    float botSprintDurationToGive;
-    float botSprintDurationToGiveMin, botSprintDurationToGiveMax, botSprintDurationToGiveCap;
-    float botMoveSpeedToGive;
-    float botMoveSpeedToGiveMin, botMoveSpeedToGiveMax, botMoveSpeedToGiveCap;
-    float botSprintSpeedToGive;
-    float botSprintSpeedToGiveMin, botSprintSpeedToGiveMax, botSprintSpeedToGiveCap;
-    float botFireRateToGive;
-    float botFireRateToGiveMin, botFireRateToGiveMax, botFireRateToGiveCap;
-    float botDamageToGive;
-    float botDamageToGiveMin, botDamageToGiveMax, botDamageToGiveCap;
+    private float botSprintDurationToGive;
+    private float botSprintDurationToGiveMin, botSprintDurationToGiveMax, botSprintDurationToGiveCap;
+    private float botMoveSpeedToGive;
+    private float botMoveSpeedToGiveMin, botMoveSpeedToGiveMax, botMoveSpeedToGiveCap;
+    private float botSprintSpeedToGive;
+    private float botSprintSpeedToGiveMin, botSprintSpeedToGiveMax, botSprintSpeedToGiveCap;
+    private float botFireRateToGive;
+    private float botFireRateToGiveMin, botFireRateToGiveMax, botFireRateToGiveCap;
+    private float botDamageToGive;
+    private float botDamageToGiveMin, botDamageToGiveMax, botDamageToGiveCap;
 
     // ── References ────────────────────────────────────────────────────
     [SerializeField] PlayerController playerController;
