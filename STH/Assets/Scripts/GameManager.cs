@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool machineGunActive;
     [SerializeField] public bool shotgunActive;
     [SerializeField] public bool flamethrowerActive;
+    [SerializeField] public bool staffActive;
     [SerializeField] public bool aiMeleeBotActive;
     [SerializeField] public bool aiRangedBotActive;
     [SerializeField] public bool showTargetReticle;
@@ -525,6 +526,13 @@ public class GameManager : MonoBehaviour
 
     // ------------------- OBSTACLES -------------------
 
+    public enum Obstacles
+    {
+        BUILDING,
+        TREE,
+        TENT
+    }
+
     public IEnumerator SpawnObstacles()
     {
         if (obstaclePrefabs == null || obstaclePrefabs.Count == 0 || spawnArea == null)
@@ -544,14 +552,14 @@ public class GameManager : MonoBehaviour
 
             GameObject ghost = Instantiate(prefabToSpawn, candidatePos, Quaternion.identity, obstacleHolder);
 
-            ghost.transform.localScale = (randomIndex == 0)
+            ghost.transform.localScale = (randomIndex == Obstacles.BUILDING)
                 ? new Vector3(Random.Range(2, 10), Random.Range(5, 10), Random.Range(2, 10))
                 : Vector3.one;
 
             Quaternion rotation;
-            if (randomIndex == 0)
+            if (randomIndex == Obstacles.BUILDING)
                 rotation = Quaternion.identity;
-            else if (randomIndex == 1 || randomIndex == 2)
+            else if (randomIndex == Obstacles.TREE || randomIndex == Obstacles.TENT)
                 rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
             else
                 rotation = Quaternion.identity;
