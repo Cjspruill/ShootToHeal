@@ -111,7 +111,8 @@ public class UpgradesSelector : MonoBehaviour
         DoubleGuns,
         MachineGun,
         Shotgun,
-        Flamethrower
+        Flamethrower,
+        Staff
     }
 
     public enum BotType
@@ -264,6 +265,7 @@ public class UpgradesSelector : MonoBehaviour
             case WeaponType.MachineGun: return GameManager.Instance.machineGunActive;
             case WeaponType.Shotgun: return GameManager.Instance.shotgunActive;
             case WeaponType.Flamethrower: return GameManager.Instance.flamethrowerActive;
+            case WeaponType.Staff: return GameManager.Instance.staffActive;
             default: return false;
         }
     }
@@ -547,6 +549,7 @@ public class UpgradesSelector : MonoBehaviour
         GameManager.Instance.machineGunActive = false;
         GameManager.Instance.shotgunActive = false;
         GameManager.Instance.flamethrowerActive = false;
+        GameManager.Instance.staffActive = false;
 
         foreach (WeaponData w in weapons)
             if (w.button != null) w.button.gameObject.SetActive(true);
@@ -565,6 +568,10 @@ public class UpgradesSelector : MonoBehaviour
                 break;
             case WeaponType.Flamethrower:
                 GameManager.Instance.flamethrowerActive = true;
+                break;
+            case WeaponType.Staff:
+                GameManager.Instance.staffActive = true;
+                playerController.staffWeapon.gameObject.SetActive(true);
                 break;
         }
 
