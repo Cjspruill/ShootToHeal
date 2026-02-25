@@ -9,8 +9,8 @@ public class RocketProjectile : MonoBehaviour
     [SerializeField] GameObject explosionPrefab;
 
     [SerializeField] public LayerMask damageableLayers;
-    [SerializeField] public float explosionRadius = 5f;
-    [SerializeField] public float explosionPower = 10f;
+    [SerializeField] public float explosionRadius;
+    [SerializeField] public float explosionPower;
 
     public void OnCollisionEnter(Collision other)
     {
