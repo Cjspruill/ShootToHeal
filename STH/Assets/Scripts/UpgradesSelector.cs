@@ -134,29 +134,29 @@ public class UpgradesSelector : MonoBehaviour
     [System.Serializable]
     public class BotGameData
     {
-        float sprintDuration;
-        float moveSpeed;
-        float sprintSpeed;
-        float fireRate;
-        float damage;
+        public float sprintDuration;
+        public float moveSpeed;
+        public float sprintSpeed;
+        public float fireRate;
+        public float damage;
     }
 
     [System.Serializable]
     public class GameData
     {
-        float enemyDetectionRange;
-        float viewRange;
-        float moveSpeed;
-        float sprintTime;
-        float sprintMultiplier;
-        float sprintCooldown;
-        float rotationSpeed;
-        float health;
-        float bulletDamage;
-        float fireRate;
-        float flameThrowerDuration;
-        float bulletKnockback;
-        BotGameData bot;
+        public float enemyDetectionRange;
+        public float viewRange;
+        public float moveSpeed;
+        public float sprintTime;
+        public float sprintMultiplier;
+        public float sprintCooldown;
+        public float rotationSpeed;
+        public float health;
+        public float bulletDamage;
+        public float fireRate;
+        public float flameThrowerDuration;
+        public float bulletKnockback;
+        public BotGameData bot;
     }
 
     static float CalcMax(float num)
