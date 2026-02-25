@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform doubleGunBarrelOutRight;
     [SerializeField] public StaffWeapon staffWeapon;
     [SerializeField] public GameObject rocketPrefab;
-    [SerializeField] public TransformBlock rocketBarrelOut;
+    [SerializeField] public Transform rocketBarrelOut;
     [SerializeField] Transform target;
     [SerializeField] public Health health;
     [SerializeField] CinemachineCamera cam;
