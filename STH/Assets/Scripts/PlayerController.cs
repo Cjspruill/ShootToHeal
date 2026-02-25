@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform doubleGunBarrelOutLeft;
     [SerializeField] Transform doubleGunBarrelOutRight;
     [SerializeField] public StaffWeapon staffWeapon;
+    [SerializeField] public GameObject rocketPrefab;
+    [SerializeField] public TransformBlock rocketBarrelOut;
     [SerializeField] Transform target;
     [SerializeField] public Health health;
     [SerializeField] CinemachineCamera cam;
@@ -460,11 +462,11 @@ public class PlayerController : MonoBehaviour
             audioSource.clip = rocketLauncherClip;
             audioSource.Play();
 
-            GameObject rocket = Instantiate(bulletPrefab, barrelOut.position, barrelOut.rotation);
+            GameObject rocket = Instantiate(rocketPrefab, rocketBarrelOut.position, rocketBarrelOut.rotation);
             rocket.GetComponent<RocketProjectile>().damage = GetBulletDamage * 2f;
             rocket.GetComponent<RocketProjectile>().shootToHeal = GetShootToHeal;
             rocket.GetComponent<RocketProjectile>().playerController = this;
-            rocket.GetComponent<Rigidbody>().AddForce(barrelOut.forward * bulletForce, ForceMode.Impulse);
+            rocket.GetComponent<Rigidbody>().AddForce(rocketBarrelOut.forward * bulletForce, ForceMode.Impulse);
 
             Destroy(rocket, 5f);
         }
