@@ -373,10 +373,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1552464186}
     - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      propertyPath: cash
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834348010958775455, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: sprintSlider
       value: 
       objectReference: {fileID: 57338911}
@@ -387,16 +383,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 724665206}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
---- !u!1 &194326880 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8963925535493690866, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
-  m_PrefabInstance: {fileID: 194326879}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,14 +412,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -597,7 +585,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 447
+    m_Bits: 1983
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -713,18 +701,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6166652936281876884, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
   m_PrefabInstance: {fileID: 194326879}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &724665206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194326880}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 079a5f445bc74c848a7154284cbc69ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RandomColor
 --- !u!114 &763863074 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3615914136395218376, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
@@ -929,9 +905,41 @@ PrefabInstance:
       value: -184.81119
       objectReference: {fileID: 0}
     - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: gameData
+      value: 
+      objectReference: {fileID: 4900000, guid: 27051b3a3ec5a7144aa275f2a3ce7f78, type: 3}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: aiHelperBot
       value: 
       objectReference: {fileID: 1810443432}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[3].price
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[4].price
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[3].weaponName
+      value: Magic Missile Wand
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[3].weaponType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[4].weaponName
+      value: Flame Thrower
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176878966063501637, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: weapons.Array.data[4].weaponType
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6259310462264460364, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
       propertyPath: m_Name
       value: HUDHolder
@@ -1201,6 +1209,7 @@ MonoBehaviour:
   machineGunActive: 0
   shotgunActive: 0
   flamethrowerActive: 0
+  staffActive: 0
   aiMeleeBotActive: 0
   aiRangedBotActive: 0
   showTargetReticle: 0
@@ -1355,6 +1364,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1242421591
 MeshFilter:
@@ -1562,6 +1572,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1807172972
 MeshFilter:
@@ -1716,6 +1727,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &2005797279
 MeshFilter:
@@ -2387,6 +2399,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2584,6 +2597,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2788,6 +2802,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2897,6 +2912,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

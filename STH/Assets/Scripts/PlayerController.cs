@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform barrelOut;
     [SerializeField] Transform doubleGunBarrelOutLeft;
     [SerializeField] Transform doubleGunBarrelOutRight;
+    [SerializeField] public StaffWeapon staffWeapon;
     [SerializeField] Transform target;
     [SerializeField] public Health health;
     [SerializeField] CinemachineCamera cam;
@@ -395,6 +396,11 @@ public class PlayerController : MonoBehaviour
 
     void ShootAtEnemy()
     {
+        if (GameManager.Instance.staffActive)
+        {
+            staffWeapon.FireBurst(GetBulletDamage, GetShootToHeal, GetBulletKnockback);
+            return;
+        }
         if (GameManager.Instance.doubleGunsActive)
         {
             audioSource.clip = doubleGunAudioClip;

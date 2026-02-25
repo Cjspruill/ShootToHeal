@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1235152255937743378}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 3975607220803306044}
   - component: {fileID: 1793972969614318760}
   - component: {fileID: 6950367445351571469}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 8560169134630468972}
   - component: {fileID: 7929803505300536517}
   - component: {fileID: 1753464457263747801}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5545776432022680086}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 1301789413081962067}
   - component: {fileID: 706249965521761381}
   - component: {fileID: 1738111505236849066}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 3634370971315160125}
   - component: {fileID: 3109966253259481827}
   - component: {fileID: 3589450925826636338}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,7 +481,7 @@ GameObject:
   - component: {fileID: -2662974694517278332}
   - component: {fileID: -9156695445387191467}
   - component: {fileID: 1709931847931688243}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RunnerEnemy
   m_TagString: Runner
   m_Icon: {fileID: 0}
@@ -595,8 +595,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   navMeshAgent: {fileID: 0}
-  moveSpeed: 8
-  sprintSpeed: 14
+  moveSpeed: 7
+  sprintSpeed: 13
   stoppingDistance: 0
   rotationSpeed: 10
   knockbackForce: 7
@@ -809,7 +809,7 @@ GameObject:
   - component: {fileID: 9107520532639278060}
   - component: {fileID: 6458294323813622175}
   - component: {fileID: 910064949338022980}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
