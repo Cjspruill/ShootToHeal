@@ -730,7 +730,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &5932308144175057192
 MeshFilter:
@@ -887,7 +886,7 @@ GameObject:
   - component: {fileID: 8417616490297123440}
   - component: {fileID: 5542620965713019258}
   m_Layer: 0
-  m_Name: StaffMagicMissle
+  m_Name: WandMagicMissile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -964,7 +963,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &8417616490297123440
 BoxCollider:
@@ -3064,7 +3062,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &7098802884351869564
 MeshFilter:
@@ -3141,7 +3138,7 @@ GameObject:
   - component: {fileID: 2634575507285490721}
   m_Layer: 0
   m_Name: Eyes
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3216,7 +3213,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &2634575507285490721
 BoxCollider:
@@ -3370,7 +3366,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7834348010958775455
 MonoBehaviour:
@@ -3429,7 +3424,7 @@ MonoBehaviour:
   sprintCooldownTimer: 0
   isSprinting: 0
   xp: 0
-  cash: 90000
+  cash: 0
   knockbackRecoverySpeed: 10
   shotgunSpreadAngle: 15
   gravity: -9.81

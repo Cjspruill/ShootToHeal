@@ -628,6 +628,7 @@ MonoBehaviour:
   damageFlashColor: {r: 1, g: 1, b: 1, a: 1}
   inDamageFlash: 0
   damageFlashTime: 0.25
+  enemyTutorial: {fileID: 0}
 --- !u!1 &5693985966020474375
 GameObject:
   m_ObjectHideFlags: 0

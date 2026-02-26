@@ -1009,7 +1009,6 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: First Off
     explanation: Let's start with opening the menu press escape on PC or the back
       arrow on your bottom of the phone bar.
@@ -1017,7 +1016,6 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Stats
     explanation: On the pause menu. You can see your current player stats, view the
       options to go back to the main menu, quit or restart. As well as open the sound
@@ -1026,7 +1024,6 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Good!
     explanation: Now let's get to the basics. Move on PC with WASD keys, if your
       on mobile, hold a finger on the screen and then slide in a direction. Try this
@@ -1035,14 +1032,12 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Movement
     explanation: Now try and move about with those inputs.
     requiresCondition: 1
     pauseGame: 0
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Good Job!
     explanation: Now. Lets get to the enemies. Lets go with an easy one. The basic
       enemy is the grunt. It is a brown enemy. Not the fastest. Not the strongest.
@@ -1050,14 +1045,12 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Spawn Grunt Enemy
     explanation: 
     requiresCondition: 1
     pauseGame: 0
     showPanel: 0
     showNextButton: 0
-    timerDuration: 0
   - header: Enemy Incoming!
     explanation: An enemy is on the way! Get ready. Just move about. The player will
       auto rotate and auto fire at them when they are in range.
@@ -1065,14 +1058,12 @@ MonoBehaviour:
     pauseGame: 1
     showPanel: 1
     showNextButton: 1
-    timerDuration: 0
   - header: Enemy Grunt Death
     explanation: 
     requiresCondition: 1
     pauseGame: 0
     showPanel: 0
     showNextButton: 0
-    timerDuration: 0
 --- !u!1 &8839122407869767612
 GameObject:
   m_ObjectHideFlags: 0
