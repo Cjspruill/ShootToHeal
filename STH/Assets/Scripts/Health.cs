@@ -76,6 +76,23 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        // ── Power-up: Invincibility (player only) ──────────────────────
+        if (GetComponent<PlayerController>() != null &&
+            PowerUpManager.Instance != null &&
+            PowerUpManager.Instance.invincibleActive)
+        {
+            return; // absorb all damage while invincible
+        }
+
+        // ── Power-up: One-Shot Kill (enemy only) ───────────────────────
+        if (GetComponent<EnemyController>() != null &&
+            PowerUpManager.Instance != null &&
+            PowerUpManager.Instance.oneShotKillActive)
+        {
+            damage = health + 1f; // guaranteed kill regardless of canDamage gate
+            canDamage = true;
+        }
+
         if (!canDamage) return;
 
         health -= damage;
@@ -98,6 +115,9 @@ public class Health : MonoBehaviour
                 for (int i = 0; i < cashOrbsToDrop; i++)
                     enemyController.DropCashOrb();
 
+                // ── Drop power/down orbs ───────────────────────────────
+                enemyController.DropPowerOrbs();
+
                 if (enemyTutorial)
                 {
                     if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
@@ -109,10 +129,7 @@ public class Health : MonoBehaviour
             else if (playerController)
             {
                 // --- PLAYER DEATH ---
-                // Clamp health to 0 so UI doesn't show negative
                 health = 0;
-
-                // Delegate entirely to GameManager which owns lives, coins, and UI routing
                 GameManager.Instance.PlayerDied();
             }
         }

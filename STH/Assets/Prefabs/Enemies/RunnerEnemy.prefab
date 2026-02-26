@@ -124,6 +124,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &6950367445351571469
 BoxCollider:
@@ -560,6 +561,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &5204944117268151480
 BoxCollider:
@@ -615,6 +617,9 @@ MonoBehaviour:
   sprintColor: {r: 0.31258634, g: 0.91194963, b: 0.89733106, a: 1}
   health: {fileID: 0}
   rb: {fileID: 0}
+  positiveOrbPrefab: {fileID: 3349496461579008403, guid: 2eae98e965ce5ce429887343696958a5, type: 3}
+  negativeOrbPrefab: {fileID: 5732228493092418642, guid: 277520fbb22f2474cb11029f7ab16768, type: 3}
+  dropRateRampTime: 600
 --- !u!114 &4455539684403054978
 MonoBehaviour:
   m_ObjectHideFlags: 0

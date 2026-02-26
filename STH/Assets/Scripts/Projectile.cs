@@ -22,7 +22,9 @@ public class Projectile : MonoBehaviour
 
         if (playerController)       
             playerController.GetComponent<Health>().GiveHealth(shootToHeal);
-        
+
+        if (PowerUpManager.Instance != null && PowerUpManager.Instance.freezeShotActive)
+            enemyController?.FreezeForDuration(2f);
 
         if (enemyController)
             enemyController.PlayHurtAudio();
