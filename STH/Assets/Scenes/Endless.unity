@@ -130,6 +130,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!1 &151693124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 151693125}
+  m_Layer: 0
+  m_Name: TrapHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &151693125
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151693124}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &155170873
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +363,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1679813293}
+    - target: {fileID: 2634575507285490721, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3433976510010458308, guid: 02de60cd07c7a1f43b331d0e203b2e9a, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -808,6 +843,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUDHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 8094177524558209655, guid: 5b4eaa2dcd5a72c4b81b53d105205bac, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0014648438
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -963,7 +1002,14 @@ MonoBehaviour:
   - {fileID: 9128204638848036961, guid: db232a539492c4b4d86c588bbc605554, type: 3}
   - {fileID: 7955955826865882083, guid: b6637a0748636f24ca150322892e4207, type: 3}
   - {fileID: 3780989869679856239, guid: 92d600acb28d5144ab4eb8de818d45f7, type: 3}
+  - {fileID: 4870827249454431677, guid: cd83f6c2ab32eeb43b16b8f7d7c94804, type: 3}
   obstacleHolder: {fileID: 994115428}
+  trapPrefabs:
+  - {fileID: 4870827249454431677, guid: cd83f6c2ab32eeb43b16b8f7d7c94804, type: 3}
+  trapHolder: {fileID: 151693125}
+  numOfTrapsToSpawn: 50
+  trapSpawnClearRadius: 3
+  minTrapDistanceFromPlayer: 5
   baseSpawnInterval: 3
   spawnIntervalDecrease: 0.2
   minSpawnInterval: 0.5
@@ -3364,6 +3410,7 @@ SceneRoots:
   - {fileID: 978316021}
   - {fileID: 155170874}
   - {fileID: 994115428}
+  - {fileID: 151693125}
   - {fileID: 2077522529}
   - {fileID: 809624391}
   - {fileID: 2615616664984158742}

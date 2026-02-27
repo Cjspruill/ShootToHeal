@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private LayerMask spawnIgnoreLayers;
 
     [Header("Enemy Settings")]
-    [SerializeField] private GameObject[] enemiesToSpawn;   // [0] & [1] = normal, [2] = runner
+    [SerializeField] private GameObject[] enemiesToSpawn;
     [SerializeField] private BoxCollider spawnArea;
     [SerializeField] private Transform enemyHolder;
 
@@ -27,6 +27,13 @@ public class GameManager : MonoBehaviour
     [Header("Obstacles")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
     [SerializeField] Transform obstacleHolder;
+
+    [Header("Traps")]
+    [SerializeField] private List<GameObject> trapPrefabs;       // Assign SpikePad, LaserTrap, SawBladeTrap prefabs
+    [SerializeField] private Transform trapHolder;               // Empty parent to keep hierarchy tidy
+    [SerializeField] private int numOfTrapsToSpawn = 4;
+    [SerializeField] private float trapSpawnClearRadius = 3f;    // Must be clear of obstacles/player to place
+    [SerializeField] private float minTrapDistanceFromPlayer = 10f; // Don't spawn traps right on top of player
 
     [Header("Spawn Settings")]
     [SerializeField] private float baseSpawnInterval = 3f;
@@ -111,10 +118,13 @@ public class GameManager : MonoBehaviour
 
         UpdateLivesUI();
 
+        // Spawn obstacles
         for (int i = 0; i < numOfObstaclesToSpawn; i++)
-        {
             StartCoroutine(SpawnObstacles());
-        }
+
+        // Spawn traps — simple placement, no Colliders sub-object required
+        if (trapPrefabs != null && trapPrefabs.Count > 0)
+            StartCoroutine(SpawnTrapsRoutine());
 
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial) return;
 
@@ -137,9 +147,7 @@ public class GameManager : MonoBehaviour
             canSprintText.text = "I'm Tired!";
 
         if (!levelEnded && playerController.GetXp >= GetMaxXpForLevel())
-        {
             EndLevel();
-        }
 
         if (TutorialManager.Instance != null && TutorialManager.Instance.isTutorial)
         {
@@ -202,11 +210,6 @@ public class GameManager : MonoBehaviour
 
     // ------------------- LIVES & REVIVE -------------------
 
-    /// <summary>
-    /// Called by Health.cs when the player reaches 0 HP.
-    /// Can afford revive (50 coins) → show revive prompt.
-    /// Cannot afford                → trigger game over.
-    /// </summary>
     public void PlayerDied()
     {
         if (spawnRoutine != null) StopCoroutine(spawnRoutine);
@@ -236,9 +239,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Hooked up to the "Revive" button on the revive panel.
-    /// </summary>
     public void OnClickRevive()
     {
         if (playerController.GetCash >= reviveCost && revivesUsed < maxRevives)
@@ -254,9 +254,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Hooked up to the "Give Up" button on the revive panel.
-    /// </summary>
     public void OnClickGiveUp()
     {
         if (revivePanel != null)
@@ -270,7 +267,6 @@ public class GameManager : MonoBehaviour
         if (revivePanel != null)
             revivePanel.SetActive(false);
 
-        // Restore player to half health and resume
         float reviveHealth = playerController.health.GetMaxHealth * 0.5f;
         playerController.UpdateHealth(reviveHealth);
 
@@ -280,7 +276,6 @@ public class GameManager : MonoBehaviour
         if (runnerRoutine != null) StopCoroutine(runnerRoutine);
         spawnRoutine = StartCoroutine(SpawnLoop());
         runnerRoutine = StartCoroutine(RunnerLoop());
-
     }
 
     private void UpdateLivesUI()
@@ -296,18 +291,11 @@ public class GameManager : MonoBehaviour
         if (spawnRoutine != null) StopCoroutine(spawnRoutine);
         if (runnerRoutine != null) StopCoroutine(runnerRoutine);
 
-        // OnGameOver fires for the scoreboard to check / save the score.
-        // The scoreboard itself is responsible for showing the high score panel
-        // if a new record was set, or falling through to the game over panel if not.
         OnGameOver?.Invoke();
     }
 
     public int GetLevel() => level;
     public int GetEnemiesDefeated() => totalEnemiesDestroyed;
-
-    /// <summary>
-    /// Legacy entry point so any existing callers don't break.
-    /// </summary>
     public void GameOver() => PlayerDied();
 
     // ------------------- SPAWNING -------------------
@@ -320,9 +308,7 @@ public class GameManager : MonoBehaviour
             float interval = GetSpawnIntervalForLevel();
 
             if (enemyHolder.childCount < maxEnemies)
-            {
                 SpawnNormalEnemy();
-            }
 
             yield return new WaitForSeconds(interval);
         }
@@ -342,9 +328,7 @@ public class GameManager : MonoBehaviour
                 }
 
                 if (runnerCount < maxRunners)
-                {
                     SpawnRunner();
-                }
             }
             yield return new WaitForSeconds(runnerSpawnInterval);
         }
@@ -402,6 +386,135 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // ------------------- TRAP SPAWNING -------------------
+
+    /// <summary>
+    /// Spawns traps using a simple OverlapSphere check — no "Colliders" sub-object needed.
+    /// Traps are placed flat on the ground and just need clear space around them.
+    /// </summary>
+    private IEnumerator SpawnTrapsRoutine()
+    {
+        // Give obstacles time to finish placing first so traps don't overlap them
+        yield return new WaitForSeconds(1f);
+
+        if (trapPrefabs == null || trapPrefabs.Count == 0 || spawnArea == null)
+            yield break;
+
+        // Create trap holder if not assigned
+        if (trapHolder == null)
+        {
+            GameObject holderObj = new GameObject("TrapHolder");
+            trapHolder = holderObj.transform;
+        }
+
+        for (int i = 0; i < numOfTrapsToSpawn; i++)
+        {
+            // Pick a random trap type
+            int randomIndex = Random.Range(0, trapPrefabs.Count);
+            GameObject prefab = trapPrefabs[randomIndex];
+
+            Vector3 spawnPos;
+            if (FindTrapSpawnLocation(out spawnPos))
+            {
+                Instantiate(prefab, spawnPos, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f), trapHolder);
+            }
+            else
+            {
+                Debug.LogWarning($"Could not find a clear spot for trap '{prefab.name}'.");
+            }
+
+            // Small stagger between each trap placement
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    /// <summary>
+    /// Finds a clear flat position for a trap inside the spawn area.
+    /// Uses a thin OverlapBox raised just above the ground so the ground
+    /// plane itself never blocks placement.
+    /// </summary>
+    private bool FindTrapSpawnLocation(out Vector3 spawnPos, int maxAttempts = 50)
+    {
+        spawnPos = Vector3.zero;
+
+        // Check slightly above ground level so we never hit the floor collider.
+        // Half-extents: wide enough to give traps breathing room, but only 0.5 tall.
+        Vector3 halfExtents = new Vector3(trapSpawnClearRadius, 0.5f, trapSpawnClearRadius);
+        float checkHeight = 1f; // y position of the overlap box centre
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
+            float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
+            Vector3 candidate = new Vector3(randX, checkHeight, randZ);
+
+            // Must be far enough from the player's starting position
+            if (playerController != null)
+            {
+                float distToPlayer = Vector3.Distance(candidate, playerController.transform.position);
+                if (distToPlayer < minTrapDistanceFromPlayer)
+                    continue;
+            }
+
+            // Only block on things that are actually obstacles — ignore the ground layer
+            Collider[] overlaps = Physics.OverlapBox(candidate, halfExtents, Quaternion.identity, ~spawnIgnoreLayers);
+
+            // Filter out the ground plane specifically (anything tagged Ground or on the ground layer)
+            bool blocked = false;
+            foreach (Collider col in overlaps)
+            {
+                if (col.CompareTag("Ground")) continue;        // skip ground
+                if (col.gameObject.layer == LayerMask.NameToLayer("Ground")) continue; // skip ground layer
+                blocked = true;
+                Debug.Log($"[TrapSpawn] Attempt {i} blocked by: {col.gameObject.name} (layer: {LayerMask.LayerToName(col.gameObject.layer)})");
+                break;
+            }
+
+            if (!blocked)
+            {
+                // Snap Y to ground surface — only hit Ground layer so we never
+                // land on top of an obstacle or the trap's own collider
+                int groundLayer = LayerMask.GetMask("Ground");
+                Vector3 rayStart = new Vector3(candidate.x, 100f, candidate.z);
+
+                if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 200f, groundLayer))
+                    candidate.y = hit.point.y;
+                else
+                    candidate.y = 0f; // fallback: just place at zero
+
+                spawnPos = candidate;
+                return true;
+            }
+        }
+
+        Debug.LogWarning("[TrapSpawn] Failed to find a clear spawn location after all attempts.");
+        return false;
+    }
+
+    // ------------------- ENEMY TRACKING -------------------
+
+    public void EnemyDestroyed()
+    {
+        totalEnemiesDestroyed++;
+    }
+
+    // ------------------- SCALING FUNCTIONS -------------------
+
+    private int GetMaxEnemiesForLevel()
+    {
+        return Mathf.Clamp(baseMaxEnemies + (level - 1) * maxEnemiesIncrease, baseMaxEnemies, maxEnemiesCap);
+    }
+
+    private float GetMaxXpForLevel()
+    {
+        return Mathf.FloorToInt(baseXP * Mathf.Pow(xpMultiplier, level - 1));
+    }
+
+    private float GetSpawnIntervalForLevel()
+    {
+        return Mathf.Clamp(baseSpawnInterval - (level - 1) * spawnIntervalDecrease, minSpawnInterval, maxSpawnInterval);
+    }
+
     private Vector3 GetPrefabBoundsSize(GameObject prefab)
     {
         Collider col = prefab.GetComponentInChildren<Collider>();
@@ -443,87 +556,6 @@ public class GameManager : MonoBehaviour
 
         Debug.LogWarning("Couldn't find free spawn spot after " + maxAttempts + " attempts!");
         return false;
-    }
-
-    private bool FindObstacleSpawnLocation(GameObject prefab, out Vector3 spawnLocation, Quaternion rotation, Vector3 scale, int maxAttempts = 30)
-    {
-        spawnLocation = Vector3.zero;
-
-        for (int attempt = 0; attempt < maxAttempts; attempt++)
-        {
-            float randX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
-            float randZ = Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z);
-            Vector3 candidatePos = new Vector3(randX, 0f, randZ);
-
-            GameObject temp = Instantiate(prefab, candidatePos, rotation);
-            temp.SetActive(false);
-            temp.transform.localScale = scale;
-
-            bool blocked = false;
-
-            Transform collidersRoot = null;
-            foreach (Transform t in temp.GetComponentsInChildren<Transform>(true))
-            {
-                if (t.name == "Colliders")
-                {
-                    collidersRoot = t;
-                    break;
-                }
-            }
-
-            if (collidersRoot == null)
-            {
-                Debug.LogWarning($"Prefab '{prefab.name}' has no 'Colliders' sub-object! Attempt #{attempt + 1}");
-                Destroy(temp);
-                continue;
-            }
-
-            foreach (BoxCollider col in collidersRoot.GetComponentsInChildren<BoxCollider>(true))
-            {
-                Vector3 worldCenter = col.transform.position + col.transform.rotation * Vector3.Scale(col.center, col.transform.lossyScale);
-                Vector3 worldHalfSize = Vector3.Scale(col.size, col.transform.lossyScale) * 0.5f;
-
-                if (Physics.CheckBox(worldCenter, worldHalfSize, col.transform.rotation, ~spawnIgnoreLayers))
-                {
-                    blocked = true;
-                    break;
-                }
-            }
-
-            Destroy(temp);
-
-            if (!blocked)
-            {
-                spawnLocation = candidatePos;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // ------------------- ENEMY TRACKING -------------------
-
-    public void EnemyDestroyed()
-    {
-        totalEnemiesDestroyed++;
-    }
-
-    // ------------------- SCALING FUNCTIONS -------------------
-
-    private int GetMaxEnemiesForLevel()
-    {
-        return Mathf.Clamp(baseMaxEnemies + (level - 1) * maxEnemiesIncrease, baseMaxEnemies, maxEnemiesCap);
-    }
-
-    private float GetMaxXpForLevel()
-    {
-        return Mathf.FloorToInt(baseXP * Mathf.Pow(xpMultiplier, level - 1));
-    }
-
-    private float GetSpawnIntervalForLevel()
-    {
-        return Mathf.Clamp(baseSpawnInterval - (level - 1) * spawnIntervalDecrease, minSpawnInterval, maxSpawnInterval);
     }
 
     // ------------------- OBSTACLES -------------------
@@ -664,12 +696,10 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0f;
-        Debug.Log("Game paused.");
     }
 
     public void ResumeGame()
     {
         Time.timeScale = 1f;
-        Debug.Log("Game resumed.");
     }
 }
