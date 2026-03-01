@@ -118,6 +118,8 @@ public class PlayerController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController>();
         targetReticle = targetReticleGameObject.GetComponent<TargetReticle>();
+        staffWeapon.playerController = this;
+
 
         lastPosition = transform.position;
     }

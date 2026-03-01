@@ -549,6 +549,10 @@ public class UpgradesSelector : MonoBehaviour
         if (GameManager.Instance.machineGunActive)
             playerController.GetFireRate /= .35f;
 
+        // ── Deactivate special weapon GameObjects ──
+        playerController.staffWeapon.gameObject.SetActive(false);
+        playerController.rocketLauncher.gameObject.SetActive(false);
+
         GameManager.Instance.doubleGunsActive = false;
         GameManager.Instance.machineGunActive = false;
         GameManager.Instance.shotgunActive = false;

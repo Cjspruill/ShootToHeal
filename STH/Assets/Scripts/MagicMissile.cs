@@ -109,6 +109,8 @@ public class MagicMissile : MonoBehaviour
         if (health != null)
             health.TakeDamage(damage);
 
+        Debug.Log($"MagicMissile hit {other.gameObject.name} | shootToHeal={shootToHeal} | playerController={playerController}");
+
         if (playerController != null)
             playerController.GetComponent<Health>().GiveHealth(shootToHeal);
 
@@ -131,23 +133,5 @@ public class MagicMissile : MonoBehaviour
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
 
         Destroy(gameObject);
-    }
-
-    void SpawnMissile(float damage, float shootToHeal, float bulletKnockback, float yawOffset)
-    {
-        Quaternion spawnRot = playerController.staffWeapon.staffTip.rotation * Quaternion.Euler(0f, yawOffset, 0f);
-        GameObject obj = Instantiate(playerController.staffWeapon.magicMissilePrefab, playerController.staffWeapon.staffTip.position, spawnRot);
-
-        MagicMissile missile = obj.GetComponent<MagicMissile>();
-        missile.damage = damage;
-        missile.shootToHeal = shootToHeal;
-        missile.bulletPushback = bulletKnockback;
-        missile.playerController = playerController;
-
-        // Ignore collision with the player specifically
-        Physics.IgnoreCollision(
-            obj.GetComponent<Collider>(),
-            playerController.GetComponent<Collider>()
-        );
     }
 }
